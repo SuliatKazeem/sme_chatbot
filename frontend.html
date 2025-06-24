@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Security Chatbot</title>
+  <style>
+    .bar {
+      width: 100%;                      
+      background-color: #1a73e8;
+      text-align: center;
+      padding: 20px 0;
+      box-sizing: border-box;
+    }
+    .footer {
+      position: fixed;   
+      bottom: 0;        
+      left: 0;   
+      width: 100%; 
+      height: 60px;
+      line-height: 20px; 
+      background-color: #1a73e8;
+      color: #ffffff;
+      font-size: 0.8rem;
+      text-align: center;
+      border-top: 1px solid #ddd;
+      white-space: nowrap;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      padding: 0;
+      background: #f2f2f2;
+      margin: 0;
+      box-sizing: border-box;
+    }
+    #chatBox {
+      width: 100%;
+      max-width: 600px;
+      margin: 20px auto;
+      background: white;
+      border-radius: 10px;
+      padding: 30px;
+      max-height: 500px;
+      overflow-y: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      display: none;
+    }
+
+    .message {
+      clear: both;
+      margin: 10px 0;
+    }
+
+    .user {
+      float: right;
+      background: #e8f0fe;
+      color: #1a73e8;
+      padding: 10px;
+      border-radius: 10px;
+      max-width: 80%;
+      word-wrap: break-word;
+    }
+
+    .bot {
+      float: left;
+      background: #f1f3f4;
+      color: #111;
+      padding: 10px;
+      border-radius: 10px;
+      max-width: 80%;
+      word-wrap: break-word;
+    }
+
+
+    #inputSection {
+      max-width: 600px;
+      margin: 20px auto;
+      display: flex;
+      gap: 10px;
+    }
+    #queryInput {
+    flex:1;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    }
+
+    button {
+      padding: 10px 20px;
+      border: none;
+      background: #1a73e8;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #faqSection {
+      max-width: 600px;
+      margin: 20px auto;
+      text-align: center;
+    }
+
+    #faqSection button {
+      margin: 5px;
+      padding: 10px;
+      background: #1a73e8;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="bar"></div>
+
+  <div id="chatBox"></div>
+
+  <div id="inputSection">
+    <input
+  type="text"
+  id="queryInput"
+  placeholder="Ask your security concern..."
+/>
+    <button onclick="sendQuery()">Send</button>
+  </div>
+
+  <div id="faqSection">
+    <button onclick="handleFAQ('scanEmail')">📧 Email Scan</button>
+    <button onclick="handleFAQ('strongPassword')">📄 Generate Incident Report</button>
+  </div>
+
+  <script>
+
+     let sessionId = localStorage.getItem("sessionId");
+    if (!sessionId) {
+    sessionId = crypto.randomUUID();
+    localStorage.setItem("sessionId", sessionId);
+    }
+  
+    let expectingEmailScan = false;
+
+    const chatBox = document.getElementById("chatBox");
+    const input = document.getElementById("queryInput");
+
+    async function sendQuery() {
+      const query = input.value.trim();
+      if (!query) return;
+
+      chatBox.style.display = "block";
+      addMessage("user", query);
+      input.value = "";
+
+      let fullQuery = query;
+      if (expectingEmailScan) {
+        fullQuery = `Please scan this email for suspicious activity: ${query}`;
+        expectingEmailScan = false;
+      }
+
+      try {
+        const response = await fetch("/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ query: fullQuery, session_id: sessionId }),
+        });
+        const text = await response.text();
+        addMessage("bot", text);
+      } catch (error) {
+        console.error("Fetch error:", error);
+        addMessage("bot", "Sorry, there was an error processing your request.");
+      }
+    }
+
+    function addMessage(sender, text) {
+      const div = document.createElement("div");
+      div.className = `message ${sender}`;
+      div.textContent = text;
+      chatBox.appendChild(div);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    input.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") sendQuery();
+    });
+
+    function handleFAQ(type) {
+      switch (type) {
+
+        case "scanEmail":
+          expectingEmailScan = true;
+          chatBox.style.display = "block";
+
+          addMessage("bot", "Please enter the email you would like me to scan");
+          return;
+
+        case "generateReport":
+          chatBox.style.display = "block";
+          input.value = "I need to generate an incident report.";
+          sendQuery();
+          return;
+
+      }
+    }
+  </script>
+
+  <div class="footer">
+    <p>
+      Powered by Suliat Kazeem - The Official Person who created the SME Chatbot<br>
+      © Copyright 2025
+    </p>
+  </div>
+</body>
+</html>
