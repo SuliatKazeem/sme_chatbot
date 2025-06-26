@@ -1,6 +1,8 @@
-import requests
+# virustotal.py
+
 import os
 import re
+import requests
 import email
 from email import policy
 from urllib.parse import urlparse
@@ -8,132 +10,90 @@ from dotenv import load_dotenv
 
 load_dotenv()
 VT_API_KEY = os.getenv("VT_API_KEY")
+headers = {"x-apikey": VT_API_KEY}
 
-headers = {
-    "x-apikey": VT_API_KEY
-}
+# Optional HTML parsing
+try:
+    from bs4 import BeautifulSoup
+    HAVE_BS4 = True
+except ImportError:
+    HAVE_BS4 = False
 
 def scan_domain(domain):
-    response = requests.get(f"https://www.virustotal.com/api/v3/domains/{domain}", headers=headers)
-
-    if response.status_code != 200:
-        return {"error": response.text}
-
-    stats = response.json().get("data", {}).get("attributes", {}).get("last_analysis_stats", {})
-    return {
-        "malicious": stats.get("malicious", 0),
-        "suspicious": stats.get("suspicious", 0),
-        "harmless": stats.get("harmless", 0),
-        "verdict": "Likely Malicious" if stats.get("malicious", 0) > 0 else "Looks Safe"
-    }
+    resp = requests.get(f"https://www.virustotal.com/api/v3/domains/{domain}", headers=headers)
+    if resp.status_code != 200:
+        return {"verdict": f"Error: {resp.text}"}
+    stats = resp.json().get("data", {}).get("attributes", {}).get("last_analysis_stats", {})
+    return {"verdict": "Likely Malicious" if stats.get("malicious",0)>0 else "Looks Safe"}
 
 def scan_url(url):
     data = {"url": url}
-    response = requests.post("https://www.virustotal.com/api/v3/urls", headers=headers, data=data)
-
-    if response.status_code != 200:
-        return {"error": response.text}
-    
-    scan_id = response.json()["data"]["id"]
+    resp = requests.post("https://www.virustotal.com/api/v3/urls", headers=headers, data=data)
+    if resp.status_code != 200:
+        return {"verdict": f"Error: {resp.text}"}
+    scan_id = resp.json()["data"]["id"]
     analysis = requests.get(f"https://www.virustotal.com/api/v3/analyses/{scan_id}", headers=headers)
-
     if analysis.status_code != 200:
-        return {"error": analysis.text}
-
+        return {"verdict": f"Error: {analysis.text}"}
     stats = analysis.json().get("data", {}).get("attributes", {}).get("stats", {})
-    return {
-        "malicious": stats.get("malicious", 0),
-        "suspicious": stats.get("suspicious", 0),
-        "harmless": stats.get("harmless", 0),
-        "verdict": "Likely Phishing" if stats.get("malicious", 0) > 0 else "Looks Safe"
-    }
+    return {"verdict": "Likely Phishing" if stats.get("malicious",0)>0 else "Looks Safe"}
 
 def scan_file_attachment(filename, file_bytes):
-    files = {
-        'file': (filename, file_bytes)
-    }
-    response = requests.post("https://www.virustotal.com/api/v3/files", headers=headers, files=files)
-    if response.status_code != 200:
-        return {"error": response.text}
-    analysis_id = response.json()["data"]["id"]
-    analysis_response = requests.get(f"https://www.virustotal.com/api/v3/analyses/{analysis_id}", headers=headers)
-    if analysis_response.status_code != 200:
-        return {"error": analysis_response.text}
-    stats = analysis_response.json().get("data", {}).get("attributes", {}).get("stats", {})
-    return {
-        "malicious": stats.get("malicious", 0),
-        "suspicious": stats.get("suspicious", 0),
-        "harmless": stats.get("harmless", 0),
-        "verdict": " Likely Malicious File" if stats.get("malicious", 0) > 0 else "File Seems Safe"
-    }
-
-def friendly_domain_report(domain, scan_result):
-    verdict = scan_result.get("verdict", "")
-    if "Likely Malicious" in verdict:
-        message = (
-            f"The domain '{domain}' has been flagged by security tools multiple times. "
-            "It looks suspicious and might be harmful. "
-            "I recommend that you avoid clicking any links or downloading files from this domain."
-        )
-    else:
-        message = (
-            f"Secure! The domain '{domain}' appears safe based on current security checks. "
-            "However, always be cautious."
-        )
-    return message
+    files = {"file": (filename, file_bytes)}
+    resp = requests.post("https://www.virustotal.com/api/v3/files", headers=headers, files=files)
+    if resp.status_code != 200:
+        return {"verdict": f"Error: {resp.text}"}
+    analysis_id = resp.json()["data"]["id"]
+    analysis = requests.get(f"https://www.virustotal.com/api/v3/analyses/{analysis_id}", headers=headers)
+    if analysis.status_code != 200:
+        return {"verdict": f"Error: {analysis.text}"}
+    stats = analysis.json().get("data", {}).get("attributes", {}).get("stats", {})
+    return {"verdict": "Likely Malicious File" if stats.get("malicious",0)>0 else "File Seems Safe"}
 
 def extract_urls(text):
-    url_pattern = r'https?://[^\s]+'
-    return re.findall(url_pattern, text)
-
-def extract_domains(urls):
-    domains = set()
-    for url in urls:
-        parsed_url = urlparse(url)
-        domains.add(parsed_url.netloc)
-    return list(domains)
+    pattern = r'https?://[^\s"\']+'
+    return set(re.findall(pattern, text))
 
 def parse_email(raw_email_bytes):
     msg = email.message_from_bytes(raw_email_bytes, policy=policy.default)
-    
-    email_text = ""
+
+    text_parts = []
+    html_parts = []
     if msg.is_multipart():
         for part in msg.walk():
-            content_type = part.get_content_type()
-            if content_type == "text/plain":
-                email_text += part.get_content()
+            ctype = part.get_content_type()
+            if ctype == "text/plain":
+                text_parts.append(part.get_content())
+            elif ctype == "text/html":
+                html_parts.append(part.get_content())
     else:
-        email_text = msg.get_content()
+        if msg.get_content_type() == "text/plain":
+            text_parts.append(msg.get_content())
+        elif msg.get_content_type() == "text/html":
+            html_parts.append(msg.get_content())
 
-    urls = extract_urls(email_text)
-    domains = extract_domains(urls)
+    # 1) Gather all URLs from plain text
+    email_text = "\n".join(text_parts)
+    urls = set(extract_urls(email_text))
 
+    # 2) If HTML and bs4 available, grab all anchor hrefs
+    if HAVE_BS4:
+        for html in html_parts:
+            soup = BeautifulSoup(html, "html.parser")
+            for a in soup.find_all("a", href=True):
+                urls.add(a["href"])
+    else:
+        for html in html_parts:
+            urls.update(extract_urls(html))
+
+    # Deduplicate domains
+    domains = {urlparse(u).netloc for u in urls}
+
+    # Gather attachments
     attachments = []
     for part in msg.iter_attachments():
-        filename = part.get_filename()
-        if filename:
-            payload = part.get_payload(decode=True)
-            attachments.append((filename, payload))
-    
-    return urls, domains, attachments
+        fn = part.get_filename()
+        if fn:
+            attachments.append((fn, part.get_payload(decode=True)))
 
-def process_email(raw_email_bytes):
-    urls, domains, attachments = parse_email(raw_email_bytes)
-
-    url_reports = {}
-    for url in urls:
-        url_reports[url] = scan_url(url)
-
-    domain_reports = {}
-    for domain in domains:
-        domain_reports[domain] = scan_domain(domain)
-
-    attachment_reports = {}
-    for filename, file_bytes in attachments:
-        attachment_reports[filename] = scan_file_attachment(filename, file_bytes)
-
-    return {
-        "urls": url_reports,
-        "domains": domain_reports,
-        "attachments": attachment_reports
-    }
+    return list(urls), list(domains), attachments
