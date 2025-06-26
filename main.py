@@ -15,6 +15,7 @@ app = FastAPI()
 
 # Regex to pull out domains from pasted email addresses
 EMAIL_REGEX = r'[\w\.-]+@([\w\.-]+)'
+URL_REGEX = r'(https?://[^\s]+|www\.[^\s]+)'
 
 @app.post("/chat", response_class=PlainTextResponse)
 async def chat(req: Request):
@@ -47,9 +48,11 @@ async def chat(req: Request):
         
     messages = []
     # Scan each URL
-    for url in urls:
-        verdict = scan_url(url)["verdict"]
-        messages.append(f"URL {url} → {verdict}.")
+    for url in set(re.findall(URL_REGEX, user_input)):
+    # make sure it has a scheme
+        full_url = url if url.startswith("http") else "http://" + url
+        verdict = scan_url(full_url)["verdict"]
+        messages.append(f"URL {full_url} → {verdict}.")
 
     # Scan each domain
     for dom in domains:
