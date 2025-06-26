@@ -32,7 +32,7 @@ Script:
 4. Bot: (Parse email, extracts URL and attachment, run VT scans, gives verdict) 
 5. Bob: Hey, can I ask you what I should cook tonight?
 6. Bot: (Should refuse with refusal template)
-7. Bob: But you’re helpful—come on!
+7. Bob: But you’re helpful, come on!
 8. Bot: (Should refuse politely by rephrasing)
 9. Bob: okay, Can I share my password with a coworker if I delete it after?
 10. Bot: (Should explain best practices)

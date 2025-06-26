@@ -2,10 +2,8 @@
 <html>
 <head>
   <title>Security Chatbot</title>
-  <!-- Markdown parser -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <style>
-    /* Top bar */
     .bar {
       width: 100%;
       background-color: #1a73e8;
@@ -14,7 +12,6 @@
       box-sizing: border-box;
     }
 
-    /* Chat bubbles container */
     #chatBox {
       display: none;
       width: 100%;
@@ -28,16 +25,19 @@
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
 
-    /* Messages */
     .message {
       clear: both;
       margin: 10px 0;
-      white-space: normal; /* allow paragraphs & lists */
+      white-space: normal;
     }
-    .message p { margin: 0.5em 0; }
+    .message p { 
+      margin: 0.5em 0; 
+    }
+
     .message ol, .message ul {
       margin: 0.5em 0 0.5em 1.5em;
     }
+
     .user {
       float: right;
       background: #e8f0fe;
@@ -47,6 +47,7 @@
       max-width: 80%;
       word-wrap: break-word;
     }
+
     .bot {
       float: left;
       background: #f1f3f4;
@@ -57,12 +58,12 @@
       word-wrap: break-word;
     }
 
-    /* Input section */
     #inputSection {
       display: flex;
       max-width: 600px;
       margin: 20px auto;
     }
+
     .editable-input {
       flex: 1;
       padding: 10px;
@@ -71,13 +72,12 @@
       font-family: inherit;
       font-size: 0.9rem;
       line-height: 1.2;
-
-      /* start at natural height, grow only when needed */
       height: auto;
       max-height: calc(1em * 2 + 0.1px);
       overflow-y: auto;
       white-space: pre-wrap;
     }
+
     .editable-input:empty:before {
       content: attr(data-placeholder);
       color: #aaa;
@@ -85,6 +85,7 @@
       display: block;
       white-space: nowrap;
     }
+
     button {
       padding: 10px 20px;
       border: none;
@@ -94,12 +95,12 @@
       cursor: pointer;
     }
 
-    /* FAQ buttons */
     #faqSection {
       max-width: 600px;
       margin: 20px auto;
       text-align: center;
     }
+
     #faqSection button {
       margin: 5px;
       padding: 10px;
@@ -109,7 +110,6 @@
       cursor: pointer;
     }
 
-    /* Footer */
     .footer {
       position: fixed;
       bottom: 0;
@@ -125,6 +125,7 @@
       margin: 0;
       padding: 0;
     }
+    
     body {
       font-family: Arial, sans-serif;
       background: #f2f2f2;
@@ -154,15 +155,14 @@
     <button onclick="generateReport()">📄 Generate Incident Report</button>
   </div>
 
-  <!-- Hidden file-input for .eml upload -->
   <input type="file" id="emlFileInput" accept=".eml" style="display:none" />
 
   <div class="footer">
-    Powered by Suliat Kazeem – SME Chatbot © 2025
+    Powered by Suliat Kazeem - The Official Person who created the SME Chatbot for Rxtra Healthcare Limited<br>
+                    © Copyright 2025 COMP8870
   </div>
 
   <script>
-    // Session persistence
     let sessionId = localStorage.getItem("sessionId");
     if (!sessionId) {
       sessionId = crypto.randomUUID();
@@ -174,15 +174,12 @@
     const fileIn   = document.getElementById("emlFileInput");
     let minHeight;
 
-    // Record one-line height on load
     window.addEventListener("DOMContentLoaded", () => {
       minHeight = inputDiv.clientHeight;
     });
 
-    // Auto-resize only when content exceeds one line
     inputDiv.addEventListener("input", autoResize);
     function autoResize() {
-      // reset height so scrollHeight is correct
       inputDiv.style.height = "auto";
       if (inputDiv.scrollHeight > minHeight) {
         inputDiv.style.height = inputDiv.scrollHeight + "px";
@@ -191,7 +188,6 @@
       }
     }
 
-    // Send on Enter (no Shift), allow Shift+Enter for newline
     inputDiv.addEventListener("keydown", (e) => {
       if (e.key === "Enter" && !e.shiftKey) {
         e.preventDefault();
@@ -199,7 +195,6 @@
       }
     });
 
-    // 1) Regular text/query
     async function sendQuery() {
       const query = inputDiv.innerText.trim();
       if (!query) return;
@@ -207,7 +202,6 @@
       chatBox.style.display = "block";
       addMessage("user", query);
 
-      // clear and collapse
       inputDiv.innerText = "";
       inputDiv.style.height = "";
 
@@ -224,7 +218,6 @@
       }
     }
 
-    // 2) Email-file scan
     function startEmailScan() {
       chatBox.style.display = "block";
       fileIn.click();
@@ -249,7 +242,6 @@
       }
     });
 
-    // 3) Incident report fallback
     function generateReport() {
       chatBox.style.display = "block";
       inputDiv.innerText = "I need to generate an incident report.";
@@ -257,7 +249,6 @@
       sendQuery();
     }
 
-    // Append a message bubble (renders Markdown via marked.js)
     function addMessage(sender, text) {
       const div = document.createElement("div");
       div.className = `message ${sender}`;

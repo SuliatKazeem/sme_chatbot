@@ -7,11 +7,9 @@ from langchain.prompts import ChatPromptTemplate
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_core.chat_history import InMemoryChatMessageHistory
 
-# — Load API key —
 load_dotenv()
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
-# — Clients —
 client = OpenAI(api_key=OPENAI_API_KEY)
 llm    = ChatOpenAI(openai_api_key=OPENAI_API_KEY, model="gpt-4o", temperature=0.5)
  
@@ -27,7 +25,7 @@ You are a helpful security management chatbot built to support Rxtra Limited a s
    - For follow-ups, skip greetings and respond directly.
    - If the follow up is vague or short, infer context from the conversation history and elaborate helpfully.
    - End conversations warmly when users signal closure.
-4. Politeness: When refusing a non-security question, respond only and start the response with any of the refusal templates. Use one template at a time.
+4. Politeness: When refusing a non-security question, respond only and always start the response with I'm sorry or I'm afraid, followed by any of the refusal templates. Use one template at a time.
 5. Phishing Queries: If asked about phishing, explain signs like suspicious links, spelling errors, or unfamiliar senders. Never attempt to scan or process the email directly. If asked about .eml file, always give helpful best practices.
 6. VirusTotal Results: When returning scan results, summarize findings in a friendly, varied way. If asked for more, rephrase explanations clearly.
 7. Avoid Repetition:
@@ -50,30 +48,30 @@ You are a helpful security management chatbot built to support Rxtra Limited a s
 Conversation History:\n{history}\n\n
 New Question:\n{question} """)
 
-# Chain
+
 chain = prompt | llm
-chat_history_store = {}
+chat_history = {}
 refusal_history = {}
 
-def get_user_session_history(session_id: str):
-    if session_id not in chat_history_store:
-        chat_history_store[session_id] = InMemoryChatMessageHistory()
-    return chat_history_store[session_id]
+def user_session_history(session_id: str):
+    if session_id not in chat_history:
+        chat_history[session_id] = InMemoryChatMessageHistory()
+    return chat_history[session_id]
 
-conversation_with_memory = RunnableWithMessageHistory(
+conversation_memory = RunnableWithMessageHistory(
     chain,
-    get_user_session_history,
+    user_session_history,
     input_messages_key="question",
     history_messages_key="history"
 )
 
 REFUSALS = [
-    "Sorry, I can only help with security best practices. Can I answer any security-related question for you?",
+    "I can only help with security best practices. Can I answer any security-related question for you?",
     "I'm only here to support company security topics, feel free to ask anything in that area!", 
-    "Sorry, that’s outside my scope, I can only help you with security best practices instead. Can I answer any security-related question for you? ",
+    "That’s outside my scope, I can only help you with security best practices instead. Can I answer any security-related question for you? ",
     "I only specialize in SME security topics. Do you have security-related questions?",
     "I can’t help with that request. Feel free to ask about protecting your company’s assets."
-    "I'm sorry, but I'm here to focus on questions related to company security or improvement, particularly in protecting your company's assets, data, and infrastructure. If you have any questions in those areas, I'd be happy to help!"
+    "I'm here to focus on questions related to company security or improvement, particularly in protecting your company's assets, data, and infrastructure. If you have any questions in those areas, I'd be happy to help!"
 ]
 
 def refuse(session_id: str) -> str:
@@ -86,8 +84,7 @@ def refuse(session_id: str) -> str:
     used.add(choice)
     return choice
 
-# — Input checks —
-def is_moderated_safe(text: str) -> bool:
+def is_safe(text: str) -> bool:
     try:
         resp = client.moderations.create(input=text)
         return not resp.results[0].flagged
@@ -95,14 +92,11 @@ def is_moderated_safe(text: str) -> bool:
         print(f"[Moderation error] {e}")
         return False
 
-# — Main entrypoint —
 def ask_openai(question: str, session_id: str) -> str:
-    # 1) Moderation filter
-    if not is_moderated_safe(question):
+    if not is_safe(question):
         return refuse(session_id)
 
-    # 3) Invoke the LLM chain with memory
-    result = conversation_with_memory.invoke(
+    result = conversation_memory.invoke(
         {"question": question},
         config={"configurable": {"session_id": session_id}}
     )

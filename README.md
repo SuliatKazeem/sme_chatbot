@@ -1,6 +1,6 @@
 # SME Security Chatbot
 
-Hey! Welcome to the readme for my little project which is a chatbot that helps SMEs with security queries, incident reporting, and VirusTotal scans. This document will walk you through what is used, how the pieces fit together, and how to get it running. 
+Hii! Welcome to the readme for my Masters project which is a chatbot that helps SMEs with security queries, incident reporting, and VirusTotal scans. This document will walk you through what is used, how the pieces fit together, and how to get it running. 
 
 
 ## Introduction
@@ -14,7 +14,7 @@ Small and medium businesses often don’t have a big security team, so this chat
 
    - A single page UI that loads in your browser at `http://localhost:8000/`. The plan is to integrate the bot into Microsoft Teams app.
    - The front-end of the chatbot system was built and designed in HTML, JavaScript, and CSS.
-   - Renders messages as Markdown (thanks to [marked.js](https://github.com/markedjs/marked)).
+   - Renders messages as Markdown.
    - Buttons for “Add Email File” (.eml upload) and “Generate Incident Report” fallback.
 
 2. **`Main.py`** (FastAPI server)
