@@ -107,14 +107,14 @@ Small and medium businesses often don’t have a big security team, so this chat
 
 4. **Refusals & Three-strike**
 
-   * Any refusal from `ask_openai` begins with `[REFUSAL] `.
+   * Any refusal from `ask_openai` begins with a rephrased refusal template.
    * The server strips that tag, counts it, and once you hit 3 total refusals it sends you a friendly warning.
 
 ---
 
 ## Tools Used
 
-* **FastAPI + Uvicorn**: super-easy async Python web server.
+* **FastAPI + Uvicorn**: easy async Python web server.
 * **marked.js**: client-side Markdown rendering, so we can send bullet lists, numbered steps, etc.
 * **OpenAI + LangChain**: gives us memory, nice templating, and a robust way to manage prompts & refusals.
 * **VirusTotal API**: known reputation checks for links, domains, and files—perfect for a lightweight security bot.
