@@ -28,6 +28,11 @@ REFUSAL_TAGS     = [
     "i cannot",       
 ]
 
+SCAN_KEYWORDS = [     
+    r'\bscan.*email\b',
+    r'\bscan.*domain\b',               
+]
+
 WARNING_MESSAGE = (
     "⚠️ Warning: You’ve exceeded the allowed number of out-of-scope questions. "
     "The IT team has been notified, and continued misuse may lead to further review. "
@@ -48,12 +53,12 @@ async def chat(req: Request):
     user_input = data.get("query", "")
     session_id = data.get("session_id", "default")
 
-    if re.search(r'\bscan an email\b', user_input, re.IGNORECASE):
+    if any(re.search(pat, user_input, re.IGNORECASE) for pat in SCAN_KEYWORDS):
         return "\n".join([
-            "Sure—click the 📧 **Add Email File** button below "
+            "Sure! You can paste it here or click the 📧 **Add Email File** button below "
             "and upload your `.eml` for a full scan.",
             "",
-            "**How to export an EML file:**",
+            "**To export an EML file:**",
             "",
             "1. In Gmail’s web interface, open the email.",
             "2. Click ⋮ → **Show original**.",
@@ -131,7 +136,7 @@ async def scan_email_file(email_file: UploadFile = File(...)):
     for dom in domains:
         if dom in INTERNAL_DOMAINS:
             return "For security and privacy reasons, internal-domain messages cannot be scanned. Please reach out to our IT support team at techsupport@rxtra.xyz for assistance."
-        
+    
     messages = []
 
     for url in urls:
