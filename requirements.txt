@@ -5,3 +5,4 @@ requests
 langchain
 python-dotenv
 langchain-openai
+python-multipart
