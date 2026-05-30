@@ -1,0 +1,20 @@
+id,title,description,department,status,created_at
+INC-d273cda3,password,password not working,it,open,2026-05-09T20:38:11.280796
+INC-590fb10e,passworddd,my password has been updated but it's not working,IT,open,2026-05-09T20:50:20.958182
+INC-87534486,password ,my password has been updated but it's not working,IT,open,2026-05-09T20:55:00.295424
+INC-e10cf763,something suspicious is happening like someone has access to my emails,I can’t connect to WiFi,Cybersecurity,open,2026-05-27T09:36:56.006486
+INC-bbf5800a,cant log into outlook,"cant log into outlook
+yes i have
+yes i have says incorrect password and its correct",IT,open,2026-05-30T14:15:13.353999
+INC4de24e2a,My account is locked,"My account is locked
+yes i have. says contact the IT Department
+i'm using the same network
+it doesnt work and wont let me access",IT,open,2026-05-30T14:33:14.176751
+INCafc05f91,My account is locked,"My account is locked
+yes i have. says contact the IT Department
+yes i have
+wont login after change passwords",IT,open,2026-05-30T14:42:48.655483
+INCaf953579,I think my account has been compromised,"I think my account has been compromised
+yes, emails have been getting sent without me doing it
+no, i didnt change my password
+emails sending without me sending them",IT,open,2026-05-30T14:45:15.044426

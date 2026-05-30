@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Create Incident</title>
+  <style>
+    body {
+      font-family: Arial;
+      background: #f2f2f2;
+      padding: 30px;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+    }
+
+    button {
+      background: #1a73e8;
+      color: white;
+      padding: 10px;
+      border: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Create an Incident</h2>
+
+  <p> * Indicates required</p>
+
+  <label for="Title">* Short Description (Summary)</label>
+  <input id="Title" placeholder="Incident Summary" />
+
+  <label for="Description">* Please describe details of your issue:</label>
+  <textarea id="Description" placeholder="Include details as the name of the affected service, relevant logs, or error messages that can provide context"></textarea>
+
+  <button onclick="submitIncident()">Submit Incident</button>
+</div>
+
+<script>
+async function submitIncident() {
+  const payload = {
+    title: document.getElementById("Title").value,
+    description: document.getElementById("Description").value,
+    session_id: localStorage.getItem("sessionId")
+  };
+
+  const res = await fetch("/incidents", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify(payload)
+  });
+
+  const data = await res.json();
+  console.log("API RESPONSE:", data);
+
+  // store result so chat can pick it up
+  console.log("STORED:", localStorage.getItem("incidentResult"));
+
+  // return to chat
+  window.location.href = "/";
+}
+</script>
+
+</body>
+</html>

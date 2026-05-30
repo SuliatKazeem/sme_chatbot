@@ -12,6 +12,13 @@
       box-sizing: border-box;
     }
 
+    #welcomeMessage{ 
+      text-align:center; 
+      font-size:20px; 
+      margin-top:200px; 
+      color:#333
+    }
+
     #chatBox {
       display: none;
       width: 100%;
@@ -19,7 +26,7 @@
       margin: 20px auto;
       background: #fff;
       border-radius: 10px;
-      padding: 30px;
+      padding: 15px;
       max-height: 500px;
       overflow-y: auto;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
@@ -58,25 +65,45 @@
       word-wrap: break-word;
     }
 
-    #inputSection {
+   #inputSection {
       display: flex;
+      align-items: stretch;
       max-width: 600px;
       margin: 20px auto;
+      gap: 10px;
+      height: 20px;
+      padding: 10px;
+    }
+
+    #send-btn {
+      font-size: 20px;
+      padding: 10px 16px;
+      height: 41px;
+      border: none;
+      background: #1a73e8;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #send-btn:hover {
+      background: #1558c0;
+    }
+
+    #send-btn2:hover {
+      background: #1558c0;
     }
 
     .editable-input {
-      flex: 1;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      font-family: inherit;
-      font-size: 0.9rem;
-      line-height: 1.2;
-      height: auto;
-      max-height: calc(1em * 2 + 0.1px);
-      overflow-y: auto;
-      white-space: pre-wrap;
-    }
+  flex: 1;
+  height: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  overflow-y: auto;
+}
 
     .editable-input:empty:before {
       content: attr(data-placeholder);
@@ -138,6 +165,11 @@
 <body>
 
   <div class="bar"></div>
+
+  <div id="welcomeMessage">
+        Hello, what's on your mind?
+  </div>
+
   <div id="chatBox"></div>
 
   <div id="inputSection">
@@ -145,14 +177,16 @@
       id="queryInput"
       class="editable-input"
       contenteditable="true"
-      data-placeholder="Ask your security concern…"
-    ></div>
-    <button onclick="sendQuery()">Send</button>
-  </div>
+      data-placeholder="Type here…"
+    ></div >
 
+    <button id="send-btn" onclick="sendQuery()"> ➢ </button>
+
+  </div>
+  
   <div id="faqSection">
-    <button onclick="startEmailScan()">📧 Add Email File</button>
-    <button onclick="generateReport()">📄 Generate Incident Report</button>
+    <button id="send-btn2" onclick="startEmailScan()"> + Add Email File</button>
+    <button id="send-btn2" onclick="openIncidentForm()"> + Generate Incident Report</button>
   </div>
 
   <input type="file" id="emlFileInput" accept=".eml" style="display:none" />
@@ -163,99 +197,100 @@
   </div>
 
   <script>
-    let sessionId = localStorage.getItem("sessionId");
-    if (!sessionId) {
-      sessionId = crypto.randomUUID();
-      localStorage.setItem("sessionId", sessionId);
-    }
+    window.onload = function () {
+
+    let sessionId = crypto.randomUUID();
 
     const chatBox  = document.getElementById("chatBox");
     const inputDiv = document.getElementById("queryInput");
-    const fileIn   = document.getElementById("emlFileInput");
-    let minHeight;
 
-    window.addEventListener("DOMContentLoaded", () => {
-      minHeight = inputDiv.clientHeight;
-    });
-
-    inputDiv.addEventListener("input", autoResize);
-    function autoResize() {
-      inputDiv.style.height = "auto";
-      if (inputDiv.scrollHeight > minHeight) {
-        inputDiv.style.height = inputDiv.scrollHeight + "px";
-      } else {
-        inputDiv.style.height = "";
-      }
-    }
-
-    inputDiv.addEventListener("keydown", (e) => {
+    inputDiv.addEventListener("keydown", function (e) {
       if (e.key === "Enter" && !e.shiftKey) {
         e.preventDefault();
         sendQuery();
       }
     });
 
-    async function sendQuery() {
+    const fileIn   = document.getElementById("emlFileInput");
+
+
+    window.sendQuery = async function () {
       const query = inputDiv.innerText.trim();
       if (!query) return;
+
+      document.getElementById("welcomeMessage").style.display = "none";
 
       chatBox.style.display = "block";
       addMessage("user", query);
 
       inputDiv.innerText = "";
-      inputDiv.style.height = "";
 
-      try {
-        const resp = await fetch("/chat", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ query, session_id: sessionId }),
-        });
-        const text = await resp.text();
-        addMessage("bot", text);
-      } catch {
-        addMessage("bot", "Sorry, there was an error processing your request.");
-      }
-    }
+      const resp = await fetch("/chat", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ query, session_id: sessionId })
+      });
 
-    function startEmailScan() {
-      chatBox.style.display = "block";
-      fileIn.click();
-    }
+      const text = await resp.text();
+      addMessage("bot", text);
+    };
+
+
+    window.openIncidentForm = function () {
+    window.location.href = "/incident_form.html";
+  };
+
+  window.startEmailScan = function () {
+    chatBox.style.display = "block";
+    fileIn.click();
+  };
+
     fileIn.addEventListener("change", async () => {
       const file = fileIn.files[0];
       if (!file) return;
+
       addMessage("user", `Uploading ${file.name} for scan…`);
+
       const form = new FormData();
       form.append("email_file", file);
+
       try {
         const resp = await fetch("/scan-email-file", {
           method: "POST",
           body: form
         });
+
         const text = await resp.text();
         addMessage("bot", text);
-      } catch {
+      } 
+      catch {
         addMessage("bot", "Error scanning that email file.");
-      } finally {
+      } 
         fileIn.value = "";
-      }
+      
     });
-
-    function generateReport() {
-      chatBox.style.display = "block";
-      inputDiv.innerText = "I need to generate an incident report.";
-      autoResize();
-      sendQuery();
-    }
 
     function addMessage(sender, text) {
       const div = document.createElement("div");
       div.className = `message ${sender}`;
       div.innerHTML = marked.parse(text);
+
+      if (text.includes("[YES_INCIDENT]")) {
+
+      div.innerHTML = div.innerHTML.replace(
+        "[YES_INCIDENT]",
+        `
+          <button onclick="startAutoIncident()">Yes</button>
+          <button onclick="cancelAutoIncident()">No</button>
+        `
+      );
+       }
       chatBox.appendChild(div);
       chatBox.scrollTop = chatBox.scrollHeight;
     }
+
+    };
   </script>
+
 </body>
 </html>
