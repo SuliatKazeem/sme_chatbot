@@ -219,7 +219,7 @@ Answers so far:
 
 Task:
 
-1. Give a short helpful recommendation (1-2 sentences).
+1. Give a short helpful recommendation (2-4 sentences).
 2. Then ask EXACTLY ONE follow-up question.
 
 Rules:
@@ -374,7 +374,7 @@ async def chat(req: Request):
         return "\n\n".join(messages)
 
     classification_raw = classify_incident(user_input, session_id)
-    
+
     try:
         classification_clean = classification_raw.strip()
 
