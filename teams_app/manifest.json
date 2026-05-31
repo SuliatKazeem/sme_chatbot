@@ -1,0 +1,37 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/teams/v1.19/MicrosoftTeams.schema.json",
+  "manifestVersion": "1.19",
+  "version": "1.0.0",
+  "id": "39bc5c84-5532-403f-b1b7-85ba50fb3355",
+  "developer": {
+    "name": "Suliat Kazeem",
+    "websiteUrl": "https://smerxtrabot-hje5avckbegfhmcn.ukwest-01.azurewebsites.net/",
+    "privacyUrl": "https://smerxtrabot-hje5avckbegfhmcn.ukwest-01.azurewebsites.net/",
+    "termsOfUseUrl": "https://smerxtrabot-hje5avckbegfhmcn.ukwest-01.azurewebsites.net/"
+  },
+  "name": {
+    "short": "SME Security Bot",
+    "full": "Rxtra SME Security Chatbot"
+  },
+  "description": {
+    "short": "Security and IT support chatbot.",
+    "full": "A chatbot for SME security guidance, email scanning, and incident reporting built for my Msc project. It is a personal tab that embeds my Azure-hosted FastAPI chatbot. It does not request Microsoft Graph permissions or access user Teams data. The app only communicates with my Azure backend over HTTPS."
+  },
+  "icons": {
+    "color": "color.png",
+    "outline": "outline.png"
+  },
+  "accentColor": "#1a73e8",
+  "staticTabs": [
+    {
+      "entityId": "securitybot",
+      "name": "Security Bot",
+      "contentUrl": "https://smerxtrabot-hje5avckbegfhmcn.ukwest-01.azurewebsites.net/",
+      "websiteUrl": "https://smerxtrabot-hje5avckbegfhmcn.ukwest-01.azurewebsites.net/",
+      "scopes": ["personal"]
+    }
+  ],
+  "validDomains": [
+    "smerxtrabot-hje5avckbegfhmcn.ukwest-01.azurewebsites.net/"
+  ]
+}

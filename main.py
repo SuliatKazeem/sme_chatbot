@@ -207,6 +207,30 @@ def create_incident_from_triage(session_id: str, state: dict):
         f"In the meantime, you can download the PDF for your incident [here](/download/{filename})."
     )
 
+def generate_triage_response(group, answers, user_input, session_id):
+    prompt = f"""
+You are an IT and cybersecurity assistant.
+
+Issue:
+{answers[0]}
+
+Answers so far:
+{answers}
+
+Task:
+
+1. Give a short helpful recommendation (1-2 sentences).
+2. Then ask EXACTLY ONE follow-up question.
+
+Rules:
+- Keep advice practical.
+- Do not provide a complete solution.
+- Do not mention incident creation.
+- Ask only one question.
+- Maximum 100 words.
+"""
+    return ask_openai(prompt, session_id)
+
 # The main chatbot endpoint, handles messages, scans links/domains, sends questions to OpenAI
 @app.post("/chat", response_class=PlainTextResponse)
 async def chat(req: Request):
@@ -335,7 +359,7 @@ async def chat(req: Request):
 
         # This message is sent if the user pastes an email as a text and explains how to upload an .eml file
     if messages:
-        messages.append([
+        messages.append("\n".join([
             "For maximum security, please upload the original `.eml` file. This ensures all hidden links, email headers, and attachments are fully inspected. Click the 📧 Add Email File button below to get started.",
             "",
             "",
@@ -345,12 +369,12 @@ async def chat(req: Request):
             "2. Click the three-dot menu `⋮` in the top-right corner, then select **Show original**.",
             "3. On the “Original Message” page, click **Download Original**.",
             "4. Save the resulting `.eml` file.",
-            "5. Return here and click **Add Email File**, and select your saved `.eml` file."])
+            "5. Return here and click **Add Email File**, and select your saved `.eml` file."]))
 
         return "\n\n".join(messages)
 
     classification_raw = classify_incident(user_input, session_id)
-
+    
     try:
         classification_clean = classification_raw.strip()
 
@@ -376,7 +400,7 @@ async def chat(req: Request):
                     "stage": "asking"
                 }
 
-        first_question = generate_next_question(
+        first_question = generate_triage_response(
                     group,
                     [user_input],
                     user_input,
