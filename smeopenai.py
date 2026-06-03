@@ -1,3 +1,5 @@
+# This file controls the OpenAI chatbot behaviour.
+
 import os
 import random
 from dotenv import load_dotenv
@@ -6,12 +8,6 @@ from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_core.chat_history import InMemoryChatMessageHistory
-
-COMPANY_CONTACTS = {
-    "it_support": "ithelp@rxtra.xyz",
-    "security_team": "security@rxtra.xyz",
-    "data_protection": "dp@rxtra.xyz",
-}
 
 load_dotenv()
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
@@ -37,6 +33,7 @@ GROUP_RULES = {
     "incident_reporting": ["incident", "reporting", "suspicious"]
 }
 
+# Each group gives the chatbot company specific guidance.
 GROUP_CONTEXT = {
                 "access_control": f"""
             At {COMPANY_NAME}, access is strictly role-based.
@@ -59,7 +56,7 @@ GROUP_CONTEXT = {
             - MFA (Multi-Factor Authentication) is mandatory for all accounts linked to {COMPANY_DOMAIN}. Users need to authenticate from the Microsoft Authentication App.
 
             Users must never share passwords or reuse passwords across systems. Passwords expire after {PASSWORD_DAYS}.
-            If a password is compromised, instruct the user to reset it immediately and notify IT at {IT_EMAIL}.
+            If a password is compromised, instruct the user to reset it immediately.
             """,
 
                 "data_protection": f"""
@@ -85,7 +82,7 @@ GROUP_CONTEXT = {
             At {COMPANY_NAME}, any suspicious activities need to be reported using the incident report button.
 
             - Users must use incident report button.
-            - If in doubt, report it immediately using the incident report button. Contact {SECURITY_EMAIL} for further investigation after incident report button has been used.
+            - If in doubt, report it immediately using the incident report button.
             """,
 
                 "network_security": f"""
@@ -94,7 +91,6 @@ GROUP_CONTEXT = {
             - Use only approved corporate Wi-Fi networks.
             - Never share Wi-Fi credentials.
             - Connect through {VPN_PORTAL}.
-            - Report unusual network activity using the incident report button.
             """,
 
                 "unknown": f"""
@@ -116,19 +112,19 @@ You are a helpful security management chatbot built to support Rxtra Limited a s
    - If the follow up is vague or short, infer context from the conversation history and elaborate helpfully.
    - End conversations warmly when users signal closure.
 4. Politeness: When refusing a clearly non-security question, briefly apologize, explain the limitation in one sentence, and use different refusals from the REFUSALS template each time.
-5. Phishing Queries: Always explain how to recognize phishing emails, suspicious links, unsafe attachments, and use nugde_lines after explaining.
+5. Phishing Queries: Always explain how to recognize phishing emails, suspicious links, unsafe attachments, and use nugde lines after explaining.
    - Do NOT provide instructions to conduct phishing attacks, penetration tests, or exploits.
    - If the user asks how to run a phishing simulation tests, attacks or perform unsafe actions, politely refuse using one of the refusal templates, even if the word “phishing” appears.
    - If the user asks how to stay safe from phishing (avoid and recognise phishing emails, verify links, scan emails), give helpful advice.
-5. Email & Link Safety:
+6. Email & Link Safety:
     - If the user asks how to tell if an email, domain, attachment, or link is safe or dangerous, first give clear best practices. Never direct them to use a link scanner.
     - Always follow up advising the user to paste the email or upload an .eml file so you can safely perform an automated scan to identify any suspicious content.
     - Only refuse unsafe instructions (e.g., simulating phishing attacks, running exploits), never refuse safety questions.
-6. VirusTotal Results: When returning scan results, summarize findings in a friendly, varied way. If asked for more, rephrase explanations clearly.
-7. Avoid Repetition:
+7. VirusTotal Results: When returning scan results, summarize findings in a friendly, varied way. If asked for more, rephrase explanations clearly.
+8. Avoid Repetition:
    - Vary closing and denial phrases.
    - Don't repeat welcome messages after the first interaction.
-8. Context Awareness: Always use the full conversation history to understand and respond appropriately.
+9. Context Awareness: Always use the full conversation history to understand and respond appropriately.
                                           
 +Formatting:
 +- Structure your answer in separate paragraphs. Refusal template in a paragraph and four sentences per paragraph after. 
@@ -142,7 +138,7 @@ You are a helpful security management chatbot built to support Rxtra Limited a s
 +  - Tip A
 +  - Tip B
                                           
-9. Company Context Rules:
+10. Company Context Rules:
 - Users must always be connected to the GlobalProtect VPN (https://portal.rxtra.com) before accessing company resources.
 - If the question belongs to a known group (password_security, access_control, data_protection, network_security, email_phishing), provide company-specific answers for Rxtra Pharmaceutical Limited.                
 - If user is asking about a phishing email, tell user to paste email in the chat.
@@ -161,6 +157,8 @@ New Question:\n{question} """)
 
 
 chain = prompt | llm
+
+# Stores chat memory and refusal history for each user session.
 chat_history = {}
 refusal_history = {}
 
@@ -169,6 +167,7 @@ def user_session_history(session_id: str):
         chat_history[session_id] = InMemoryChatMessageHistory()
     return chat_history[session_id]
 
+# Adds conversation memory so the chatbot can understand follow-up questions.
 conversation_memory = RunnableWithMessageHistory(
     chain,
     user_session_history,
@@ -200,6 +199,7 @@ REFUSAL_PHRASES = [
         "here to assist with"
     ]
 
+#checks the user's message and places it into a topic group.
 def classify_group(question: str) -> str:
     q = question.lower()
 
@@ -255,6 +255,7 @@ def is_safe(text: str) -> bool:
         print(f"[Moderation error] {e}")
         return False
 
+#main function used by main.py
 def ask_openai(question: str, session_id: str) -> str:
     group = classify_group(question)
 

@@ -1,3 +1,5 @@
+# This file is for the scanning of URLs, domains, and uploaded email files.
+
 import os
 import re
 import requests
@@ -16,8 +18,13 @@ try:
 except ImportError:
     HAVE_BS4 = False
 
+# Scan a domain with VirusTotal.
 def scan_domain(domain):
-    resp = requests.get(f"https://www.virustotal.com/api/v3/domains/{domain}", headers=headers)
+    resp = requests.get(
+    f"https://www.virustotal.com/api/v3/domains/{domain}",
+    headers=headers,
+    timeout=15
+    )
 
     if resp.status_code != 200:
         return {"verdict": f"Error: {resp.text}"}
@@ -25,9 +32,10 @@ def scan_domain(domain):
     stats = resp.json().get("data", {}).get("attributes", {}).get("last_analysis_stats", {})
     return {"verdict": "Likely Malicious" if stats.get("malicious",0)>0 else "Looks Safe"}
 
+# Scan a URL with VirusTotal.
 def scan_url(url):
     data = {"url": url}
-    resp = requests.post("https://www.virustotal.com/api/v3/urls", headers=headers, data=data)
+    resp = requests.post("https://www.virustotal.com/api/v3/urls", headers=headers, data=data, timeout=15)
 
     if resp.status_code != 200:
         return {"verdict": f"Error: {resp.text}"}
@@ -41,9 +49,10 @@ def scan_url(url):
     stats = analysis.json().get("data", {}).get("attributes", {}).get("stats", {})
     return {"verdict": "Likely Phishing" if stats.get("malicious",0)>0 else "Looks Safe"}
 
+# Scan .EML file uploaded with VirusTotal.
 def scan_file_attachment(filename, file_bytes):
     files = {"file": (filename, file_bytes)}
-    resp = requests.post("https://www.virustotal.com/api/v3/files", headers=headers, files=files)
+    resp = requests.post("https://www.virustotal.com/api/v3/files", headers=headers, files=files, timeout=15)
 
     if resp.status_code != 200:
         return {"verdict": f"Error: {resp.text}"}
@@ -67,6 +76,7 @@ def parse_email(raw_email_bytes):
     text_parts = []
     html_parts = []
 
+#So links can be found properly.
     if msg.is_multipart():
         for part in msg.walk():
             ctype = part.get_content_type()

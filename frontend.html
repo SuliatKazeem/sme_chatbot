@@ -2,170 +2,60 @@
 <html>
 <head>
   <title>Security Chatbot</title>
+  <link rel="stylesheet" href="/static/mystyle.css">
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="https://res.cdn.office.net/teams-js/2.34.0/js/MicrosoftTeams.min.js"></script>
-  <style>
-    .bar {
-      width: 100%;
-      background-color: #1a73e8;
-      text-align: center;
-      padding: 20px 0;
-      box-sizing: border-box;
-    }
-
-    #welcomeMessage{ 
-      text-align:center; 
-      font-size:20px; 
-      margin-top:200px; 
-      color:#333
-    }
-
-    #chatBox {
-      display: none;
-      width: 100%;
-      max-width: 600px;
-      margin: 20px auto;
-      background: #fff;
-      border-radius: 10px;
-      padding: 15px;
-      max-height: 500px;
-      overflow-y: auto;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-
-    .message {
-      clear: both;
-      margin: 10px 0;
-      white-space: normal;
-    }
-    .message p { 
-      margin: 0.5em 0; 
-    }
-
-    .message ol, .message ul {
-      margin: 0.5em 0 0.5em 1.5em;
-    }
-
-    .user {
-      float: right;
-      background: #e8f0fe;
-      color: #1a73e8;
-      padding: 10px;
-      border-radius: 10px;
-      max-width: 80%;
-      word-wrap: break-word;
-    }
-
-    .bot {
-      float: left;
-      background: #f1f3f4;
-      color: #111;
-      padding: 10px;
-      border-radius: 10px;
-      max-width: 80%;
-      word-wrap: break-word;
-    }
-
-   #inputSection {
-      display: flex;
-      align-items: stretch;
-      max-width: 600px;
-      margin: 20px auto;
-      gap: 10px;
-      height: 20px;
-      padding: 10px;
-    }
-
-    #send-btn {
-      font-size: 20px;
-      padding: 10px 16px;
-      height: 41px;
-      border: none;
-      background: #1a73e8;
-      color: white;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    #send-btn:hover {
-      background: #1558c0;
-    }
-
-    #send-btn2:hover {
-      background: #1558c0;
-    }
-
-    .editable-input {
-  flex: 1;
-  height: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-family: inherit;
-  font-size: 0.9rem;
-  overflow-y: auto;
-}
-
-    .editable-input:empty:before {
-      content: attr(data-placeholder);
-      color: #aaa;
-      pointer-events: none;
-      display: block;
-      white-space: nowrap;
-    }
-
-    button {
-      padding: 10px 20px;
-      border: none;
-      background: #1a73e8;
-      color: white;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    #faqSection {
-      max-width: 600px;
-      margin: 20px auto;
-      text-align: center;
-    }
-
-    #faqSection button {
-      margin: 5px;
-      padding: 10px;
-      background: #1a73e8;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    .footer {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 60px;
-      line-height: 20px;
-      background-color: #1a73e8;
-      color: #ffffff;
-      font-size: 0.8rem;
-      text-align: center;
-      border-top: 1px solid #ddd;
-      margin: 0;
-      padding: 0;
-    }
-    
-    body {
-      font-family: Arial, sans-serif;
-      background: #f2f2f2;
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-  </style>
 </head>
 <body>
 
+  <div class="app-layout">
+
+  <aside class="sidebar">
+    <div class="logo-header">
+  <img src="/static/logo.png" alt="Logo">
+  <h2>Rxtra Security Bot</h2>
+</div>
+
+    <h3>About</h3>
+<p>
+  An SME security chatbot designed to help employees with security guidance,
+  suspicious email checks, and incident reporting.
+</p>
+
+    <h3>Purpose</h3>
+    <p>
+      The bot helps users understand security best practices and report IT or
+      cybersecurity issues when needed.
+    </p>
+
+    <h3>Features</h3>
+    <ul>
+      <li>Security guidance</li>
+      <li>Email and URL scanning</li>
+      <li>Incident triage</li>
+      <li>PDF incident reports</li>
+      <li>IT and Cybersecurity routing</li>
+    </ul>
+
+ <h3>FAQs</h3>
+
+<div id="faqButtons"></div>
+
+<button id="moreFaqBtn" onclick="nextFAQs()">
+  ↻ Show More FAQs
+</button>
+
+</aside>
+
+  <main class="chat-area">
+
   <div class="bar"></div>
+
+  <div class="chat-toolbar">
+    <button id="newChatBtn" onclick="newChat()">
+        + New Chat
+    </button>
+</div>
 
   <div id="welcomeMessage">
         Hello, what's on your mind?
@@ -189,7 +79,8 @@
     <button id="send-btn2" onclick="startEmailScan()"> + Add Email File</button>
     <button id="send-btn2" onclick="openIncidentForm()"> + Generate Incident Report</button>
   </div>
-
+    </main>
+  </div>
   <input type="file" id="emlFileInput" accept=".eml" style="display:none" />
 
   <div class="footer">
@@ -215,7 +106,65 @@
     });
 
     const fileIn   = document.getElementById("emlFileInput");
+    const faqQuestions = [
+  "How do I report a suspicious email?",
+  "What should I do if my account is locked?",
+  "How do I scan an email file?",
+  "What should I do if I click a suspicious link?",
+  "How do I request system access?",
+  "Why do I need MFA?",
+  "How do I connect to the VPN?",
+  "How do I report a data breach?",
+  "How can I create an incident report?"
+];
 
+// Shuffle FAQs when the page loads
+let shuffledFAQs = [...faqQuestions].sort(() => Math.random() - 0.5);
+
+let faqIndex = 0;
+
+function renderFAQs() {
+  const faqDiv = document.getElementById("faqButtons");
+  faqDiv.innerHTML = "";
+
+  const currentFAQs = shuffledFAQs.slice(faqIndex, faqIndex + 3);
+
+  currentFAQs.forEach(question => {
+    const btn = document.createElement("button");
+    btn.innerText = question;
+    btn.onclick = () => showFAQ(question);
+
+    faqDiv.appendChild(btn);
+  });
+}
+
+window.nextFAQs = function () {
+  faqIndex += 3;
+
+  if (faqIndex >= shuffledFAQs.length) {
+    shuffledFAQs = [...faqQuestions].sort(() => Math.random() - 0.5);
+    faqIndex = 0;
+  }
+
+  renderFAQs();
+};
+
+    window.showFAQ = function (question) {
+    inputDiv.innerText = question;
+    sendQuery();
+    };
+
+    renderFAQs();
+
+window.newChat = function () {
+  sessionId = crypto.randomUUID();
+
+  chatBox.innerHTML = "";
+  chatBox.style.display = "none";
+  document.getElementById("welcomeMessage").style.display = "block";
+
+  inputDiv.innerText = "";
+};
 
     window.sendQuery = async function () {
       const query = inputDiv.innerText.trim();
@@ -228,16 +177,29 @@
 
       inputDiv.innerText = "";
 
-      const resp = await fetch("/chat", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({ query, session_id: sessionId })
-      });
+     const typingDiv = document.createElement("div");
+typingDiv.className = "message bot";
+typingDiv.id = "typingIndicator";
+typingDiv.innerHTML = "Typing...";
 
-      const text = await resp.text();
-      addMessage("bot", text);
-    };
+chatBox.appendChild(typingDiv);
+chatBox.scrollTop = chatBox.scrollHeight;
 
+const resp = await fetch("/chat", {
+  method: "POST",
+  headers: {"Content-Type": "application/json"},
+  body: JSON.stringify({ query, session_id: sessionId })
+});
+
+const text = await resp.text();
+
+// Remove the typing message
+document.getElementById("typingIndicator")?.remove();
+
+// Show animated response
+await typeBotMessage(text);
+
+};
 
     window.openIncidentForm = function () {
     window.location.href = "/incident_form.html";
@@ -291,6 +253,29 @@
       chatBox.appendChild(div);
       chatBox.scrollTop = chatBox.scrollHeight;
     }
+
+    async function typeBotMessage(text) {
+
+  const div = document.createElement("div");
+  div.className = "message bot";
+
+  chatBox.appendChild(div);
+
+  const words = text.split(" ");
+
+  let currentText = "";
+
+  for (const word of words) {
+
+    currentText += word + " ";
+
+    div.innerHTML = marked.parse(currentText);
+
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+    await new Promise(resolve => setTimeout(resolve, 20));
+  }
+}
 
     };
   </script>

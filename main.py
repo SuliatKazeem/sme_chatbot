@@ -1,5 +1,5 @@
-# Load values from .env file into the chatbot
-
+# Load environment variables from the .env file.
+# This is where API keys are stored locally so they are not hardcoded in the code.
 from dotenv import load_dotenv
 load_dotenv()  
 
@@ -8,7 +8,7 @@ import re
 
 from fastapi import FastAPI, Request, UploadFile, File
 from fastapi.responses import PlainTextResponse, HTMLResponse, FileResponse
-from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 
 from datetime import datetime
 from collections import defaultdict
@@ -24,6 +24,7 @@ import uuid
 import json
 
 app = FastAPI()
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 INTERNAL_DOMAINS = {
     d.strip() for d in os.getenv("INTERNAL_DOMAINS", "").split(",") if d.strip()
@@ -33,15 +34,16 @@ INTERNAL_DOMAINS = {
 EMAIL_REGEX = r'[\w\.-]+@[\w\.-]+\.\w+'
 URL_REGEX   = r'(https?://[^\s]+|www\.[^\s]+)'
 
+# CSVs created for departments. IT issues go into it_incidents.csv and security issues go into security_incidents.csv.
 IT_CSV = "it_incidents.csv"
 SECURITY_CSV= "security_incidents.csv"
 
 THRESHOLD     = 3 # threshold for out-of-scope questions, warning after 3rd time
-FOLLOWUPQUESTIONS = 2  # max back and forth turns before forcing confirmation
+FOLLOWUPQUESTIONS = 2  # 2 follow-up questions before asking if the user wants an incident created.
 
 refusal_count = defaultdict(int)
 
-# Store chat history
+# Store chat history temporarily
 chat_sessions = defaultdict(list)
 
 triage_state = {}
@@ -70,7 +72,7 @@ WARNING_MESSAGE = (
     "Please keep your questions focused on SME security topics!"
 )
 
-# blocking internal domains from being scanned at all
+# blocking internal domains from being scanned at all - cybersecurity solution
 def block_internal(dom: str, session_id: str) -> str | None:
     if dom in INTERNAL_DOMAINS:
         return (
@@ -99,7 +101,7 @@ def save_incident(incident: dict):
             incident["status"],
             incident["created_at"]
         ])
-
+#The function to stop the bot from creating incidents for normal advice questions. Used prompt engineering to help bot decide real issues
 def classify_incident(text: str, session_id: str):
     prompt = f"""
 
@@ -141,11 +143,16 @@ def classify_incident(text: str, session_id: str):
     
     return ask_openai(prompt, session_id)
 
+#decides the groups based on user's input
 def get_department_from_group(group: str):
-    if group in ["email_phishing", "data_protection", "incident_reporting"]:
+    cybersecurity_groups = ["access_control", "password_security", "email_phishing", "data_protection", "incident_reporting"]
+        
+    if group in cybersecurity_groups:
         return "Cybersecurity"
+    
     return "IT"
 
+#the bot will generate a followup question based on user input. Focuses on missing informations.
 def generate_next_question(group: str, answers: list, user_input: str, session_id: str):
     prompt = f"""
 You are an IT security incident triage assistant.
@@ -163,13 +170,12 @@ Ask EXACTLY ONE follow-up question to gather missing diagnostic information need
 
 Rules:
 - Ask only ONE question
-- Do NOT provide solutions
-- Do NOT explain internal policy
 - Keep it short and natural
 - Focus on missing information only
 """
     return ask_openai(prompt, session_id)
 
+#save the incident to CSV, create a PDF report, and give user a download link.
 def create_incident_from_triage(session_id: str, state: dict):
     group = state["group"]
     department = get_department_from_group(group)
@@ -177,7 +183,7 @@ def create_incident_from_triage(session_id: str, state: dict):
     incident = {
         "id": f"INC{uuid.uuid4().hex[:8]}",
         "title": state["answers"][0],
-        "description": "\n".join(state["answers"]),
+        "description": state["answers"][-1],
         "department": department,
         "status": "open",
         "created_at": datetime.utcnow().isoformat()
@@ -207,6 +213,7 @@ def create_incident_from_triage(session_id: str, state: dict):
         f"In the meantime, you can download the PDF for your incident [here](/download/{filename})."
     )
 
+# gives short helpful advice first, then asks one follow-up question
 def generate_triage_response(group, answers, user_input, session_id):
     prompt = f"""
 You are an IT and cybersecurity assistant.
@@ -219,12 +226,13 @@ Answers so far:
 
 Task:
 
-1. Give a short helpful recommendation (2-4 sentences).
+1. Give a short helpful recommendation according to company policy (2-4 sentences).
 2. Then ask EXACTLY ONE follow-up question.
 
 Rules:
 - Keep advice practical.
 - Do not provide a complete solution.
+- Do not repeat same recommendation.
 - Do not mention incident creation.
 - Ask only one question.
 - Maximum 100 words.
@@ -245,8 +253,8 @@ async def chat(req: Request):
             if user_input.lower() in ["yes", "y"]:
                 state["stage"] = "more_details"
                 return (
-                    "Great. Before I create the incident, please provide any extra details that may help the right department, "
-                    "such as the exact error message, screenshots, affected device, affected system, time it started, "
+                    "Great! Before I create the incident, please provide any extra details that may help" 
+                    f"{[department]}" "department, such as the exact error message, screenshots, affected device, affected system, time it started, "
                     "or anything you have already tried."
                 )
             if user_input.lower() in ["no", "n"]:
@@ -263,9 +271,9 @@ async def chat(req: Request):
 
         if state["question_count"] >= FOLLOWUPQUESTIONS:
             state["stage"] = "confirm"
-            return "Thanks for the details. Would you like me to create an incident for this? Reply YES or NO."
+            return "Okay. Would you like me to create an incident for this? Reply YES or NO."
 
-        next_question = generate_next_question(
+        next_question = generate_triage_response(
             state["group"],
             state["answers"],
             user_input,
@@ -447,7 +455,7 @@ async def scan_email_file(email_file: UploadFile = File(...)):
 
     for dom in domains:
         if dom in INTERNAL_DOMAINS:
-            return "For security and privacy reasons, internal-domain messages cannot be scanned. Please reach out to our IT support team at techsupport@rxtra.xyz for assistance."
+            return "For security and privacy reasons, internal-domain messages cannot be scanned. Please reach out to our IT support team at ithelp@rxtra.xyz for assistance."
 
     for url in urls:
         verdict = scan_url(url)["verdict"]
@@ -515,29 +523,8 @@ async def create_incident(request: Request):
         title = data.get("title", "")
         description = data.get("description", "")
         
-        # If description contains these words - Security, else IT
-        def classify(text):
-            text = text.lower()
-
-            security_keywords = [
-                "phishing",
-                "hack",
-                "breach",
-                "malware",
-                "virus",
-                "ransomware",
-                "suspicious",
-                "unauthorized",
-                "spam",
-                "cyber"
-            ]
-
-            if any(word in text for word in security_keywords):
-                return "Cybersecurity"
-
-            return "IT"
-
-        department = classify(title + " " + description)
+        group = classify_group(title + " " + description)
+        department = get_department_from_group(group)
 
         # creating incident 
         incident = {
@@ -560,7 +547,7 @@ async def create_incident(request: Request):
             f"- **ID**: {incident['id']}\n\n"
             f"- **Status**: {incident['status']}\n\n"
             f"- **Short Description**: {incident['title']}\n\n"
-            f"The team will contact you soon to provide support ans assistance. Please be ready to share any details regarding the issue to help them assist you effectively.\n\n" 
+            f"The team will contact you soon to provide support and assistance. Please be ready to share any details regarding the issue to help them assist you effectively.\n\n" 
             f"In the meantime, you can download the PDF for your incident [here](${data.download_url})"
         )
 
