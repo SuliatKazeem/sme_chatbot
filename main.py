@@ -145,7 +145,7 @@ def classify_incident(text: str, session_id: str):
 
 #decides the groups based on user's input
 def get_department_from_group(group: str):
-    cybersecurity_groups = ["access_control", "password_security", "email_phishing", "data_protection", "incident_reporting"]
+    cybersecurity_groups = ["email_security", "security_incidents", "data_protection", "general_security"]
         
     if group in cybersecurity_groups:
         return "Cybersecurity"
@@ -253,8 +253,7 @@ async def chat(req: Request):
             if user_input.lower() in ["yes", "y"]:
                 state["stage"] = "more_details"
                 return (
-                    "Great! Before I create the incident, please provide any extra details that may help" 
-                    f"{[department]}" "department, such as the exact error message, screenshots, affected device, affected system, time it started, "
+                    "Great! Before I create the incident, please provide any extra details that may help such as the exact error message, screenshots, affected device, affected system, time it started, "
                     "or anything you have already tried."
                 )
             if user_input.lower() in ["no", "n"]:
@@ -286,7 +285,7 @@ async def chat(req: Request):
     # This message is sent if the user asks about scanning an email explain how to upload an .eml file
     if any(re.search(pat, user_input, re.IGNORECASE) for pat in SCAN_KEYWORDS):
         return "\n".join([
-            "Sure! You can paste it here or click the 📧 **Add Email File** button below "
+            "You can paste it here or click the 📧 **Add Email File** button below "
             "and upload your `.eml` for a full scan.",
             "",
             "**To export an EML file:**",
