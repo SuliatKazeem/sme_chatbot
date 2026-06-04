@@ -686,3 +686,19 @@ def view_incidents():
                 result += f.read()
 
     return PlainTextResponse(result)
+
+@app.get("/blob-test")
+def blob_test():
+    from azure.storage.blob import BlobServiceClient
+    import os
+
+    blob_service_client = BlobServiceClient.from_connection_string(
+        os.getenv("AZURE_STORAGE_CONNECTION_STRING")
+    )
+
+    blobs = []
+
+    for blob in blob_service_client.get_container_client("incidents").list_blobs():
+        blobs.append(blob.name)
+
+    return blobs
