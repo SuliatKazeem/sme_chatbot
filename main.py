@@ -282,7 +282,7 @@ def upload_csv_to_blob(file_path):
         )
 
         blob_client = blob_service_client.get_blob_client(
-            container="incidents",
+            container="smeincidents",
             blob=os.path.basename(file_path)
         )
 
