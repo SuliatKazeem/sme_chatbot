@@ -643,3 +643,18 @@ def view_it_incidents():
 def view_cyber_incidents():
     with open("security_incidents.csv", "r", encoding="utf-8") as f:
         return PlainTextResponse(f.read())
+    
+@app.get("/view-incidents")
+def view_incidents():
+    import os
+
+    result = ""
+
+    for file in ["it_incidents.csv", "security_incidents.csv"]:
+        if os.path.exists(file):
+            result += f"\n\n===== {file} =====\n\n"
+
+            with open(file, "r", encoding="utf-8") as f:
+                result += f.read()
+
+    return PlainTextResponse(result)
