@@ -698,7 +698,7 @@ def blob_test():
 
     blobs = []
 
-    for blob in blob_service_client.get_container_client("incidents").list_blobs():
+    for blob in blob_service_client.get_container_client("smeincidents").list_blobs():
         blobs.append(blob.name)
 
     return blobs
