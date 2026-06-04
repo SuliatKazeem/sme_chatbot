@@ -9,3 +9,4 @@ langchain-openai
 python-multipart
 reportlab
 beautifulsoup4
+azure-storage-blob

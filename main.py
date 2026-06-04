@@ -18,6 +18,7 @@ from smeopenai import ask_openai, classify_group
 from virustotal import parse_email, scan_url, scan_domain, scan_file_attachment
 from incident_report import generate_incident_pdf
 from notifypdf import notify_cybersecurity
+from azure.storage.blob import BlobServiceClient
 
 import csv
 import uuid
@@ -101,6 +102,9 @@ def save_incident(incident: dict):
             incident["status"],
             incident["created_at"]
         ])
+
+        upload_csv_to_blob(file_path)
+
 #The function to stop the bot from creating incidents for normal advice questions. Used prompt engineering to help bot decide real issues
 def classify_incident(text: str, session_id: str):
     prompt = f"""
@@ -265,6 +269,25 @@ Rules:
 """
     return ask_openai(prompt, session_id)
 
+def upload_csv_to_blob(file_path):
+    connection_string = os.getenv("AZURE_STORAGE_CONNECTION_STRING")
+
+    if not connection_string:
+        print("Azure Storage connection string missing.")
+        return
+
+    blob_service_client = BlobServiceClient.from_connection_string(connection_string)
+
+    container_name = "incidents"
+    blob_name = os.path.basename(file_path)
+
+    blob_client = blob_service_client.get_blob_client(
+        container=container_name,
+        blob=blob_name
+    )
+
+    with open(file_path, "rb") as data:
+        blob_client.upload_blob(data, overwrite=True)
 
 # The main chatbot endpoint, handles messages, scans links/domains, sends questions to OpenAI
 @app.post("/chat", response_class=PlainTextResponse)
