@@ -3,15 +3,6 @@
   min-height: calc(100vh - 60px);
 }
 
-.sidebar {
-  width: 300px;
-  background: #ffffff;
-  padding: 25px;
-  border-right: 5px solid #1a73e8;
-  border-top: 40px solid #1a73e8;
-  overflow-y: auto;
-}
-
 .sidebar h2 {
   color: #1a73e8;
   margin-top: 0;
@@ -34,12 +25,12 @@
   padding-left: 18px;
 }
 
-.sidebar button {
+#sidebarContent button {
   display: block;
   width: 100%;
   margin: 8px 0;
   padding: 10px;
-  background: #f7f9fc;
+  background: white;
   color: #1a73e8;
   border: 1px solid #d6e2ff;
   border-radius: 6px;
@@ -65,13 +56,13 @@
   padding-bottom: 80px;
 }
 
-    .bar {
+ .bar {
   width: 100%;
   background-color: #1a73e8;
   padding: 10px 25px;
   box-sizing: border-box;
   display: flex;
-  justify-content: flex-end;
+  justify-content: flex-start;
   align-items: center;
   min-height: 40px;
 }
@@ -227,11 +218,11 @@
       box-sizing: border-box;
     }
 
-   .logo-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 25px;
+.logo-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 25px;
 }
 
 .logo-header img {
@@ -241,27 +232,186 @@
   flex-shrink: 0;
 }
 
+
 .logo-header h2 {
-  margin: 0;
-  line-height: 1.2;
+    flex: 1;
+    margin: 0;
+    color: #1a73e8;
 }
 
 .chat-toolbar {
-    display: flex;
-    justify-content: flex-end;
-    padding: 15px 25px 0 25px;
+  display: flex;
+  justify-content: flex-end;
+  padding: 15px 25px 0 25px;
 }
 
+/* New Chat button */
+
 #newChatBtn {
-    background: white;
-    color: #1a73e8;
-    border: 1px solid #1a73e8;
-    border-radius: 5px;
-    padding: 8px 16px;
-    font-weight: 600;
-    cursor: pointer;
+  background: white;
+  color: #1a73e8;
+  border: 1px solid #1a73e8;
+  border-radius: 5px;
+  padding: 8px 16px;
+  font-weight: 600;
+  cursor: pointer;
 }
 
 #newChatBtn:hover {
-    background: #eef3ff;
+  background: #eef3ff;
+}
+
+/* SIDEBAR */
+
+.sidebar {
+  width: 380px;
+  background: white;
+  border-right: 5px solid #1a73e8;
+  flex-shrink: 0;
+  overflow-y: auto;
+
+}
+
+.sidebar-header {
+  height: 40px;
+  background: #1a73e8;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 15px;
+  box-sizing: border-box;
+}
+
+.sidebar-headerdid {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 13px;
+    padding: 15px;
+    background: white;
+}
+
+.sidebar-headerdid img {
+    width: 35px;
+    height: 35px;
+}
+
+.sidebar-headerdid h2 {
+    flex: 1;
+    margin: 0;
+    color: #1a73e8;
+}
+
+.sidebar-header img {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+}
+
+.sidebar-header h2 {
+  flex: 1;
+  margin: 0;
+  color: white;
+  font-size: 1.2rem;
+}
+
+#sidebarToggle {
+  width: 35px;
+  height: 35px;
+  padding: 0;
+  margin: 0;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background: white;
+  color: #1a73e8;
+  border: 1px solid #d6e2ff;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#sidebarToggle:hover {
+  background: #eef3ff;
+}
+
+#sidebarContent {
+  padding: 1px 15px;
+}
+
+/* Collapsed sidebar */
+
+.sidebar.collapsed {
+  width: 50px;
+}
+
+.sidebar.collapsed #sidebarContent,
+.sidebar.collapsed .sidebar-headerdid > img,
+.sidebar.collapsed .sidebar-headerdid h2 {
+    display: none;
+}
+
+.sidebar.collapsed .sidebar-headerdid {
+  width: 32px;
+  height: 32px;
+  padding: 15px 0px;
+  justify-content: center;
+  width: 100%;
+  overflow: hidden;
+
+    display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background: white;
+  color: #1a73e8;
+  border: 1px solid #ffffff;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.sidebar.collapsed .logo-header h2 {
+    display: none;
+}
+
+.sidebar.collapsed #sidebarToggle {
+  margin: 0;
+}
+
+.sidebar.collapsed #sidebarToggle img {
+  width: 35px;
+  height: 35px;
+  display: block;
+}
+
+#sidebarToggle img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  display: block;
+}
+
+#collapsedMenu {
+    display: none;
+}
+
+.sidebar.collapsed #collapsedMenu {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding-top: 10px;
+}
+
+.sidebar.collapsed #collapsedMenu button {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border-radius: 5px;
+    background: white;
+    color: #1a73e8;
+    border: 1px solid #d6e2ff;
+    font-size: 20px;
+    cursor: pointer;
 }

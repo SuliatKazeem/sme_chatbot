@@ -31,7 +31,7 @@ INTERNAL_DOMAINS = {
 }
 
 # detect emails and URLs inside messages sent 
-EMAIL_REGEX = r'[\w\.-]+@[\w\.-]+\.\w+'
+EMAIL_REGEX = r'[\w\.-]+@([\w\.-]+\.\w+)'
 URL_REGEX   = r'(https?://[^\s]+|www\.[^\s]+)'
 
 # CSVs created for departments. IT issues go into it_incidents.csv and security issues go into security_incidents.csv.
@@ -234,10 +234,37 @@ Rules:
 - Do not provide a complete solution.
 - Do not repeat same recommendation.
 - Do not mention incident creation.
+- Do not suggest they contact department.
 - Ask only one question.
+- Do not suggest to give contact information unless asked.
 - Maximum 100 words.
 """
     return ask_openai(prompt, session_id)
+
+def generate_final_details_question(group: str, answers: list, session_id: str):
+    prompt = f"""
+You are an IT and cybersecurity incident triage assistant.
+
+Incident category:
+{group}
+
+Information collected so far:
+{answers}
+
+Task:
+Ask the user for more useful details about the incident before creating the incident.
+
+Rules:
+- Do not use a generic template.
+- Ask for details relevant to the incident category.
+- Do not ask for information already provided.
+- Keep it short and natural.
+- Mention examples only if they fit the incident.
+- Do not ask more than one question.
+- Do not mention error messages unless the issue is a system or login problem.
+"""
+    return ask_openai(prompt, session_id)
+
 
 # The main chatbot endpoint, handles messages, scans links/domains, sends questions to OpenAI
 @app.post("/chat", response_class=PlainTextResponse)
@@ -252,10 +279,13 @@ async def chat(req: Request):
         if state.get("stage") == "confirm":
             if user_input.lower() in ["yes", "y"]:
                 state["stage"] = "more_details"
-                return (
-                    "Great! Before I create the incident, please provide any extra details that may help such as the exact error message, screenshots, affected device, affected system, time it started, "
-                    "or anything you have already tried."
-                )
+
+                return generate_final_details_question(
+                        state["group"],
+                        state["answers"],
+                        session_id
+                    )
+            
             if user_input.lower() in ["no", "n"]:
                 triage_state.pop(session_id, None)
                 return "Okay, no incident was created."
@@ -285,16 +315,16 @@ async def chat(req: Request):
     # This message is sent if the user asks about scanning an email explain how to upload an .eml file
     if any(re.search(pat, user_input, re.IGNORECASE) for pat in SCAN_KEYWORDS):
         return "\n".join([
-            "You can paste it here or click the 📧 **Add Email File** button below "
-            "and upload your `.eml` for a full scan.",
+            "For maximum security, please upload the original `.eml` file. This ensures all hidden links, email headers, and attachments are fully inspected. Click the 📧 Add Email File button below to get started.",
             "",
-            "**To export an EML file:**",
             "",
-            "1. In Gmail’s web interface, open the email.",
-            "2. Click ⋮ → **Show original**.",
-            "3. On “Original Message,” click **Download Original**.",
-            "4. Save the `.eml` to your computer.",
-            "5. Come back here, hit **Add Email File**, and select it.",
+            "**How to export an EML file:**",
+            "",
+            "1. Open the email in Gmail’s web interface.",
+            "2. Click the three-dot menu `⋮` in the top-right corner, then select **Show original**.",
+            "3. On the “Original Message” page, click **Download Original**.",
+            "4. Save the resulting `.eml` file.",
+            "5. Return here and click **Add Email File**, and select your saved `.eml` file."
         ])
 
     raw_bytes = user_input.encode("utf-8")

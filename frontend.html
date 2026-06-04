@@ -1,26 +1,35 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Security Chatbot</title>
+  <title>SME Security Chatbot</title>
   <link rel="stylesheet" href="/static/mystyle.css">
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="https://res.cdn.office.net/teams-js/2.34.0/js/MicrosoftTeams.min.js"></script>
 </head>
 <body>
+  <div class="app-layout" id="appLayout">
 
-  <div class="app-layout">
+  <aside class="sidebar" id="sidebar">
 
-  <aside class="sidebar">
-    <div class="logo-header">
-  <img src="/static/logo.png" alt="Logo">
-  <h2>Rxtra Security Bot</h2>
-</div>
+  <div class="sidebar-header"></div>
+    <div class="sidebar-headerdid"> 
+    <img src="/static/logo.png" alt="Logo">
+    <p>  </p>
+    <h2>   Rxtra Security Bot</h2>
+    <button id="sidebarToggle" title="Hide sidebar" onclick="toggleSidebar()">☰</button>
+  </div>
 
+  <div id="collapsedMenu">
+      <button title="About" onclick="showInfo()">i</button>
+        <button title="FAQs" onclick="showFAQs()">?</button>
+    </div>
+
+  <div id="sidebarContent">
     <h3>About</h3>
-<p>
-  An SME security chatbot designed to help employees with security guidance,
-  suspicious email checks, and incident reporting.
-</p>
+    <p>
+      An SME security chatbot designed to help employees with security guidance,
+      suspicious email checks, and incident reporting.
+    </p>
 
     <h3>Purpose</h3>
     <p>
@@ -37,21 +46,24 @@
       <li>IT and Cybersecurity routing</li>
     </ul>
 
- <h3>FAQs</h3>
+    <h3>FAQs</h3>
+    <div id="faqButtons"></div>
 
-<div id="faqButtons"></div>
-
-<button id="moreFaqBtn" onclick="nextFAQs()">
-  ↻ Show More FAQs
-</button>
+    <button id="moreFaqBtn" onclick="nextFAQs()">
+      ↻ Show More FAQs
+    </button>
+  </div>
 
 </aside>
 
   <main class="chat-area">
 
-  <div class="bar"></div>
+<div class="bar">
 
-  <div class="chat-toolbar">
+</div>
+
+ <div class="chat-toolbar">
+
     <button id="newChatBtn" onclick="newChat()">
         + New Chat
     </button>
@@ -89,6 +101,54 @@
   </div>
 
   <script>
+
+function toggleSidebar() {
+  const sidebar = document.getElementById("sidebar");
+  const btn = document.getElementById("sidebarToggle");
+
+  sidebar.classList.toggle("collapsed");
+
+  if (sidebar.classList.contains("collapsed")) {
+    btn.innerHTML = '<img src="/static/logo.png" alt="Logo">';
+    btn.title = "Open sidebar";
+  } else {
+    btn.innerHTML = "☰";
+    btn.title = "Hide sidebar";
+  }
+}
+
+function openSidebar() {
+  const sidebar = document.getElementById("sidebar");
+  const btn = document.getElementById("sidebarToggle");
+
+  sidebar.classList.remove("collapsed");
+
+  btn.innerHTML = "☰";
+  btn.title = "Hide sidebar";
+}
+
+function showFAQs() {
+  openSidebar();
+
+  setTimeout(() => {
+    document.getElementById("faqButtons").scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  }, 100);
+}
+
+function showInfo() {
+  openSidebar();
+
+  setTimeout(() => {
+    document.querySelector("#sidebarContent h3").scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  }, 100);
+}
+
     window.onload = function () {
 
     microsoftTeams.app.initialize();
@@ -98,6 +158,7 @@
     const chatBox  = document.getElementById("chatBox");
     const inputDiv = document.getElementById("queryInput");
 
+  
     inputDiv.addEventListener("keydown", function (e) {
       if (e.key === "Enter" && !e.shiftKey) {
         e.preventDefault();
