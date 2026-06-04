@@ -270,24 +270,29 @@ Rules:
     return ask_openai(prompt, session_id)
 
 def upload_csv_to_blob(file_path):
-    connection_string = os.getenv("AZURE_STORAGE_CONNECTION_STRING")
+    try:
+        connection_string = os.getenv("AZURE_STORAGE_CONNECTION_STRING")
 
-    if not connection_string:
-        print("Azure Storage connection string missing.")
-        return
+        if not connection_string:
+            print("Azure Storage connection string missing.")
+            return
 
-    blob_service_client = BlobServiceClient.from_connection_string(connection_string)
+        blob_service_client = BlobServiceClient.from_connection_string(
+            connection_string
+        )
 
-    container_name = "incidents"
-    blob_name = os.path.basename(file_path)
+        blob_client = blob_service_client.get_blob_client(
+            container="incidents",
+            blob=os.path.basename(file_path)
+        )
 
-    blob_client = blob_service_client.get_blob_client(
-        container=container_name,
-        blob=blob_name
-    )
+        with open(file_path, "rb") as data:
+            blob_client.upload_blob(data, overwrite=True)
 
-    with open(file_path, "rb") as data:
-        blob_client.upload_blob(data, overwrite=True)
+        print("Blob upload successful")
+
+    except Exception as e:
+        print("BLOB ERROR:", str(e))
 
 # The main chatbot endpoint, handles messages, scans links/domains, sends questions to OpenAI
 @app.post("/chat", response_class=PlainTextResponse)
