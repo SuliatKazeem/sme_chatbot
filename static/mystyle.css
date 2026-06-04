@@ -64,7 +64,7 @@
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  min-height: 40px;
+  min-height: 20px;
 }
 
     #welcomeMessage{ 
@@ -266,14 +266,14 @@
 .sidebar {
   width: 380px;
   background: white;
-  border-right: 5px solid #1a73e8;
+  border-right: 2px solid #1a73e8;
   flex-shrink: 0;
   overflow-y: auto;
 
 }
 
 .sidebar-header {
-  height: 40px;
+  height: 20px;
   background: #1a73e8;
   display: flex;
   align-items: center;
