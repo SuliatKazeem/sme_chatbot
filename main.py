@@ -634,11 +634,12 @@ async def download_pdf(filename: str):
 async def home():
     return FileResponse("frontend.html")
 
-@app.get("/test-incidents")
-def test_incidents():
-    import os
-
-    return {
-        "cwd": os.getcwd(),
-        "files": os.listdir(".")
-    }
+@app.get("/view-it-incidents")
+def view_it_incidents():
+    with open("it_incidents.csv", "r", encoding="utf-8") as f:
+        return PlainTextResponse(f.read())
+    
+@app.get("/view-cyber-incidents")
+def view_cyber_incidents():
+    with open("security_incidents.csv", "r", encoding="utf-8") as f:
+        return PlainTextResponse(f.read())
