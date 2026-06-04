@@ -633,3 +633,12 @@ async def download_pdf(filename: str):
 @app.get("/", response_class=HTMLResponse)
 async def home():
     return FileResponse("frontend.html")
+
+@app.get("/test-incidents")
+def test_incidents():
+    import os
+
+    return {
+        "cwd": os.getcwd(),
+        "files": os.listdir(".")
+    }
