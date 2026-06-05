@@ -1,26 +1,42 @@
-id,title,description,department,status,created_at
-INC-d273cda3,password,password not working,it,open,2026-05-09T20:38:11.280796
-INC-590fb10e,passworddd,my password has been updated but it's not working,IT,open,2026-05-09T20:50:20.958182
-INC-87534486,password ,my password has been updated but it's not working,IT,open,2026-05-09T20:55:00.295424
-INC-e10cf763,something suspicious is happening like someone has access to my emails,I can’t connect to WiFi,Cybersecurity,open,2026-05-27T09:36:56.006486
-INC-bbf5800a,cant log into outlook,"cant log into outlook
-yes i have
-yes i have says incorrect password and its correct",IT,open,2026-05-30T14:15:13.353999
-INC4de24e2a,My account is locked,"My account is locked
-yes i have. says contact the IT Department
-i'm using the same network
-it doesnt work and wont let me access",IT,open,2026-05-30T14:33:14.176751
-INCafc05f91,My account is locked,"My account is locked
-yes i have. says contact the IT Department
-yes i have
-wont login after change passwords",IT,open,2026-05-30T14:42:48.655483
-INCaf953579,I think my account has been compromised,"I think my account has been compromised
-yes, emails have been getting sent without me doing it
-no, i didnt change my password
-emails sending without me sending them",IT,open,2026-05-30T14:45:15.044426
-INC32752abe,i can’t connect to WiFi,"i can’t connect to WiFi
-yes i have
-its specific to the corporate wifi
-its just not connecting",IT,open,2026-05-30T18:00:32.140111
-INCd054027d,my account seems locked,my account seems locked,IT,open,2026-06-03T19:01:33.908299
-INCc7d0a90a,my account is locked,yes i have,IT,open,2026-06-04T09:11:23.092708
+id,summary,conversation,description,department,status,created_at
+INC6e05f03b,febncsk,,wdbfnekgkl;refjcsb,IT,open,2026-06-05T10:20:06.818433
+INCffd788ae,Password Not Working Despite Reset Attempts,"U: password not working
+B: If your password isn't working, first ensure that Caps Lock is off and try typing it again carefully. If the issue persists, you may need to reset your password using the company's password recovery process. Make sure you're connected to the GlobalProtect VPN before attempting any password changes.
+
+Have you tried resetting your password through the company's recovery process?
+B: If you've already tried resetting your password and it's still not working, ensure that you're connected to the GlobalProtect VPN, as this is necessary for accessing company resources. Double-check that you're entering the new password correctly and that there are no connectivity issues with the VPN.
+
+Have you confirmed that your VPN connection is active and stable?
+B: Okay. Would you like me to create an incident for this? Reply YES or NO.
+U: yes
+B: Could you let me know if you've received any error messages when trying to log in, or if there's been any recent changes to your account settings?
+U: password really doesnt work",,IT,open,2026-06-05T10:20:51.165501
+INCa3fb6972,try again,,lets see what happens hereeeee,IT,open,2026-06-05T10:22:28.909665
+INC3176a322,sav ,,i cant get this to owrk,IT,open,2026-06-05T10:24:17.461169
+INC74233f3a,seems i found the error,,i think i found it,IT,open,2026-06-05T10:25:43.361369
+INCc3cc6add,okayyyy,,lets seeeee,IT,open,2026-06-05T10:28:35.491228
+INC6a124f69,trg/lvjf,,jrgwjkmvoqrjenfk,IT,open,2026-06-05T10:32:25.198812
+INC7345e7e8,lets tyr ,,lets tyr ,IT,open,2026-06-05T10:37:01.661848
+INC7b4b20a5,".hj,ghxgjhjjkhvbnn",,"m,nbvmh;iklmn,bjk.nm,n.jk"":",IT,open,2026-06-05T10:38:06.500196
+INCca451891,mine,,affecteddddd,IT,open,2026-06-05T10:45:14.894013
+INC6edda390,last time ,,lr43hfdw,IT,open,2026-06-05T10:50:20.667252
+INC0ffe9b42,",jgfgdfzji/;kljbnv",,"mhfngbfbxngfhmj,bkj.nlm, ",IT,open,2026-06-05T10:57:28.357520
+INC45960720,Short Description (Summary),,Short Description (Summary),IT,open,2026-06-05T11:07:30.089641
+INCc8a860a2,again today,,password lockedddd,IT,open,2026-06-05T11:17:21.681931
+INC87e85efc,* Short Description (Summary),,* Short Description (Summary),IT,open,2026-06-05T11:20:44.238594
+INC10c548f5, Short Description (Summary),, Short Description (Summary),IT,open,2026-06-05T11:22:47.532100
+INC110207e1,Short Description (Summary),,Short Description (Summary),IT,open,2026-06-05T11:25:37.716244
+INC09e7c99e,hort Description (Summary),,hort Description (Summary),IT,open,2026-06-05T11:27:17.080885
+INC84572156,password wrong,,password not working after change,IT,open,2026-06-05T11:30:48.892034
+INC65de3325,password wrong,,password wrong\,IT,open,2026-06-05T11:37:05.810120
+INC71463859,Account Locked After Password Change,"U: account is locked
+B: If your account is locked, the first step is to ensure you are connected to the GlobalProtect VPN (https://portal.rxtra.com) as this is required for accessing company resources. Once connected, try resetting your password using the self-service portal. If the issue persists, it might be due to multiple failed login attempts or a security policy. 
+
+Have you recently changed your password or experienced any unusual activity on your account?
+B: Since you've recently changed your password and are experiencing a locked account, ensure that your new password meets the company's security requirements. If you're still unable to access your account, try clearing your browser cache and cookies, then attempt to log in again. 
+
+Have you tried accessing your account from a different device or network to see if the issue persists?
+B: Okay. Would you like me to create an incident for this? Reply YES or NO.
+U: yes
+B: Could you let me know if you've received any specific error messages when trying to log in, or if there have been any recent changes to your account settings that might have affected access?
+U: password was changed and then account got locked",,IT,open,2026-06-05T11:38:13.644997

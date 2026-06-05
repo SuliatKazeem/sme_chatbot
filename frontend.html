@@ -151,14 +151,17 @@ function showInfo() {
 
     window.onload = function () {
 
-    microsoftTeams.app.initialize();
+    try {
+      microsoftTeams.app.initialize();
+    } catch (e) {
+      console.log("Teams SDK not running here:", e);
+    }
 
     let sessionId = crypto.randomUUID();
 
     const chatBox  = document.getElementById("chatBox");
     const inputDiv = document.getElementById("queryInput");
 
-  
     inputDiv.addEventListener("keydown", function (e) {
       if (e.key === "Enter" && !e.shiftKey) {
         e.preventDefault();
@@ -315,6 +318,14 @@ await typeBotMessage(text);
       chatBox.scrollTop = chatBox.scrollHeight;
     }
 
+  const savedIncidentMessage = localStorage.getItem("incident_message");
+
+  if (savedIncidentMessage) {
+    document.getElementById("welcomeMessage").style.display = "none";
+    chatBox.style.display = "block";
+    addMessage("bot", savedIncidentMessage);
+    localStorage.removeItem("incident_message");
+  }
     async function typeBotMessage(text) {
 
   const div = document.createElement("div");

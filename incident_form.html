@@ -51,10 +51,14 @@
 <script>
 async function submitIncident() {
   const payload = {
-    title: document.getElementById("Title").value,
-    description: document.getElementById("Description").value,
-    session_id: localStorage.getItem("sessionId")
+    title: document.getElementById("Title").value.trim(),
+    description: document.getElementById("Description").value.trim()
   };
+
+  if (!payload.title || !payload.description) {
+    alert("Please complete all required fields.");
+    return;
+  }
 
   const res = await fetch("/incidents", {
     method: "POST",
@@ -63,13 +67,9 @@ async function submitIncident() {
   });
 
   const data = await res.json();
-  console.log("API RESPONSE:", data);
 
-  // store result so chat can pick it up
-  console.log("STORED:", localStorage.getItem("incidentResult"));
-
-  // return to chat
-  window.location.href = "/";
+  localStorage.setItem("incident_message", data.message);
+window.location.href = "/";
 }
 </script>
 

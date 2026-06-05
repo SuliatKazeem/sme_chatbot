@@ -6,7 +6,7 @@ import uuid
 import os
 
 def generate_incident_pdf(report_data: dict) -> str:
-    incident_id = report_data.get("incident_id", "UNKNOWN")
+    incident_id = report_data.get("incident_id", f"INC{uuid.uuid4().hex[:8]}")
     filename = f"incident_{incident_id}.pdf"
     filepath = os.path.join("reports", filename)
     os.makedirs("reports", exist_ok=True)
@@ -18,14 +18,17 @@ def generate_incident_pdf(report_data: dict) -> str:
         Paragraph("<b>Security Incident Report</b>", styles["Title"]),
         Paragraph(f"<b>Incident ID:</b> {incident_id}", styles["Normal"]),
         Paragraph(f"<b>Date:</b> {datetime.utcnow().isoformat()}", styles["Normal"]),
-        Paragraph(f"<b>Report Type:</b> {report_data['report_type']}", styles["Normal"]),
-        Paragraph(f"<b>Summary:</b> {report_data['summary']}", styles["Normal"]),
-        Paragraph(f"<b>Severity:</b> {report_data['severity']}", styles["Normal"]),
-        Paragraph("<b>Description:</b>", styles["Heading2"]),
+        Paragraph(f"<b>Summary:</b> {report_data.get('summary', '')}", styles["Normal"]),
     ]
 
-    for i in report_data.get("indicators", []):
-        content.append(Paragraph(f"- {i}", styles["Normal"]))
+    if report_data.get("conversation"):
+        content.append(Paragraph("<b>Conversation:</b>", styles["Heading2"]))
+        for line in report_data["conversation"].split("\n"):
+            content.append(Paragraph(line, styles["Normal"]))
+
+    elif report_data.get("details"):
+        content.append(Paragraph("<b>Details:</b>", styles["Heading2"]))
+        content.append(Paragraph(report_data["details"], styles["Normal"]))
 
     doc.build(content)
     return filepath, incident_id

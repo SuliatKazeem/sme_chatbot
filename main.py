@@ -7,7 +7,7 @@ import os
 import re
 
 from fastapi import FastAPI, Request, UploadFile, File
-from fastapi.responses import PlainTextResponse, HTMLResponse, FileResponse
+from fastapi.responses import PlainTextResponse, HTMLResponse, FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 from datetime import datetime
@@ -92,18 +92,19 @@ def save_incident(incident: dict):
         writer = csv.writer(f)
 
         if not file_exists:
-            writer.writerow(["id","title","description","department","status","created_at"])
+            writer.writerow(["id", "summary", "conversation", "details", "department", "status", "created_at"])
 
         writer.writerow([
             incident["id"],
-            incident["title"],
-            incident["description"],
+            incident["summary"],
+            incident.get("conversation", ""),
+            incident.get("details", ""),
             incident["department"],
             incident["status"],
             incident["created_at"]
         ])
 
-        upload_csv_to_blob(file_path)
+    upload_csv_to_blob(file_path)
 
 #The function to stop the bot from creating incidents for normal advice questions. Used prompt engineering to help bot decide real issues
 def classify_incident(text: str, session_id: str):
@@ -185,24 +186,22 @@ def create_incident_from_triage(session_id: str, state: dict):
     department = get_department_from_group(group)
 
     incident = {
-        "id": f"INC{uuid.uuid4().hex[:8]}",
-        "title": state["answers"][0],
-        "description": state["answers"][-1],
-        "department": department,
-        "status": "open",
-        "created_at": datetime.utcnow().isoformat()
-    }
+    "id": f"INC{uuid.uuid4().hex[:8]}",
+    "summary": generate_incident_title(state["conversation"], session_id),
+    "conversation": "\n".join(state["conversation"]),
+    "department": department,
+    "status": "open",
+    "created_at": datetime.utcnow().isoformat()
+}
 
     save_incident(incident)
 
     pdf_path, incident_id = generate_incident_pdf({
         "incident_id": incident["id"],
-        "report_type": "manual",
-        "summary": incident["title"],
-        "severity": "medium",
-        "indicators": state["answers"]
+        "summary": incident["summary"],
+        "details": state["answers"][-1]
     })
-
+    
     filename = os.path.basename(pdf_path)
 
     triage_state.pop(session_id, None)
@@ -212,7 +211,7 @@ def create_incident_from_triage(session_id: str, state: dict):
         f"{incident['department']} department.\n\n"
         f"- **ID**: {incident['id']}\n\n"
         f"- **Status**: {incident['status']}\n\n"
-        f"- **Short Description**: {incident['title']}\n\n"
+        f"- **Summary**: {incident['summary']}\n\n"
         f"The team will contact you soon to provide support and assistance.\n\n"
         f"In the meantime, you can download the PDF for your incident [here](/download/{filename})."
     )
@@ -294,6 +293,22 @@ def upload_csv_to_blob(file_path):
     except Exception as e:
         print("BLOB ERROR:", str(e))
 
+def generate_incident_title(answers: list, session_id: str):
+    prompt = f"""
+Create a short incident title from this triage conversation.
+
+Rules:
+- Maximum 8 words
+- Clear and professional
+- Do not include quotation marks
+- Return only the title
+
+Conversation:
+{answers}
+"""
+    return ask_openai(prompt, session_id)
+
+
 # The main chatbot endpoint, handles messages, scans links/domains, sends questions to OpenAI
 @app.post("/chat", response_class=PlainTextResponse)
 async def chat(req: Request):
@@ -306,13 +321,18 @@ async def chat(req: Request):
 
         if state.get("stage") == "confirm":
             if user_input.lower() in ["yes", "y"]:
+                state["conversation"].append(f"U: {user_input}")
                 state["stage"] = "more_details"
 
-                return generate_final_details_question(
-                        state["group"],
-                        state["answers"],
-                        session_id
-                    )
+                question = generate_final_details_question(
+                    state["group"],
+                    state["answers"],
+                    session_id
+                )
+
+                state["conversation"].append(f"B: {question}")
+
+                return question
             
             if user_input.lower() in ["no", "n"]:
                 triage_state.pop(session_id, None)
@@ -322,21 +342,26 @@ async def chat(req: Request):
 
         if state.get("stage") == "more_details":
             state["answers"].append(user_input)
+            state["conversation"].append(f"U: {user_input}")
             return create_incident_from_triage(session_id, state)
 
         state["answers"].append(user_input)
 
         if state["question_count"] >= FOLLOWUPQUESTIONS:
             state["stage"] = "confirm"
-            return "Okay. Would you like me to create an incident for this? Reply YES or NO."
+            question = "Okay. Would you like me to create an incident for this? Reply YES or NO."
 
+            state["conversation"].append(f"B: {question}")
+
+            return question
+        
         next_question = generate_triage_response(
             state["group"],
             state["answers"],
             user_input,
             session_id
         )
-
+        state["conversation"].append(f"B: {next_question}")
         state["question_count"] += 1
         return next_question
 
@@ -458,22 +483,25 @@ async def chat(req: Request):
     if classification.get("create_incident"):
         group = classify_group(user_input)
 
-        triage_state[session_id] = {
-                    "group": group,
-                    "answers": [user_input],
-                    "question_count": 1,
-                    "stage": "asking"
-                }
-
         first_question = generate_triage_response(
-                    group,
-                    [user_input],
-                    user_input,
-                    session_id
-                )
+            group,
+            [user_input],
+            user_input,
+            session_id
+        )
+
+        triage_state[session_id] = {
+            "group": group,
+            "answers": [user_input],
+            "conversation": [
+                f"U: {user_input}",
+                f"B: {first_question}"
+            ],
+            "question_count": 1,
+            "stage": "asking"
+        }
 
         return first_question
-    
     llm_reply = ask_openai(user_input, session_id=session_id)
 
     reply_lower = llm_reply.lower()
@@ -586,8 +614,8 @@ async def create_incident(request: Request):
         # creating incident 
         incident = {
             "id": f"INC{uuid.uuid4().hex[:8]}",
-            "title": title,
-            "description": description,
+            "summary": title,
+            "details": description,
             "department": department,
             "status": "open",
             "created_at": datetime.utcnow().isoformat()
@@ -595,17 +623,24 @@ async def create_incident(request: Request):
 
         save_incident(incident)
 
-        session_id = data.get("session_id", "default")
+        # Generate downloadable PDF report
+        pdf_path, incident_id = generate_incident_pdf({
+            "incident_id": incident["id"],
+            "summary": incident["summary"],
+            "details": incident["details"]
+        })
 
+        filename = os.path.basename(pdf_path)
+        session_id = data.get("session_id", "default")
         incident_message = (
             f"Your incident has been successfully created and sent to the "
             f"{incident['department']} department!\n\n"
             f"For reference, the details of your incident are:\n\n"
             f"- **ID**: {incident['id']}\n\n"
             f"- **Status**: {incident['status']}\n\n"
-            f"- **Short Description**: {incident['title']}\n\n"
+            f"- **Summary**: {incident['summary']}\n\n"
             f"The team will contact you soon to provide support and assistance. Please be ready to share any details regarding the issue to help them assist you effectively.\n\n" 
-            f"In the meantime, you can download the PDF for your incident [here](${data.download_url})"
+            f"In the meantime, you can download the PDF for your incident [here](/download/{filename})"
         )
 
         chat_sessions[session_id].append({
@@ -613,38 +648,22 @@ async def create_incident(request: Request):
             "message": incident_message
         })
 
-        # Generate downloadable PDF report
-        pdf_path, incident_id = generate_incident_pdf({
-        "incident_id": incident["id"],
-        "report_type": "manual",
-        "summary": title,
-        "severity": "medium",
-        "indicators": [description]
-        })
-
         print("Saved incident:", incident)
-
-        filename = os.path.basename(pdf_path)
 
         return {
             "success": True,
             "incident": incident,
+            "message": incident_message,
             "download_url": f"/download/{filename}"
         }
     
     except Exception as e:
         print("ERROR:", e)
-        return {"error": str(e)}
-
-# PDF download endpoint
-@app.get("/download-pdf")
-async def download_pdf(path: str):
-    return FileResponse(
-        path,
-        media_type="application/pdf",
-        filename=os.path.basename(path)
-    )
-
+        return JSONResponse(
+    status_code=500,
+    content={"success": False, "error": str(e)}
+)
+    
 # Users can download incident reports from reports folder
 @app.get("/download/{filename}")
 async def download_pdf(filename: str):
@@ -662,43 +681,6 @@ async def download_pdf(filename: str):
 async def home():
     return FileResponse("frontend.html")
 
-@app.get("/view-it-incidents")
-def view_it_incidents():
-    with open("it_incidents.csv", "r", encoding="utf-8") as f:
-        return PlainTextResponse(f.read())
-    
-@app.get("/view-cyber-incidents")
-def view_cyber_incidents():
-    with open("security_incidents.csv", "r", encoding="utf-8") as f:
-        return PlainTextResponse(f.read())
-    
-@app.get("/view-incidents")
-def view_incidents():
-    import os
-
-    result = ""
-
-    for file in ["it_incidents.csv", "security_incidents.csv"]:
-        if os.path.exists(file):
-            result += f"\n\n===== {file} =====\n\n"
-
-            with open(file, "r", encoding="utf-8") as f:
-                result += f.read()
-
-    return PlainTextResponse(result)
-
-@app.get("/blob-test")
-def blob_test():
-    from azure.storage.blob import BlobServiceClient
-    import os
-
-    blob_service_client = BlobServiceClient.from_connection_string(
-        os.getenv("AZURE_STORAGE_CONNECTION_STRING")
-    )
-
-    blobs = []
-
-    for blob in blob_service_client.get_container_client("smeincidents").list_blobs():
-        blobs.append(blob.name)
-
-    return blobs
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
