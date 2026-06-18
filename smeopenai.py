@@ -16,13 +16,13 @@ client = OpenAI(api_key=OPENAI_API_KEY)
 llm    = ChatOpenAI(openai_api_key=OPENAI_API_KEY, model="gpt-4o", temperature=0.2)
 
 COMPANY_NAME = "Rxtra"
-COMPANY_DOMAIN = "@rxtra.xyz"
-IT_EMAIL = "ithelp@rxtra.xyz"
-SECURITY_EMAIL= "security@rxtra.xyz"
-DATA_EMAIL= "dp@rxtra.xyz"
-ESM_PORTAL = "https://esm.rxtra.com"
+COMPANY_DOMAIN = "@rxtra.sk993"
+IT_EMAIL = "ithelp@rxtra.sk993"
+SECURITY_EMAIL= "security@rxtra.sk993"
+DATA_EMAIL= "dp@rxtra.sk993"
+ESM_PORTAL = "https://esm.rxtra.sk993"
 VPN_NAME = "GlobalProtect VPN"
-VPN_PORTAL = "portal.rxtra.com"
+VPN_PORTAL = "portal.rxtra.sk993"
 PASSWORD_DAYS = "90 days"
 
 GROUP_RULES = {
@@ -158,7 +158,7 @@ You are a helpful security management chatbot built to support Rxtra Limited a s
 +  - Tip B
                                           
 10. Company Context Rules:
-- Users must always be connected to the GlobalProtect VPN (https://portal.rxtra.com) before accessing company resources.
+- Users must always be connected to the GlobalProtect VPN (https://portal.rxtra.sk993) before accessing company resources.
 - If the question belongs to a known group (email_security,security_incidents, data_protection, account_access, network_and_remote_access, general_security), provide company-specific answers for Rxtra Pharmaceutical Limited.                
 - If user is asking about a phishing email, tell user to paste email in the chat.
 - Users can report suspicious or strange activities using the incident report button.                            

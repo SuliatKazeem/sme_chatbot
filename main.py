@@ -34,6 +34,14 @@ INTERNAL_DOMAINS = {
 # detect emails and URLs inside messages sent 
 EMAIL_REGEX = r'[\w\.-]+@([\w\.-]+\.\w+)'
 URL_REGEX   = r'(https?://[^\s]+|www\.[^\s]+)'
+DOMAIN_PATTERN = r'^[a-zA-Z0-9-]+\.[a-zA-Z]{2,}$'
+
+PI_PATTERNS = {
+    "NI_NUMBER": r"\b[A-CEGHJ-PR-TW-Z]{2}\d{6}[A-D]\b",
+    "UK_PHONE": r"\b(?:\+44|0)\d{10,11}\b",
+    "CREDIT_CARD": r"\b(?:\d[ -]*?){13,16}\b",
+    "PASSPORT_LIKE_ID": r"\b[A-Z]{1,2}\d{6,9}\b"
+}
 
 # CSVs created for departments. IT issues go into it_incidents.csv and security issues go into security_incidents.csv.
 IT_CSV = "it_incidents.csv"
@@ -48,7 +56,7 @@ refusal_count = defaultdict(int)
 chat_sessions = defaultdict(list)
 
 triage_state = {}
-
+response_cache = {}
 
 # For the bot to detect out-of-scope questions, common phrases in replies
 REFUSAL_TAGS = [ 
@@ -104,7 +112,7 @@ def save_incident(incident: dict):
             incident["created_at"]
         ])
 
-    upload_csv_to_blob(file_path)
+    upload_incident_to_blob(incident)
 
 #The function to stop the bot from creating incidents for normal advice questions. Used prompt engineering to help bot decide real issues
 def classify_incident(text: str, session_id: str):
@@ -188,7 +196,7 @@ def create_incident_from_triage(session_id: str, state: dict):
     incident = {
     "id": f"INC{uuid.uuid4().hex[:8]}",
     "summary": generate_incident_title(state["conversation"], session_id),
-    "conversation": "\n".join(state["conversation"]),
+    "conversation": redact_pi("\n".join(state["conversation"])),
     "department": department,
     "status": "open",
     "created_at": datetime.utcnow().isoformat()
@@ -268,31 +276,6 @@ Rules:
 """
     return ask_openai(prompt, session_id)
 
-def upload_csv_to_blob(file_path):
-    try:
-        connection_string = os.getenv("AZURE_STORAGE_CONNECTION_STRING")
-
-        if not connection_string:
-            print("Azure Storage connection string missing.")
-            return
-
-        blob_service_client = BlobServiceClient.from_connection_string(
-            connection_string
-        )
-
-        blob_client = blob_service_client.get_blob_client(
-            container="smeincidents",
-            blob=os.path.basename(file_path)
-        )
-
-        with open(file_path, "rb") as data:
-            blob_client.upload_blob(data, overwrite=True)
-
-        print("Blob upload successful")
-
-    except Exception as e:
-        print("BLOB ERROR:", str(e))
-
 def generate_incident_title(answers: list, session_id: str):
     prompt = f"""
 Create a short incident title from this triage conversation.
@@ -308,13 +291,62 @@ Conversation:
 """
     return ask_openai(prompt, session_id)
 
+def redact_pi(text: str) -> str:
+    if not text:
+        return text
+
+    redacted = text
+
+    for label, pattern in PI_PATTERNS.items():
+        redacted = re.sub(
+            pattern,
+            f"[REDACTED_{label}]",
+            redacted,
+            flags=re.IGNORECASE
+        )
+
+    return redacted
+
+def upload_incident_to_blob(incident: dict):
+    try:
+        connection_string = os.getenv("AZURE_STORAGE_CONNECTION_STRING")
+
+        if not connection_string:
+            print("Azure Storage connection string missing.")
+            return
+
+        blob_service_client = BlobServiceClient.from_connection_string(connection_string)
+
+        container_name = "smeincidents"
+
+        blob_name = f"{incident['department']}/{incident['id']}.json"
+
+        blob_client = blob_service_client.get_blob_client(
+            container=container_name,
+            blob=blob_name
+        )
+
+        blob_client.upload_blob(
+            json.dumps(incident, indent=2),
+            overwrite=False
+        )
+
+        print("Incident uploaded to Blob:", blob_name)
+
+    except Exception as e:
+        print("BLOB ERROR:", str(e))
+
 
 # The main chatbot endpoint, handles messages, scans links/domains, sends questions to OpenAI
 @app.post("/chat", response_class=PlainTextResponse)
 async def chat(req: Request):
     data = await req.json()
     user_input = data.get("query", "").strip()
+    safe_user_input = redact_pi(user_input)
+
     session_id = data.get("session_id", "default")
+
+    cache_key = safe_user_input.lower().strip()
 
     if session_id in triage_state:
         state = triage_state[session_id]
@@ -403,8 +435,14 @@ async def chat(req: Request):
 
      # Scan domains
     for dom in domains:
+        if not re.match(DOMAIN_PATTERN, dom):
+            messages.append(
+                f"Domain {dom} → Invalid domain format. Please check the spelling."
+            )
+            continue
         verdict = scan_domain(dom)["verdict"]
         messages.append(f"Domain {dom} → {verdict}.")
+
         if verdict.startswith("Likely"):
             malicious_indicators.append(f"Domain: {dom}")
 
@@ -502,7 +540,15 @@ async def chat(req: Request):
         }
 
         return first_question
-    llm_reply = ask_openai(user_input, session_id=session_id)
+    
+    if cache_key in response_cache:
+        print("CACHE HIT:", cache_key)
+        return response_cache[cache_key]
+
+
+    llm_reply = ask_openai(safe_user_input, session_id=session_id)
+
+    response_cache[cache_key] = llm_reply
 
     reply_lower = llm_reply.lower()
 

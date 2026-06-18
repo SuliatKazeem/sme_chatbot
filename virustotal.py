@@ -26,8 +26,11 @@ def scan_domain(domain):
     timeout=15
     )
 
+    if resp.status_code == 404:
+        return {"verdict": "Not found on VirusTotal. Treat as suspicious and verify manually"}
+
     if resp.status_code != 200:
-        return {"verdict": f"Error: {resp.text}"}
+        return {"verdict": "Invalid domain format. Please confirm domain spelling"}
     
     stats = resp.json().get("data", {}).get("attributes", {}).get("last_analysis_stats", {})
     return {"verdict": "Likely Malicious" if stats.get("malicious",0)>0 else "Looks Safe"}
