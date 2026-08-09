@@ -40,7 +40,7 @@
     <h3>Features</h3>
     <ul>
       <li>Security guidance</li>
-      <li>Email and URL scanning</li>
+      <li>Email and URL scanning for phishing</li>
       <li>Automatic & Manual Incident Generation</li>
       <li>PDF incident reports</li>
       <li>IT and Cybersecurity routing</li>
@@ -242,26 +242,33 @@ window.newChat = function () {
       inputDiv.innerText = "";
 
      const typingDiv = document.createElement("div");
-typingDiv.className = "message bot";
-typingDiv.id = "typingIndicator";
-typingDiv.innerHTML = "Thinking...";
+      typingDiv.className = "message bot";
+      typingDiv.id = "typingIndicator";
+      typingDiv.innerHTML = "Thinking...";
 
-chatBox.appendChild(typingDiv);
-chatBox.scrollTop = chatBox.scrollHeight;
+      chatBox.appendChild(typingDiv);
+      chatBox.scrollTop = chatBox.scrollHeight;
 
-const resp = await fetch("/chat", {
-  method: "POST",
-  headers: {"Content-Type": "application/json"},
-  body: JSON.stringify({ query, session_id: sessionId })
-});
+      const resp = await fetch("/chat", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ query, session_id: sessionId })
+      });
 
-const text = await resp.text();
+      const contentType = resp.headers.get("content-type");
 
-// Remove the typing message
-document.getElementById("typingIndicator")?.remove();
+      // Remove the typing message
+      document.getElementById("typingIndicator")?.remove();
 
-// Show animated response
-await typeBotMessage(text);
+      if (contentType && contentType.includes("application/json")) {
+        const data = await resp.json();
+
+        await typeBotMessage(data.message);
+      } else {
+        const text = await resp.text();
+
+        await typeBotMessage(text);
+      }
 
 };
 
@@ -289,8 +296,17 @@ await typeBotMessage(text);
           body: form
         });
 
-        const text = await resp.text();
-        addMessage("bot", text);
+        const contentType = resp.headers.get("content-type");
+
+          if (contentType && contentType.includes("application/json")) {
+            const data = await resp.json();
+
+            addMessage("bot", data.message);
+          } else {
+            const text = await resp.text();
+
+            addMessage("bot", text);
+          }
       } 
       catch {
         addMessage("bot", "Error scanning that email file.");

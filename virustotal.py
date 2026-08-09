@@ -4,6 +4,7 @@ import os
 import re
 import requests
 import email
+import time
 from email import policy
 from urllib.parse import urlparse
 from dotenv import load_dotenv
@@ -44,30 +45,86 @@ def scan_url(url):
         return {"verdict": f"Error: {resp.text}"}
     
     scan_id = resp.json()["data"]["id"]
-    analysis = requests.get(f"https://www.virustotal.com/api/v3/analyses/{scan_id}", headers=headers)
 
-    if analysis.status_code != 200:
-        return {"verdict": f"Error: {analysis.text}"}
-    
-    stats = analysis.json().get("data", {}).get("attributes", {}).get("stats", {})
-    return {"verdict": "Likely Phishing" if stats.get("malicious",0)>0 else "Looks Safe"}
+    for _ in range(10):
+
+        analysis = requests.get(
+            f"https://www.virustotal.com/api/v3/analyses/{scan_id}",
+            headers=headers,
+            timeout=15
+        )
+
+        if analysis.status_code != 200:
+            return {"verdict": f"Error: {analysis.text}"}
+
+        attributes = analysis.json().get("data", {}).get("attributes", {})
+        status = attributes.get("status")
+
+        if status == "completed":
+            stats = attributes.get("stats", {})
+
+            malicious = stats.get("malicious", 0)
+            suspicious = stats.get("suspicious", 0)
+
+            if malicious > 0:
+                return {"verdict": "Likely Malicious"}
+
+            if suspicious > 0:
+                return {"verdict": "Suspicious"}
+
+            return {"verdict": "Looks Safe"}
+
+        time.sleep(2)
+
+    return {"verdict": "Analysis still processing. Please try again shortly."}
 
 # Scan .EML file uploaded with VirusTotal.
 def scan_file_attachment(filename, file_bytes):
     files = {"file": (filename, file_bytes)}
-    resp = requests.post("https://www.virustotal.com/api/v3/files", headers=headers, files=files, timeout=15)
+
+    resp = requests.post(
+        "https://www.virustotal.com/api/v3/files",
+        headers=headers,
+        files=files,
+        timeout=15
+    )
 
     if resp.status_code != 200:
         return {"verdict": f"Error: {resp.text}"}
-    
-    analysis_id = resp.json()["data"]["id"]
-    analysis = requests.get(f"https://www.virustotal.com/api/v3/analyses/{analysis_id}", headers=headers)
 
-    if analysis.status_code != 200:
-        return {"verdict": f"Error: {analysis.text}"}
-    
-    stats = analysis.json().get("data", {}).get("attributes", {}).get("stats", {})
-    return {"verdict": "Likely Malicious File" if stats.get("malicious",0)>0 else "File Seems Safe"}
+    analysis_id = resp.json()["data"]["id"]
+
+    for _ in range(10):
+
+        analysis = requests.get(
+            f"https://www.virustotal.com/api/v3/analyses/{analysis_id}",
+            headers=headers,
+            timeout=15
+        )
+
+        if analysis.status_code != 200:
+            return {"verdict": f"Error: {analysis.text}"}
+
+        attributes = analysis.json().get("data", {}).get("attributes", {})
+        status = attributes.get("status")
+
+        if status == "completed":
+            stats = attributes.get("stats", {})
+
+            malicious = stats.get("malicious", 0)
+            suspicious = stats.get("suspicious", 0)
+
+            if malicious > 0:
+                return {"verdict": "Likely Malicious File"}
+
+            if suspicious > 0:
+                return {"verdict": "Suspicious"}
+
+            return {"verdict": "File Seems Safe"}
+
+        time.sleep(2)
+
+    return {"verdict": "Analysis still processing. Please try again shortly."}
 
 def extract_urls(text):
     pattern = r'https?://[^\s"\']+'

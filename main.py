@@ -20,7 +20,6 @@ from incident_report import generate_incident_pdf
 from notifypdf import notify_cybersecurity
 from azure.storage.blob import BlobServiceClient
 
-import csv
 import uuid
 import json
 
@@ -42,10 +41,6 @@ PI_PATTERNS = {
     "CREDIT_CARD": r"\b(?:\d[ -]*?){13,16}\b",
     "PASSPORT_LIKE_ID": r"\b[A-Z]{1,2}\d{6,9}\b"
 }
-
-# CSVs created for departments. IT issues go into it_incidents.csv and security issues go into security_incidents.csv.
-IT_CSV = "it_incidents.csv"
-SECURITY_CSV= "security_incidents.csv"
 
 THRESHOLD     = 3 # threshold for out-of-scope questions, warning after 3rd time
 FOLLOWUPQUESTIONS = 2  # 2 follow-up questions before asking if the user wants an incident created.
@@ -90,28 +85,8 @@ def block_internal(dom: str, session_id: str) -> str | None:
         )
     return None
 
-# save incidents created into the inicdents csv file
+# Save incidents to Azure Blob Storage
 def save_incident(incident: dict):
-    file_path = SECURITY_CSV if incident["department"] == "Cybersecurity" else IT_CSV
-
-    file_exists = os.path.isfile(file_path)
-
-    with open(file_path, "a", newline="", encoding="utf-8") as f:
-        writer = csv.writer(f)
-
-        if not file_exists:
-            writer.writerow(["id", "summary", "conversation", "details", "department", "status", "created_at"])
-
-        writer.writerow([
-            incident["id"],
-            incident["summary"],
-            incident.get("conversation", ""),
-            incident.get("details", ""),
-            incident["department"],
-            incident["status"],
-            incident["created_at"]
-        ])
-
     upload_incident_to_blob(incident)
 
 #The function to stop the bot from creating incidents for normal advice questions. Used prompt engineering to help bot decide real issues
@@ -167,28 +142,28 @@ def get_department_from_group(group: str):
 
 #the bot will generate a followup question based on user input. Focuses on missing informations.
 def generate_next_question(group: str, answers: list, user_input: str, session_id: str):
-    prompt = f"""
-You are an IT security incident triage assistant.
+        prompt = f"""
+    You are an IT security incident triage assistant.
 
-Group: {group}
+    Group: {group}
 
-User issue:
-{user_input}
+    User issue:
+    {user_input}
 
-Conversation so far:
-{answers}
+    Conversation so far:
+    {answers}
 
-Task:
-Ask EXACTLY ONE follow-up question to gather missing diagnostic information needed for incident creation.
+    Task:
+    Ask EXACTLY ONE follow-up question to gather missing diagnostic information needed for incident creation.
 
-Rules:
-- Ask only ONE question
-- Keep it short and natural
-- Focus on missing information only
-"""
-    return ask_openai(prompt, session_id)
+    Rules:
+    - Ask only ONE question
+    - Keep it short and natural
+    - Focus on missing information only
+    """
+        return ask_openai(prompt, session_id)
 
-#save the incident to CSV, create a PDF report, and give user a download link.
+# Save the incident to Azure Blob Storage, create a PDF report, and give user a download link.
 def create_incident_from_triage(session_id: str, state: dict):
     group = state["group"]
     department = get_department_from_group(group)
@@ -430,7 +405,7 @@ async def chat(req: Request):
         full_url = url if url.startswith("http") else "http://" + url
         verdict = scan_url(full_url)["verdict"]
         messages.append(f"URL {full_url} → {verdict}.")
-        if verdict.startswith("Likely"):
+        if verdict.startswith("Likely") or verdict == "Suspicious":
             malicious_indicators.append(f"URL: {full_url}")
 
      # Scan domains
@@ -443,13 +418,14 @@ async def chat(req: Request):
         verdict = scan_domain(dom)["verdict"]
         messages.append(f"Domain {dom} → {verdict}.")
 
-        if verdict.startswith("Likely"):
+        if verdict.startswith("Likely") or verdict == "Suspicious":
             malicious_indicators.append(f"Domain: {dom}")
 
     for fname, fbytes in attachments:
         verdict = scan_file_attachment(fname, fbytes)["verdict"]
         messages.append(f"Attachment {fname} → {verdict}.")
-        if verdict.startswith("Likely"):
+
+        if verdict.startswith("Likely") or verdict == "Suspicious":
             malicious_indicators.append(f"Attachment: {fname}")
 
     for dom in set(re.findall(EMAIL_REGEX, user_input)):
@@ -461,29 +437,57 @@ async def chat(req: Request):
             verdict = scan_domain(dom)["verdict"]
             messages.append(f"Domain {dom} → {verdict}.")
 
+            if verdict.startswith("Likely") or verdict == "Suspicious":
+                malicious_indicators.append(f"Domain: {dom}")
+
     # If anything malicious is detected, generate a PDF incident report automatically & notify security team
     if malicious_indicators:
+
+        incident = {
+            "id": f"INC{uuid.uuid4().hex[:8]}",
+            "summary": "Malicious indicators detected during scan",
+            "details": ", ".join(malicious_indicators),
+            "department": "Cybersecurity",
+            "status": "open",
+            "created_at": datetime.utcnow().isoformat()
+        }
+
+        # Save incident permanently to Azure Blob Storage
+        save_incident(incident)
+
         report_data = {
-        "report_type": "automatic",
-        "summary": "Malicious indicators detected during scan",
-        "severity": "high",
-        "indicators": malicious_indicators
+            "incident_id": incident["id"],
+            "report_type": "automatic",
+            "summary": incident["summary"],
+            "severity": "high",
+            "indicators": malicious_indicators
         }
 
         pdf_path, incident_id = generate_incident_pdf(report_data)
 
         notify_cybersecurity({
-            "incident_id": incident_id,
+            "incident_id": incident["id"],
             "report_type": "automatic",
             "severity": "high",
             "indicators": malicious_indicators
         })
 
-        return FileResponse(
-            pdf_path,
-            media_type="application/pdf",
-            filename="incident_report.pdf"
+        filename = os.path.basename(pdf_path)
+
+        message = (
+            f"⚠️ A potential security threat was detected during the VirusTotal scan.\n\n"
+            f"An incident report has been automatically generated and sent to the Cybersecurity team.\n\n"
+            f"- **Incident ID**: {incident['id']}\n\n"
+            f"- **Severity**: High\n\n"
+            f"Please avoid interacting with the suspicious URL, domain, or file until it has been reviewed.\n\n"
+            f"You can download the incident report [here](/download/{filename})."
         )
+
+        return JSONResponse({
+            "message": message,
+            "download_url": f"/download/{filename}",
+            "incident_id": incident["id"]
+        })
 
         # This message is sent if the user pastes an email as a text and explains how to upload an .eml file
     if messages:
@@ -591,25 +595,38 @@ async def scan_email_file(email_file: UploadFile = File(...)):
     for url in urls:
         verdict = scan_url(url)["verdict"]
         messages.append(f"URL {url} → {verdict}.")
-        if verdict.startswith("Likely"):
+        if verdict.startswith("Likely") or verdict == "Suspicious":
             malicious_indicators.append(f"URL: {url}")
 
     for dom in domains:
         verdict = scan_domain(dom)["verdict"]
         messages.append(f"Domain {dom} → {verdict}.")
-        if verdict.startswith("Likely"):
+        if verdict.startswith("Likely") or verdict == "Suspicious":
             malicious_indicators.append(f"Domain: {dom}")
 
     for fn, fb in attachments:
         verdict = scan_file_attachment(fn, fb)["verdict"]
         messages.append(f"Attachment {fn} → {verdict}.")
-        if verdict.startswith("Likely"):
+        if verdict.startswith("Likely") or verdict == "Suspicious":
             malicious_indicators.append(f"Attachment: {fn}")
 
     if malicious_indicators:
+
+        incident = {
+            "id": f"INC{uuid.uuid4().hex[:8]}",
+            "summary": "Malicious indicators detected in uploaded email",
+            "details": ", ".join(malicious_indicators),
+            "department": "Cybersecurity",
+            "status": "open",
+            "created_at": datetime.utcnow().isoformat()
+        }
+
+        save_incident(incident)
+
         report_data = {
+            "incident_id": incident["id"],
             "report_type": "automatic",
-            "summary": "Malicious indicators detected in uploaded EML file",
+            "summary": incident["summary"],
             "severity": "high",
             "indicators": malicious_indicators
         }
@@ -617,18 +634,28 @@ async def scan_email_file(email_file: UploadFile = File(...)):
         pdf_path, incident_id = generate_incident_pdf(report_data)
 
         notify_cybersecurity({
-            "incident_id": incident_id,
+            "incident_id": incident["id"],
             "report_type": "automatic",
             "severity": "high",
             "indicators": malicious_indicators
         })
 
-        return FileResponse(
-            pdf_path,
-            media_type="application/pdf",
-            filename="incident_report.pdf"
+        filename = os.path.basename(pdf_path)
+
+        message = (
+            f"⚠️ A potential security threat was detected in the uploaded email.\n\n"
+            f"An incident report has been automatically generated for the Cybersecurity team.\n\n"
+            f"- **Incident ID**: {incident['id']}\n\n"
+            f"- **Severity**: High\n\n"
+            f"Please avoid interacting with any suspicious links or attachments until they have been reviewed.\n\n"
+            f"You can download the incident report [here](/download/{filename})."
         )
 
+        return JSONResponse({
+            "message": message,
+            "download_url": f"/download/{filename}",
+            "incident_id": incident["id"]
+        })
     if not messages:
             return "No URLs, domains, or attachments found in that .eml."
 
