@@ -49,28 +49,31 @@
 </div>
 
 <script>
-async function submitIncident() {
-  const payload = {
-    title: document.getElementById("Title").value.trim(),
-    description: document.getElementById("Description").value.trim()
-  };
 
-  if (!payload.title || !payload.description) {
-    alert("Please complete all required fields.");
-    return;
+//submit incident
+  async function submitIncident() {
+    const payload = {
+      title: document.getElementById("Title").value.trim(),
+      description: document.getElementById("Description").value.trim()
+    };
+
+    if (!payload.title || !payload.description) {
+      alert("Please complete all required fields.");
+      return;
+    }
+
+    const res = await fetch("/incidents", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify(payload)
+    });
+
+    const data = await res.json();
+
+    localStorage.setItem("incident_message", data.message);
+    
+    window.location.href = "/";
   }
-
-  const res = await fetch("/incidents", {
-    method: "POST",
-    headers: {"Content-Type": "application/json"},
-    body: JSON.stringify(payload)
-  });
-
-  const data = await res.json();
-
-  localStorage.setItem("incident_message", data.message);
-window.location.href = "/";
-}
 </script>
 
 </body>

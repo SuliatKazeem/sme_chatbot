@@ -35,6 +35,7 @@ EMAIL_REGEX = r'[\w\.-]+@([\w\.-]+\.\w+)'
 URL_REGEX   = r'(https?://[^\s]+|www\.[^\s]+)'
 DOMAIN_PATTERN = r'^[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+$'
 
+# Patterns used to detect personal information.
 PI_PATTERNS = {
     "NI_NUMBER": r"\b[A-CEGHJ-PR-TW-Z]{2}\d{6}[A-D]\b",
     "UK_PHONE": r"\b(?:\+44|0)\d{10,11}\b",
@@ -50,7 +51,10 @@ refusal_count = defaultdict(int)
 # Store chat history temporarily
 chat_sessions = defaultdict(list)
 
+# Store incident triage progress for each session.
 triage_state = {}
+
+# Cache previous chatbot responses.
 response_cache = {}
 
 # For the bot to detect out-of-scope questions, common phrases in replies
@@ -143,24 +147,24 @@ def get_department_from_group(group: str):
 #the bot will generate a followup question based on user input. Focuses on missing informations.
 def generate_next_question(group: str, answers: list, user_input: str, session_id: str):
         prompt = f"""
-    You are an IT security incident triage assistant.
+                    You are an IT security incident triage assistant.
 
-    Group: {group}
+                    Group: {group}
 
-    User issue:
-    {user_input}
+                    User issue:
+                    {user_input}
 
-    Conversation so far:
-    {answers}
+                    Conversation so far:
+                    {answers}
 
-    Task:
-    Ask EXACTLY ONE follow-up question to gather missing diagnostic information needed for incident creation.
+                    Task:
+                    Ask EXACTLY ONE follow-up question to gather missing diagnostic information needed for incident creation.
 
-    Rules:
-    - Ask only ONE question
-    - Keep it short and natural
-    - Focus on missing information only
-    """
+                    Rules:
+                    - Ask only ONE question
+                    - Keep it short and natural
+                    - Focus on missing information only
+                    """
         return ask_openai(prompt, session_id)
 
 # Save the incident to Azure Blob Storage, create a PDF report, and give user a download link.
@@ -169,103 +173,104 @@ def create_incident_from_triage(session_id: str, state: dict):
     department = get_department_from_group(group)
 
     incident = {
-    "id": f"INC{uuid.uuid4().hex[:8]}",
-    "summary": generate_incident_title(state["conversation"], session_id),
-    "conversation": redact_pi("\n".join(state["conversation"])),
-    "department": department,
-    "status": "open",
-    "created_at": datetime.utcnow().isoformat()
-}
+                "id": f"INC{uuid.uuid4().hex[:8]}",
+                "summary": generate_incident_title(state["conversation"], session_id),
+                "conversation": redact_pi("\n".join(state["conversation"])),
+                "department": department,
+                "status": "open",
+                "created_at": datetime.utcnow().isoformat()
+            }
 
     save_incident(incident)
 
     pdf_path, incident_id = generate_incident_pdf({
-        "incident_id": incident["id"],
-        "summary": incident["summary"],
-        "details": state["answers"][-1]
-    })
+                "incident_id": incident["id"],
+                "summary": incident["summary"],
+                "details": state["answers"][-1]
+            })
     
     filename = os.path.basename(pdf_path)
 
     triage_state.pop(session_id, None)
 
     return (
-        f"Your incident has been successfully created and sent to the "
-        f"{incident['department']} department.\n\n"
-        f"- **ID**: {incident['id']}\n\n"
-        f"- **Status**: {incident['status']}\n\n"
-        f"- **Summary**: {incident['summary']}\n\n"
-        f"The team will contact you soon to provide support and assistance.\n\n"
-        f"In the meantime, you can download the PDF for your incident [here](/download/{filename})."
-    )
+                f"Your incident has been successfully created and sent to the "
+                f"{incident['department']} department.\n\n"
+                f"- **ID**: {incident['id']}\n\n"
+                f"- **Status**: {incident['status']}\n\n"
+                f"- **Summary**: {incident['summary']}\n\n"
+                f"The team will contact you soon to provide support and assistance.\n\n"
+                f"In the meantime, you can download the PDF for your incident [here](/download/{filename})."
+            )
 
 # gives short helpful advice first, then asks one follow-up question
 def generate_triage_response(group, answers, user_input, session_id):
-    prompt = f"""
-You are an IT and cybersecurity assistant.
+        prompt = f"""
+                You are an IT and cybersecurity assistant.
 
-Issue:
-{answers[0]}
+                Issue:
+                {answers[0]}
 
-Answers so far:
-{answers}
+                Answers so far:
+                {answers}
 
-Task:
+                Task:
 
-1. Give a short helpful recommendation according to company policy (2-4 sentences).
-2. Then ask EXACTLY ONE follow-up question.
+                1. Give a short helpful recommendation according to company policy (2-4 sentences).
+                2. Then ask EXACTLY ONE follow-up question.
 
-Rules:
-- Keep advice practical.
-- Do not provide a complete solution.
-- Do not repeat same recommendation.
-- Do not mention incident creation.
-- Do not suggest they contact department.
-- Ask only one question.
-- Do not suggest to give contact information unless asked.
-- Maximum 100 words.
-"""
-    return ask_openai(prompt, session_id)
+                Rules:
+                - Keep advice practical.
+                - Do not provide a complete solution.
+                - Do not repeat same recommendation.
+                - Do not mention incident creation.
+                - Do not suggest they contact department.
+                - Ask only one question.
+                - Do not suggest to give contact information unless asked.
+                - Maximum 100 words.
+                """
+        return ask_openai(prompt, session_id)
 
 def generate_final_details_question(group: str, answers: list, session_id: str):
-    prompt = f"""
-You are an IT and cybersecurity incident triage assistant.
+        prompt = f"""
+                You are an IT and cybersecurity incident triage assistant.
 
-Incident category:
-{group}
+                Incident category:
+                {group}
 
-Information collected so far:
-{answers}
+                Information collected so far:
+                {answers}
 
-Task:
-Ask the user for more useful details about the incident before creating the incident.
+                Task:
+                Ask the user for more useful details about the incident before creating the incident.
 
-Rules:
-- Do not use a generic template.
-- Ask for details relevant to the incident category.
-- Do not ask for information already provided.
-- Keep it short and natural.
-- Mention examples only if they fit the incident.
-- Do not ask more than one question.
-- Do not mention error messages unless the issue is a system or login problem.
-"""
-    return ask_openai(prompt, session_id)
+                Rules:
+                - Do not use a generic template.
+                - Ask for details relevant to the incident category.
+                - Do not ask for information already provided.
+                - Keep it short and natural.
+                - Mention examples only if they fit the incident.
+                - Do not ask more than one question.
+                - Do not mention error messages unless the issue is a system or login problem.
+                """
+        return ask_openai(prompt, session_id)
 
 def generate_incident_title(answers: list, session_id: str):
-    prompt = f"""
-Create a short incident title from this triage conversation.
+        prompt = f"""
+                Create a short incident title from this triage conversation.
 
-Rules:
-- Maximum 8 words
-- Clear and professional
-- Do not include quotation marks
-- Return only the title
+                Rules:
+                - Maximum 8 words
+                - Clear and professional
+                - Do not include quotation marks
+                - Return only the title
 
-Conversation:
-{answers}
-"""
-    return ask_openai(prompt, session_id)
+                Conversation:
+                {answers}
+                """
+        return ask_openai(prompt, session_id)
 
+# Remove personal information before processing.
 def redact_pi(text: str) -> str:
     if not text:
         return text
@@ -282,6 +287,7 @@ def redact_pi(text: str) -> str:
 
     return redacted
 
+# Store incident records in Azure Blob Storage.
 def upload_incident_to_blob(incident: dict):
     try:
         connection_string = os.getenv("AZURE_STORAGE_CONNECTION_STRING")
@@ -372,7 +378,7 @@ async def chat(req: Request):
         state["question_count"] += 1
         return next_question
 
-    # This message is sent if the user asks about scanning an email explain how to upload an .eml file
+# This message is sent if the user asks about scanning an email explain how to upload an .eml file
     if any(re.search(pat, user_input, re.IGNORECASE) for pat in SCAN_KEYWORDS):
         return "\n".join([
             "For maximum security, please upload the original `.eml` file. This ensures all hidden links, email headers, and attachments are fully inspected. Click the 📧 Add Email File button below to get started.",
@@ -390,12 +396,14 @@ async def chat(req: Request):
     raw_bytes = user_input.encode("utf-8")
     urls, domains, attachments = parse_email(raw_bytes)
 
+#separate detected threats from unverified indicators.
     malicious_indicators = []
+    unverified_indicators = []
     messages = []
 
-    # if domain is rxtra.xyz (internal domain), don't scan
+    # if domain is rxtra.sk993 (internal domain), don't scan
     for dom in domains:
-        msg = block_internal(dom, session_id)
+        msg = block_internal(dom, session_id) # prevent internal domains from being sent to VirusTotal.
         if msg:
             return msg
         
@@ -405,48 +413,91 @@ async def chat(req: Request):
         full_url = url if url.startswith("http") else "http://" + url
         verdict = scan_url(full_url)["verdict"]
         messages.append(f"URL {full_url} → {verdict}.")
+
         if verdict.startswith("Likely") or verdict == "Suspicious":
             malicious_indicators.append(f"URL: {full_url}")
 
-     # Scan domains
+        elif (verdict.startswith("Not found") or verdict.startswith("Unable to verify")):
+            unverified_indicators.append(f"URL: {full_url}")
+
+    # Scan domains
     for dom in domains:
+
         if not re.match(DOMAIN_PATTERN, dom):
-            messages.append(
-                f"Domain {dom} → Invalid domain format. Please check the spelling."
-            )
+            messages.append(f"Domain {dom} → Unable to verify domain format. Treat as suspicious and verify manually.")
+            unverified_indicators.append(f"Domain: {dom}")
+
             continue
+
         verdict = scan_domain(dom)["verdict"]
         messages.append(f"Domain {dom} → {verdict}.")
 
         if verdict.startswith("Likely") or verdict == "Suspicious":
             malicious_indicators.append(f"Domain: {dom}")
 
+        elif (verdict.startswith("Not found") or verdict.startswith("Unable to verify")):
+            unverified_indicators.append(f"Domain: {dom}")
+
+    #scan attachments
     for fname, fbytes in attachments:
+
         verdict = scan_file_attachment(fname, fbytes)["verdict"]
         messages.append(f"Attachment {fname} → {verdict}.")
 
         if verdict.startswith("Likely") or verdict == "Suspicious":
             malicious_indicators.append(f"Attachment: {fname}")
 
+        elif (verdict.startswith("Not found") or verdict.startswith("Unable to verify")):
+            unverified_indicators.append(f"Attachment: {fname}")
+
     for dom in set(re.findall(EMAIL_REGEX, user_input)):
-        msg = block_internal(dom, session_id)
+
+        msg = block_internal(dom, session_id) # prevent internal domains from being sent to VirusTotal.
+
         if msg:
             return msg
-        
+
         if dom not in domains:
+
+            if not re.match(DOMAIN_PATTERN, dom):
+
+                messages.append(f"Domain {dom} → Unable to verify domain format. Treat as suspicious and verify manually.")
+                unverified_indicators.append(f"Domain: {dom}")
+
+                continue
+
             verdict = scan_domain(dom)["verdict"]
             messages.append(f"Domain {dom} → {verdict}.")
 
             if verdict.startswith("Likely") or verdict == "Suspicious":
                 malicious_indicators.append(f"Domain: {dom}")
 
-    # If anything malicious is detected, generate a PDF incident report automatically & notify security team
-    if malicious_indicators:
+            elif (verdict.startswith("Not found") or verdict.startswith("Unable to verify")):
+                unverified_indicators.append(f"Domain: {dom}")
+
+# If anything malicious is detected, generate a PDF incident report automatically, notify security team and create an incident for malicious or unverified indicators.
+    if malicious_indicators or unverified_indicators:
+
+    # Set severity based on the scan result.
+        if malicious_indicators:
+            severity = "high"
+            indicators = malicious_indicators
+            summary = "Malicious indicators detected during scan"
+
+            warning_text = ("⚠️ A potential security threat was detected during the VirusTotal scan.")
+
+    # VirusTotal could not confirm the indicator
+        else:
+            severity = "medium"
+            indicators = unverified_indicators
+            summary = "Unverified indicators detected during scan"
+
+            warning_text = ("⚠️ The submitted indicator could not be verified using VirusTotal.")
 
         incident = {
             "id": f"INC{uuid.uuid4().hex[:8]}",
-            "summary": "Malicious indicators detected during scan",
-            "details": ", ".join(malicious_indicators),
+            "summary": summary,
+            "details": ", ".join(indicators),
             "department": "Cybersecurity",
             "status": "open",
             "created_at": datetime.utcnow().isoformat()
@@ -459,8 +510,8 @@ async def chat(req: Request):
             "incident_id": incident["id"],
             "report_type": "automatic",
             "summary": incident["summary"],
-            "severity": "high",
-            "indicators": malicious_indicators
+            "severity": severity,
+            "indicators": indicators
         }
 
         pdf_path, incident_id = generate_incident_pdf(report_data)
@@ -468,19 +519,25 @@ async def chat(req: Request):
         notify_cybersecurity({
             "incident_id": incident["id"],
             "report_type": "automatic",
-            "severity": "high",
-            "indicators": malicious_indicators
+            "severity": severity,
+            "indicators": indicators
         })
 
         filename = os.path.basename(pdf_path)
 
+        scan_results = "\n\n".join(messages)
+
         message = (
-            f"⚠️ A potential security threat was detected during the VirusTotal scan.\n\n"
-            f"An incident report has been automatically generated and sent to the Cybersecurity team.\n\n"
+            f"{scan_results}\n\n"
+            f"{warning_text}\n\n"
+            f"As a precaution, an incident report has been automatically generated "
+            f"and sent to Cybersecurity team for review.\n\n"
             f"- **Incident ID**: {incident['id']}\n\n"
-            f"- **Severity**: High\n\n"
-            f"Please avoid interacting with the suspicious URL, domain, or file until it has been reviewed.\n\n"
-            f"You can download the incident report [here](/download/{filename})."
+            f"- **Severity**: {severity.capitalize()}\n\n"
+            f"Please avoid interacting with the suspicious or unverified URL, domain, "
+            f"or file until it has been reviewed.\n\n"
+            f"You can download the incident report "
+            f"[here](/download/{filename})."
         )
 
         return JSONResponse({
@@ -489,7 +546,7 @@ async def chat(req: Request):
             "incident_id": incident["id"]
         })
 
-        # This message is sent if the user pastes an email as a text and explains how to upload an .eml file
+# This message is sent if the user pastes an email as a text and explains how to upload an .eml file
     if messages:
         messages.append("\n".join([
             "For maximum security, please upload the original `.eml` file. This ensures all hidden links, email headers, and attachments are fully inspected. Click the 📧 Add Email File button below to get started.",
@@ -545,6 +602,7 @@ async def chat(req: Request):
 
         return first_question
     
+    # Reuse a cached response if available.
     if cache_key in response_cache:
         print("CACHE HIT:", cache_key)
         return response_cache[cache_key]
@@ -586,17 +644,24 @@ async def scan_email_file(email_file: UploadFile = File(...)):
     urls, domains, attachments = parse_email(raw_bytes)
 
     malicious_indicators = []
+    unverified_indicators = []
     messages = []
 
+  # if domain is rxtra.sk993 (internal domain), don't scan
     for dom in domains:
         if dom in INTERNAL_DOMAINS:
             return "For security and privacy reasons, internal-domain messages cannot be scanned. Please reach out to our IT support team at security@rxtra.sk993 for assistance."
 
     for url in urls:
-        verdict = scan_url(url)["verdict"]
+        full_url = url if url.startswith("http") else "http://" + url
+
+        verdict = scan_url(full_url)["verdict"]
         messages.append(f"URL {url} → {verdict}.")
         if verdict.startswith("Likely") or verdict == "Suspicious":
             malicious_indicators.append(f"URL: {url}")
+
+        elif (verdict.startswith("Not found") or verdict.startswith("Unable to verify")):
+            unverified_indicators.append(f"URL: {full_url}")
 
     for dom in domains:
         verdict = scan_domain(dom)["verdict"]
@@ -604,31 +669,54 @@ async def scan_email_file(email_file: UploadFile = File(...)):
         if verdict.startswith("Likely") or verdict == "Suspicious":
             malicious_indicators.append(f"Domain: {dom}")
 
+        elif (verdict.startswith("Not found") or verdict.startswith("Unable to verify")):
+            unverified_indicators.append(f"Domain: {dom}")
+
     for fn, fb in attachments:
         verdict = scan_file_attachment(fn, fb)["verdict"]
         messages.append(f"Attachment {fn} → {verdict}.")
         if verdict.startswith("Likely") or verdict == "Suspicious":
             malicious_indicators.append(f"Attachment: {fn}")
+    
+        elif (verdict.startswith("Not found") or verdict.startswith("Unable to verify")):
+            unverified_indicators.append(f"Attachment: {fn}")
 
-    if malicious_indicators:
+# If anything malicious is detected, generate a PDF incident report automatically, notify security team and create an incident for malicious or unverified indicators.
+    if malicious_indicators or unverified_indicators:
+
+        if malicious_indicators:
+            severity = "high"
+            indicators = malicious_indicators
+            summary = "Malicious indicators detected during scan"
+
+            warning_text = ("⚠️ A potential security threat was detected during the VirusTotal scan.")
+
+    # VirusTotal could not confirm the indicator
+        else:
+            severity = "medium"
+            indicators = unverified_indicators
+            summary = "Unverified indicators detected during scan"
+
+            warning_text = ("⚠️ The submitted indicator could not be verified using VirusTotal.")
 
         incident = {
             "id": f"INC{uuid.uuid4().hex[:8]}",
-            "summary": "Malicious indicators detected in uploaded email",
-            "details": ", ".join(malicious_indicators),
+            "summary": summary,
+            "details": ", ".join(indicators),
             "department": "Cybersecurity",
             "status": "open",
             "created_at": datetime.utcnow().isoformat()
         }
 
+        # Save incident permanently to Azure Blob Storage
         save_incident(incident)
 
         report_data = {
             "incident_id": incident["id"],
             "report_type": "automatic",
             "summary": incident["summary"],
-            "severity": "high",
-            "indicators": malicious_indicators
+            "severity": severity,
+            "indicators": indicators
         }
 
         pdf_path, incident_id = generate_incident_pdf(report_data)
@@ -636,19 +724,25 @@ async def scan_email_file(email_file: UploadFile = File(...)):
         notify_cybersecurity({
             "incident_id": incident["id"],
             "report_type": "automatic",
-            "severity": "high",
-            "indicators": malicious_indicators
+            "severity": severity,
+            "indicators": indicators
         })
 
         filename = os.path.basename(pdf_path)
 
+        scan_results = "\n\n".join(messages)
+
         message = (
-            f"⚠️ A potential security threat was detected in the uploaded email.\n\n"
-            f"An incident report has been automatically generated for the Cybersecurity team.\n\n"
+            f"{scan_results}\n\n"
+            f"{warning_text}\n\n"
+            f"As a precaution, an incident report has been automatically generated "
+            f"and routed to Cybersecurity for review.\n\n"
             f"- **Incident ID**: {incident['id']}\n\n"
-            f"- **Severity**: High\n\n"
-            f"Please avoid interacting with any suspicious links or attachments until they have been reviewed.\n\n"
-            f"You can download the incident report [here](/download/{filename})."
+            f"- **Severity**: {severity.capitalize()}\n\n"
+            f"Please avoid interacting with the suspicious or unverified URL, domain, "
+            f"or file until it has been reviewed.\n\n"
+            f"You can download the incident report "
+            f"[here](/download/{filename})."
         )
 
         return JSONResponse({
@@ -656,6 +750,7 @@ async def scan_email_file(email_file: UploadFile = File(...)):
             "download_url": f"/download/{filename}",
             "incident_id": incident["id"]
         })
+    
     if not messages:
             return "No URLs, domains, or attachments found in that .eml."
 

@@ -1,5 +1,4 @@
 # This file is for the scanning of URLs, domains, and uploaded email files.
-
 import os
 import re
 import requests
@@ -8,16 +7,12 @@ import time
 from email import policy
 from urllib.parse import urlparse
 from dotenv import load_dotenv
+from bs4 import BeautifulSoup
 
+# Load the VirusTotal API key.
 load_dotenv()
 VT_API_KEY = os.getenv("VT_API_KEY")
 headers = {"x-apikey": VT_API_KEY}
-
-try:
-    from bs4 import BeautifulSoup
-    HAVE_BS4 = True
-except ImportError:
-    HAVE_BS4 = False
 
 # Scan a domain with VirusTotal.
 def scan_domain(domain):
@@ -31,21 +26,41 @@ def scan_domain(domain):
         return {"verdict": "Not found on VirusTotal. Treat as suspicious and verify manually"}
 
     if resp.status_code != 200:
-        return {"verdict": "Invalid domain format. Please confirm domain spelling"}
+        return {"verdict": "Unable to verify with VirusTotal. Treat as suspicious and verify manually"}
     
     stats = resp.json().get("data", {}).get("attributes", {}).get("last_analysis_stats", {})
-    return {"verdict": "Likely Malicious" if stats.get("malicious",0)>0 else "Looks Safe"}
+    
+    malicious = stats.get("malicious", 0)
+    suspicious = stats.get("suspicious", 0)
+
+    if malicious > 0:
+        return {"verdict": "Likely Malicious"}
+
+    if suspicious > 0:
+        return {"verdict": "Suspicious"}
+
+    return {"verdict": "Looks Safe"}
 
 # Scan a URL with VirusTotal.
 def scan_url(url):
     data = {"url": url}
-    resp = requests.post("https://www.virustotal.com/api/v3/urls", headers=headers, data=data, timeout=15)
+
+    resp = requests.post(
+        "https://www.virustotal.com/api/v3/urls",
+        headers=headers,
+        data=data,
+        timeout=15
+    )
+
+    if resp.status_code == 404:
+        return {"verdict": "Not found on VirusTotal. Treat as suspicious and verify manually"}
 
     if resp.status_code != 200:
-        return {"verdict": f"Error: {resp.text}"}
-    
+        return {"verdict": "Unable to verify with VirusTotal. Treat as suspicious and verify manually"}
+
     scan_id = resp.json()["data"]["id"]
 
+# Wait for VirusTotal to complete the analysis.
     for _ in range(10):
 
         analysis = requests.get(
@@ -54,10 +69,18 @@ def scan_url(url):
             timeout=15
         )
 
-        if analysis.status_code != 200:
-            return {"verdict": f"Error: {analysis.text}"}
+        if analysis.status_code == 404:
+            return {"verdict": "Not found on VirusTotal. Treat as suspicious and verify manually"}
 
-        attributes = analysis.json().get("data", {}).get("attributes", {})
+        if analysis.status_code != 200:
+            return {"verdict": "Unable to verify with VirusTotal. Treat as suspicious and verify manually"}
+
+        attributes = (
+            analysis.json()
+            .get("data", {})
+            .get("attributes", {})
+        )
+
         status = attributes.get("status")
 
         if status == "completed":
@@ -76,7 +99,7 @@ def scan_url(url):
 
         time.sleep(2)
 
-    return {"verdict": "Analysis still processing. Please try again shortly."}
+    return {"verdict": "Unable to verify with VirusTotal. Treat as suspicious and verify manually"}
 
 # Scan .EML file uploaded with VirusTotal.
 def scan_file_attachment(filename, file_bytes):
@@ -90,10 +113,11 @@ def scan_file_attachment(filename, file_bytes):
     )
 
     if resp.status_code != 200:
-        return {"verdict": f"Error: {resp.text}"}
+        return {"verdict": "Unable to verify with VirusTotal. Treat as suspicious and verify manually"}
 
     analysis_id = resp.json()["data"]["id"]
 
+# Wait for VirusTotal to complete the analysis.
     for _ in range(10):
 
         analysis = requests.get(
@@ -103,9 +127,14 @@ def scan_file_attachment(filename, file_bytes):
         )
 
         if analysis.status_code != 200:
-            return {"verdict": f"Error: {analysis.text}"}
+            return {"verdict": "Unable to verify with VirusTotal. Treat as suspicious and verify manually"}
 
-        attributes = analysis.json().get("data", {}).get("attributes", {})
+        attributes = (
+            analysis.json()
+            .get("data", {})
+            .get("attributes", {})
+        )
+
         status = attributes.get("status")
 
         if status == "completed":
@@ -124,19 +153,20 @@ def scan_file_attachment(filename, file_bytes):
 
         time.sleep(2)
 
-    return {"verdict": "Analysis still processing. Please try again shortly."}
+    return {"verdict": "Unable to verify with VirusTotal. Treat as suspicious and verify manually"}
 
+# Extract URLs from email text.
 def extract_urls(text):
     pattern = r'https?://[^\s"\']+'
     return set(re.findall(pattern, text))
 
+# Extract URLs, domains and attachments from an email.
 def parse_email(raw_email_bytes):
     msg = email.message_from_bytes(raw_email_bytes, policy=policy.default)
 
     text_parts = []
     html_parts = []
 
-#So links can be found properly.
     if msg.is_multipart():
         for part in msg.walk():
             ctype = part.get_content_type()
@@ -154,18 +184,17 @@ def parse_email(raw_email_bytes):
     email_text = "\n".join(text_parts)
     urls = set(extract_urls(email_text))
 
-    if HAVE_BS4:
-        for html in html_parts:
-            soup = BeautifulSoup(html, "html.parser")
-            for a in soup.find_all("a", href=True):
-                urls.add(a["href"])
-    else:
-        for html in html_parts:
-            urls.update(extract_urls(html))
+    # Extract links from HTML content.
+    for html in html_parts:
+        soup = BeautifulSoup(html, "html.parser")
+
+        for a in soup.find_all("a", href=True):
+            urls.add(a["href"])
 
     domains = {urlparse(u).netloc for u in urls}
     attachments = []
 
+    # Extract email attachments.
     for part in msg.iter_attachments():
         fn = part.get_filename()
         

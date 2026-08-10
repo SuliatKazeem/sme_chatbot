@@ -3,13 +3,12 @@ import csv
 import io
 from datetime import datetime
 from azure.storage.blob import BlobServiceClient
-from azure.core.exceptions import ResourceExistsError
 
-os.makedirs("reports", exist_ok=True)
-
+# Azure CSV storage location.
 CONTAINER_NAME = "smeincidents"
 BLOB_NAME = "Logs/virustotal_incident.csv"
 
+# Record VirusTotal incidents in Azure.
 def notify_cybersecurity(meta: dict):
     try:
         connection_string = os.getenv("AZURE_STORAGE_CONNECTION_STRING")
@@ -18,6 +17,7 @@ def notify_cybersecurity(meta: dict):
             print("Azure Storage connection string missing.")
             return
 
+# Connect to Azure Blob Storage.
         blob_service_client = BlobServiceClient.from_connection_string(
             connection_string
         )
@@ -28,7 +28,7 @@ def notify_cybersecurity(meta: dict):
         )
 
         # Create the append blob the first time only
-        try:
+        if not blob_client.exists():
             blob_client.create_append_blob()
 
             header = (
@@ -39,13 +39,8 @@ def notify_cybersecurity(meta: dict):
                 header.encode("utf-8")
             )
 
-        except ResourceExistsError:
-            # Blob already exists, so continue appending
-            pass
-
-        # Build one CSV row in memory
+        # Create a new CSV row.
         output = io.StringIO()
-
         writer = csv.writer(output)
 
         writer.writerow([
@@ -58,7 +53,7 @@ def notify_cybersecurity(meta: dict):
 
         csv_row = output.getvalue()
 
-        # Append directly to the Azure CSV
+        # Add the incident
         blob_client.append_block(
             csv_row.encode("utf-8")
         )

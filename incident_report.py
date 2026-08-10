@@ -5,6 +5,7 @@ from datetime import datetime
 import uuid
 import os
 
+# Generate a PDF report for an incident.
 def generate_incident_pdf(report_data: dict) -> str:
     incident_id = report_data.get("incident_id", f"INC{uuid.uuid4().hex[:8]}")
     filename = f"incident_{incident_id}.pdf"
@@ -14,6 +15,7 @@ def generate_incident_pdf(report_data: dict) -> str:
     doc = SimpleDocTemplate(filepath, pagesize=A4)
     styles = getSampleStyleSheet()
 
+     # Add incident details.
     content = [
         Paragraph("<b>Security Incident Report</b>", styles["Title"]),
         Paragraph(f"<b>Incident ID:</b> {incident_id}", styles["Normal"]),
@@ -30,5 +32,6 @@ def generate_incident_pdf(report_data: dict) -> str:
         content.append(Paragraph("<b>Details:</b>", styles["Heading2"]))
         content.append(Paragraph(report_data["details"], styles["Normal"]))
 
+    # Create PDF.
     doc.build(content)
     return filepath, incident_id

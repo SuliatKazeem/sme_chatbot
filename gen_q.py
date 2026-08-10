@@ -7,7 +7,6 @@ import pandas as pd
 from dotenv import load_dotenv
 import csv
 from openai import OpenAI
-from smeopenai import REFUSAL_PHRASES
 
 load_dotenv()
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
@@ -18,6 +17,22 @@ load_dotenv()
 
 API_KEY = os.getenv("OPENAI_API_KEY")
 API_URL = "http://127.0.0.1:8000/chat"
+
+# Phrases used to identify refusal responses.
+REFUSAL_PHRASES = [
+            "can't help",
+            "can't assist",
+            "i'm sorry",
+            "only assist",
+            "only here to support",
+            "outside my scope",
+            "only help with security",
+            "i only specialize",
+            "i can’t help with that",
+            "i'm here to focus on",
+            "warning",
+            "here to assist with"
+        ]
 
 def normalize(text):
     if not isinstance(text, str):

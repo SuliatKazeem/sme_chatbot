@@ -9,90 +9,91 @@
 <body>
   <div class="app-layout" id="appLayout">
 
-  <aside class="sidebar" id="sidebar">
+    <aside class="sidebar" id="sidebar">
 
-  <div class="sidebar-header"></div>
-    <div class="sidebar-headerdid"> 
-    <img src="/static/logo.png" alt="Logo">
-    <p>  </p>
-    <h2>   Rxtra Security Bot</h2>
-    <button id="sidebarToggle" title="Hide sidebar" onclick="toggleSidebar()">☰</button>
-  </div>
+      <div class="sidebar-header"></div>
+      <div class="sidebar-headerdid"> 
+        <img src="/static/logo.png" alt="Logo">
+        <p>  </p>
+        <h2>   Rxtra Security Bot</h2>
+        <button id="sidebarToggle" title="Hide sidebar" onclick="toggleSidebar()">☰</button>
+      </div>
 
-  <div id="collapsedMenu">
-      <button title="About" onclick="showInfo()">i</button>
-        <button title="FAQs" onclick="showFAQs()">?</button>
-    </div>
+      <div id="collapsedMenu">
+          <button title="About" onclick="showInfo()">i</button>
+            <button title="FAQs" onclick="showFAQs()">?</button>
+      </div>
 
-  <div id="sidebarContent">
-    <h3>About</h3>
-    <p>
-      An SME security chatbot designed to help employees with security guidance,
-      suspicious email checks, and incident reporting.
-    </p>
+      <div id="sidebarContent">
+        <h3>About</h3>
+        <p>
+          An SME security chatbot designed to help employees with security guidance,
+          suspicious email checks, and incident reporting.
+        </p>
 
-    <h3>Purpose</h3>
-    <p>
-      The bot helps users understand security best practices and report IT or
-      cybersecurity issues when needed.
-    </p>
+        <h3>Purpose</h3>
+        <p>
+          The bot helps users understand security best practices and report IT or
+          cybersecurity issues when needed.
+        </p>
 
-    <h3>Features</h3>
-    <ul>
-      <li>Security guidance</li>
-      <li>Email and URL scanning for phishing</li>
-      <li>Automatic & Manual Incident Generation</li>
-      <li>PDF incident reports</li>
-      <li>IT and Cybersecurity routing</li>
-    </ul>
+        <h3>Features</h3>
+        <ul>
+          <li>Security guidance</li>
+          <li>Email and URL scanning for phishing</li>
+          <li>Automatic & Manual Incident Generation</li>
+          <li>PDF incident reports</li>
+          <li>IT and Cybersecurity routing</li>
+        </ul>
 
-    <h3>FAQs</h3>
-    <div id="faqButtons"></div>
+        <h3>FAQs</h3>
+        <div id="faqButtons"></div>
 
-    <button id="moreFaqBtn" onclick="nextFAQs()">
-      ↻ Show More FAQs
-    </button>
-  </div>
+        <button id="moreFaqBtn" onclick="nextFAQs()">
+          ↻ Show More FAQs
+        </button>
+      </div>
 
-</aside>
+    </aside>
 
-  <main class="chat-area">
+    <main class="chat-area">
 
-<div class="bar">
+      <div class="bar"></div>
 
-</div>
+      <div class="chat-toolbar">
 
- <div class="chat-toolbar">
+        <button id="newChatBtn" onclick="newChat()">
+            + New Chat
+        </button>
+      </div>
 
-    <button id="newChatBtn" onclick="newChat()">
-        + New Chat
-    </button>
-</div>
+      <div id="welcomeMessage">
+            Hello, what's on your mind?
+      </div>
 
-  <div id="welcomeMessage">
-        Hello, what's on your mind?
-  </div>
+      <div id="chatBox"></div>
 
-  <div id="chatBox"></div>
+      <div id="inputSection">
+        <div
+          id="queryInput"
+          class="editable-input"
+          contenteditable="true"
+          data-placeholder="Type here…"
+        ></div >
 
-  <div id="inputSection">
-    <div
-      id="queryInput"
-      class="editable-input"
-      contenteditable="true"
-      data-placeholder="Type here…"
-    ></div >
+        <button id="send-btn" onclick="sendQuery()"> ➢ </button>
 
-    <button id="send-btn" onclick="sendQuery()"> ➢ </button>
+      </div>
+      
+      <div id="faqSection">
+      <button id="send-btn2" onclick="startEmailScan()"> + Add Email File</button>
+      <button id="send-btn2" onclick="openIncidentForm()"> + Generate Incident Report</button>
+      </div>
+
+    </main>
 
   </div>
   
-  <div id="faqSection">
-    <button id="send-btn2" onclick="startEmailScan()"> + Add Email File</button>
-    <button id="send-btn2" onclick="openIncidentForm()"> + Generate Incident Report</button>
-  </div>
-    </main>
-  </div>
   <input type="file" id="emlFileInput" accept=".eml" style="display:none" />
 
   <div class="footer">
@@ -102,271 +103,276 @@
 
   <script>
 
-function toggleSidebar() {
-  const sidebar = document.getElementById("sidebar");
-  const btn = document.getElementById("sidebarToggle");
+    // Open and close the sidebar.
+    function toggleSidebar() {
+      const sidebar = document.getElementById("sidebar");
+      const btn = document.getElementById("sidebarToggle");
 
-  sidebar.classList.toggle("collapsed");
+      sidebar.classList.toggle("collapsed");
 
-  if (sidebar.classList.contains("collapsed")) {
-    btn.innerHTML = '<img src="/static/logo.png" alt="Logo">';
-    btn.title = "Open sidebar";
-  } else {
-    btn.innerHTML = "☰";
-    btn.title = "Hide sidebar";
-  }
-}
+      if (sidebar.classList.contains("collapsed")) {
+        btn.innerHTML = '<img src="/static/logo.png" alt="Logo">';
+        btn.title = "Open sidebar";
+      } else {
+        btn.innerHTML = "☰";
+        btn.title = "Hide sidebar";
+      }
+    }
 
-function openSidebar() {
-  const sidebar = document.getElementById("sidebar");
-  const btn = document.getElementById("sidebarToggle");
+    function openSidebar() {
+      const sidebar = document.getElementById("sidebar");
+      const btn = document.getElementById("sidebarToggle");
 
-  sidebar.classList.remove("collapsed");
+      sidebar.classList.remove("collapsed");
 
-  btn.innerHTML = "☰";
-  btn.title = "Hide sidebar";
-}
+      btn.innerHTML = "☰";
+      btn.title = "Hide sidebar";
+    }
 
-function showFAQs() {
-  openSidebar();
+    // Open the sidebar and show the FAQs.
+    function showFAQs() {
+      openSidebar();
 
-  setTimeout(() => {
-    document.getElementById("faqButtons").scrollIntoView({
-      behavior: "smooth",
-      block: "start"
-    });
-  }, 100);
-}
+      setTimeout(() => {
+        document.getElementById("faqButtons").scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
+      }, 100);
+    }
 
-function showInfo() {
-  openSidebar();
+    // Open the sidebar and show the chatbot information.
+    function showInfo() {
+      openSidebar();
 
-  setTimeout(() => {
-    document.querySelector("#sidebarContent h3").scrollIntoView({
-      behavior: "smooth",
-      block: "start"
-    });
-  }, 100);
-}
+      setTimeout(() => {
+        document.querySelector("#sidebarContent h3").scrollIntoView({
+          behavior: "smooth",
+          block: "start" 
+        }); 
+      }, 100);
+    }
 
     window.onload = function () {
 
-    try {
-      microsoftTeams.app.initialize();
-    } catch (e) {
-      console.log("Teams SDK not running here:", e);
-    }
-
-    let sessionId = crypto.randomUUID();
-
-    const chatBox  = document.getElementById("chatBox");
-    const inputDiv = document.getElementById("queryInput");
-
-    inputDiv.addEventListener("keydown", function (e) {
-      if (e.key === "Enter" && !e.shiftKey) {
-        e.preventDefault();
-        sendQuery();
+    // Initialise the Microsoft Teams SDK.
+      try { 
+        microsoftTeams.app.initialize();
+      } catch (e) {
+        console.log("Teams SDK not running here:", e);
       }
-    });
 
-    const fileIn   = document.getElementById("emlFileInput");
-    const faqQuestions = [
-  "How do I report a suspicious email?",
-  "What should I do if my account is locked?",
-  "How do I scan an email file?",
-  "What should I do if I click a suspicious link?",
-  "How do I request system access?",
-  "Why do I need MFA?",
-  "How do I connect to the VPN?",
-  "How do I report a data breach?",
-  "How can I create an incident report?"
-];
+    // Create a unique ID for the chat session.
+      let sessionId = crypto.randomUUID();
 
-// Shuffle FAQs when the page loads
-let shuffledFAQs = [...faqQuestions].sort(() => Math.random() - 0.5);
+      const chatBox  = document.getElementById("chatBox");
+      const inputDiv = document.getElementById("queryInput");
 
-let faqIndex = 0;
-
-function renderFAQs() {
-  const faqDiv = document.getElementById("faqButtons");
-  faqDiv.innerHTML = "";
-
-  const currentFAQs = shuffledFAQs.slice(faqIndex, faqIndex + 3);
-
-  currentFAQs.forEach(question => {
-    const btn = document.createElement("button");
-    btn.innerText = question;
-    btn.onclick = () => showFAQ(question);
-
-    faqDiv.appendChild(btn);
-  });
-}
-
-window.nextFAQs = function () {
-  faqIndex += 3;
-
-  if (faqIndex >= shuffledFAQs.length) {
-    shuffledFAQs = [...faqQuestions].sort(() => Math.random() - 0.5);
-    faqIndex = 0;
-  }
-
-  renderFAQs();
-};
-
-    window.showFAQ = function (question) {
-    inputDiv.innerText = question;
-    sendQuery();
-    };
-
-    renderFAQs();
-
-window.newChat = function () {
-  sessionId = crypto.randomUUID();
-
-  chatBox.innerHTML = "";
-  chatBox.style.display = "none";
-  document.getElementById("welcomeMessage").style.display = "block";
-
-  inputDiv.innerText = "";
-};
-
-    window.sendQuery = async function () {
-      const query = inputDiv.innerText.trim();
-      if (!query) return;
-
-      document.getElementById("welcomeMessage").style.display = "none";
-
-      chatBox.style.display = "block";
-      addMessage("user", query);
-
-      inputDiv.innerText = "";
-
-     const typingDiv = document.createElement("div");
-      typingDiv.className = "message bot";
-      typingDiv.id = "typingIndicator";
-      typingDiv.innerHTML = "Thinking...";
-
-      chatBox.appendChild(typingDiv);
-      chatBox.scrollTop = chatBox.scrollHeight;
-
-      const resp = await fetch("/chat", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({ query, session_id: sessionId })
+      inputDiv.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" && !e.shiftKey) {
+          e.preventDefault();
+          sendQuery(); 
+        }
       });
 
-      const contentType = resp.headers.get("content-type");
+      const fileIn   = document.getElementById("emlFileInput");
+      const faqQuestions = [
+              "How do I report a suspicious email?",
+              "What should I do if my account is locked?",
+              "How do I scan an email file?",
+              "What should I do if I click a suspicious link?",
+              "How do I request system access?",
+              "Why do I need MFA?",
+              "How do I connect to the VPN?",
+              "How do I report a data breach?",
+              "How can I create an incident report?"
+            ];
 
-      // Remove the typing message
-      document.getElementById("typingIndicator")?.remove();
+    // Shuffle FAQs when the page loads
+      let shuffledFAQs = [...faqQuestions].sort(() => Math.random() - 0.5);
+      let faqIndex = 0;
 
-      if (contentType && contentType.includes("application/json")) {
-        const data = await resp.json();
+    // Display three FAQ questions at a time.
+      function renderFAQs() {
+        const faqDiv = document.getElementById("faqButtons");
+        faqDiv.innerHTML = "";
 
-        await typeBotMessage(data.message);
-      } else {
-        const text = await resp.text();
+        const currentFAQs = shuffledFAQs.slice(faqIndex, faqIndex + 3);
 
-        await typeBotMessage(text);
+        currentFAQs.forEach(question => {
+          const btn = document.createElement("button");
+          btn.innerText = question;
+          btn.onclick = () => showFAQ(question);
+
+          faqDiv.appendChild(btn);
+        });
       }
 
-};
+      window.nextFAQs = function () {
+        faqIndex += 3;
 
-    window.openIncidentForm = function () {
-    window.location.href = "/incident_form.html";
-  };
+        if (faqIndex >= shuffledFAQs.length) {
+          shuffledFAQs = [...faqQuestions].sort(() => Math.random() - 0.5);
+          faqIndex = 0;
+        }
 
-  window.startEmailScan = function () {
-    chatBox.style.display = "block";
-    fileIn.click();
-  };
+        renderFAQs();
+      };
 
-    fileIn.addEventListener("change", async () => {
-      const file = fileIn.files[0];
-      if (!file) return;
+      window.showFAQ = function (question) {
+        inputDiv.innerText = question;
+        sendQuery();
+      };
 
-      addMessage("user", `Uploading ${file.name} for scan…`);
+      renderFAQs();
 
-      const form = new FormData();
-      form.append("email_file", file);
 
-      try {
-        const resp = await fetch("/scan-email-file", {
+    // Start a new chat session.
+      window.newChat = function () {
+        sessionId = crypto.randomUUID();
+
+        chatBox.innerHTML = "";
+        chatBox.style.display = "none";
+        document.getElementById("welcomeMessage").style.display = "block";
+
+        inputDiv.innerText = "";
+      };
+
+      // Send the user's message to the backend.
+      window.sendQuery = async function () {
+        const query = inputDiv.innerText.trim();
+        if (!query) return;
+
+        document.getElementById("welcomeMessage").style.display = "none";
+
+        chatBox.style.display = "block";
+        addMessage("user", query);
+
+        inputDiv.innerText = "";
+
+        const typingDiv = document.createElement("div");
+        typingDiv.className = "message bot";
+        typingDiv.id = "typingIndicator";
+        typingDiv.innerHTML = "Thinking...";
+
+        chatBox.appendChild(typingDiv);
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+        const resp = await fetch("/chat", {
           method: "POST",
-          body: form
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({ query, session_id: sessionId })
         });
 
         const contentType = resp.headers.get("content-type");
 
+        // Remove the typing message
+        document.getElementById("typingIndicator")?.remove();
+
+        if (contentType && contentType.includes("application/json")) {
+          const data = await resp.json();
+
+          await typeBotMessage(data.message);
+        } else {
+          const text = await resp.text();
+
+          await typeBotMessage(text);
+        }
+      };
+
+        //open incident form
+      window.openIncidentForm = function () {
+        window.location.href = "/incident_form.html";
+      };
+        //Open the file picker for an email scan.
+      window.startEmailScan = function () {
+        chatBox.style.display = "block";
+        fileIn.click();
+      };
+
+      fileIn.addEventListener("change", async () => {
+        const file = fileIn.files[0];
+        if (!file) return;
+
+        addMessage("user", `Uploading ${file.name} for scan…`);
+
+        const form = new FormData();
+        form.append("email_file", file);
+
+        try {
+          const resp = await fetch("/scan-email-file", {
+            method: "POST",
+            body: form
+          });
+
+          const contentType = resp.headers.get("content-type");
+
           if (contentType && contentType.includes("application/json")) {
             const data = await resp.json();
-
             addMessage("bot", data.message);
+          
           } else {
             const text = await resp.text();
-
             addMessage("bot", text);
           }
-      } 
-      catch {
-        addMessage("bot", "Error scanning that email file.");
-      } 
-        fileIn.value = "";
-      
-    });
+          } catch {
+            addMessage("bot", "Error scanning that email file.");
+          } 
 
-    function addMessage(sender, text) {
-      const div = document.createElement("div");
-      div.className = `message ${sender}`;
-      div.innerHTML = marked.parse(text);
+          fileIn.value = "";
+          
+        });
 
-      if (text.includes("[YES_INCIDENT]")) {
+        // Add a user or bot message to the chat.
+        function addMessage(sender, text) {
+          const div = document.createElement("div");
+          div.className = `message ${sender}`;
+          div.innerHTML = marked.parse(text);
 
-      div.innerHTML = div.innerHTML.replace(
-        "[YES_INCIDENT]",
-        `
-          <button onclick="startAutoIncident()">Yes</button>
-          <button onclick="cancelAutoIncident()">No</button>
-        `
-      );
-       }
-      chatBox.appendChild(div);
-      chatBox.scrollTop = chatBox.scrollHeight;
-    }
+          if (text.includes("[YES_INCIDENT]")) {
 
-  const savedIncidentMessage = localStorage.getItem("incident_message");
+          div.innerHTML = div.innerHTML.replace(
+            "[YES_INCIDENT]",
+            `
+              <button onclick="startAutoIncident()">Yes</button>
+              <button onclick="cancelAutoIncident()">No</button>
+            `
+          );
+          }
 
-  if (savedIncidentMessage) {
-    document.getElementById("welcomeMessage").style.display = "none";
-    chatBox.style.display = "block";
-    addMessage("bot", savedIncidentMessage);
-    localStorage.removeItem("incident_message");
-  }
-    async function typeBotMessage(text) {
+          chatBox.appendChild(div);
+          chatBox.scrollTop = chatBox.scrollHeight;
+        }
 
-  const div = document.createElement("div");
-  div.className = "message bot";
+        // Display the incident message after returning to the chat.
+        const savedIncidentMessage = localStorage.getItem("incident_message");
 
-  chatBox.appendChild(div);
+        if (savedIncidentMessage) {
+          document.getElementById("welcomeMessage").style.display = "none";
+          chatBox.style.display = "block";
+          addMessage("bot", savedIncidentMessage);
+          localStorage.removeItem("incident_message");
+        }
 
-  const words = text.split(" ");
+      // Display the chatbot response with a typing effect.
+        async function typeBotMessage(text) {
 
-  let currentText = "";
+          const div = document.createElement("div");
+          div.className = "message bot";
 
-  for (const word of words) {
+          chatBox.appendChild(div);
+          const words = text.split(" ");
+          let currentText = "";
 
-    currentText += word + " ";
+          for (const word of words) {
+            currentText += word + " ";
+            div.innerHTML = marked.parse(currentText);
+            chatBox.scrollTop = chatBox.scrollHeight;
+            await new Promise(resolve => setTimeout(resolve, 20));
+          }
+        }
 
-    div.innerHTML = marked.parse(currentText);
-
-    chatBox.scrollTop = chatBox.scrollHeight;
-
-    await new Promise(resolve => setTimeout(resolve, 20));
-  }
-}
-
-    };
+      };
   </script>
-
 </body>
 </html>
