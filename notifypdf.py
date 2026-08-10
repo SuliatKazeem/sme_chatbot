@@ -1,36 +1,72 @@
-import logging
-import csv
 import os
+import csv
+import io
 from datetime import datetime
+from azure.storage.blob import BlobServiceClient
+from azure.core.exceptions import ResourceExistsError
 
 os.makedirs("reports", exist_ok=True)
 
-LOG_FILE = "virustotal_incident.log"
-CSV_FILE = "virustotal_incident.csv"
-
-logging.basicConfig(
-    filename=LOG_FILE,
-    level=logging.WARNING,
-    format="%(asctime)s - %(message)s"
-)
+CONTAINER_NAME = "smeincidents"
+BLOB_NAME = "Logs/virustotal_incident.csv"
 
 def notify_cybersecurity(meta: dict):
-    logging.warning(
-        f"INCIDENT {meta['incident_id']} | "
-        f"type={meta['report_type']} | "
-        f"severity={meta['severity']} | "
-        f"indicators={meta.get('indicators', [])}"
-    )
+    try:
+        connection_string = os.getenv("AZURE_STORAGE_CONNECTION_STRING")
 
-    file_exists = os.path.isfile(CSV_FILE)
-    with open(CSV_FILE, mode='a', newline='') as f:
-        writer = csv.DictWriter(f, fieldnames=["timestamp", "incident_id", "report_type", "severity", "indicators"])
-        if not file_exists:
-            writer.writeheader()
-        writer.writerow({
-            "timestamp": datetime.utcnow().isoformat(),
-            "incident_id": meta["incident_id"],
-            "report_type": meta["report_type"],
-            "severity": meta["severity"],
-            "indicators": ", ".join(meta.get("indicators", []))
-        })
+        if not connection_string:
+            print("Azure Storage connection string missing.")
+            return
+
+        blob_service_client = BlobServiceClient.from_connection_string(
+            connection_string
+        )
+
+        blob_client = blob_service_client.get_blob_client(
+            container=CONTAINER_NAME,
+            blob=BLOB_NAME
+        )
+
+        # Create the append blob the first time only
+        try:
+            blob_client.create_append_blob()
+
+            header = (
+                "timestamp,incident_id,report_type,severity,indicators\n"
+            )
+
+            blob_client.append_block(
+                header.encode("utf-8")
+            )
+
+        except ResourceExistsError:
+            # Blob already exists, so continue appending
+            pass
+
+        # Build one CSV row in memory
+        output = io.StringIO()
+
+        writer = csv.writer(output)
+
+        writer.writerow([
+            datetime.utcnow().isoformat(),
+            meta["incident_id"],
+            meta["report_type"],
+            meta["severity"],
+            ", ".join(meta.get("indicators", []))
+        ])
+
+        csv_row = output.getvalue()
+
+        # Append directly to the Azure CSV
+        blob_client.append_block(
+            csv_row.encode("utf-8")
+        )
+
+        print(
+            "VirusTotal incident appended to Azure CSV:",
+            meta["incident_id"]
+        )
+
+    except Exception as e:
+        print("AZURE CSV ERROR:", str(e))

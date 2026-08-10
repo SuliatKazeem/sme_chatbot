@@ -33,7 +33,7 @@ INTERNAL_DOMAINS = {
 # detect emails and URLs inside messages sent 
 EMAIL_REGEX = r'[\w\.-]+@([\w\.-]+\.\w+)'
 URL_REGEX   = r'(https?://[^\s]+|www\.[^\s]+)'
-DOMAIN_PATTERN = r'^[a-zA-Z0-9-]+\.[a-zA-Z]{2,}$'
+DOMAIN_PATTERN = r'^[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+$'
 
 PI_PATTERNS = {
     "NI_NUMBER": r"\b[A-CEGHJ-PR-TW-Z]{2}\d{6}[A-D]\b",
@@ -81,7 +81,7 @@ def block_internal(dom: str, session_id: str) -> str | None:
     if dom in INTERNAL_DOMAINS:
         return (
             "For security and privacy reasons, we can’t scan messages from internal domains. "
-            "Please contact IT at **techsupport@rxtra.xyz** for help."
+            "Please contact IT at **security@rxtra.sk993** for help."
         )
     return None
 
@@ -590,7 +590,7 @@ async def scan_email_file(email_file: UploadFile = File(...)):
 
     for dom in domains:
         if dom in INTERNAL_DOMAINS:
-            return "For security and privacy reasons, internal-domain messages cannot be scanned. Please reach out to our IT support team at ithelp@rxtra.xyz for assistance."
+            return "For security and privacy reasons, internal-domain messages cannot be scanned. Please reach out to our IT support team at security@rxtra.sk993 for assistance."
 
     for url in urls:
         verdict = scan_url(url)["verdict"]
