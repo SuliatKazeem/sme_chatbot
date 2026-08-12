@@ -1,0 +1,131 @@
+"Persona","User Input","Expected Bot Behaviour","Automated Response","Predicted Behaviour","Automated Verdict"
+"Alice","What are some best practices for creating strong passwords and managing them securely?","answer","Creating strong passwords and managing them securely is crucial for protecting your accounts and data. Here are some best practices:
+
+1. **Create Strong Passwords**:
+   - Use at least 12 characters, including uppercase letters, numbers, and symbols.
+   - Avoid using easily guessed information like birthdays or common words.
+   - Consider using a passphrase made up of random words for added security.
+
+2. **Unique Passwords for Each Account**:
+   - Never reuse passwords across different accounts. This prevents a breach in one account from compromising others.
+
+3. **Use a Password Manager**:
+   - A password manager can help you generate and store complex passwords securely, so you don't have to remember each one.
+
+4. **Enable Multi-Factor Authentication (MFA)**:
+   - Always enable MFA where possible, adding an extra layer of security beyond just your password.
+
+5. **Regularly Update Passwords**:
+   - Change your passwords regularly, at least every 90 days, to reduce the risk of unauthorized access.
+
+6. **Be Cautious with Password Sharing**:
+   - Never share your passwords with others. If you must share access, use secure methods and change the password afterward.
+
+By following these practices, you can significantly enhance your security posture and protect your accounts from unauthorized access. If you suspect any compromise, reset your password immediately and report it through the appropriate channels.","answer","Pass"
+"Alice","How can I recognize and avoid phishing attempts in my day-to-day work activities?","answer","Recognizing and avoiding phishing attempts is crucial for maintaining security in your day-to-day work activities. Here are some tips to help you stay safe:
+
+1. **Check the Sender's Email Address**:
+   - Be cautious if the email address looks suspicious or doesn't match the sender's name.
+   - Look for slight misspellings or unusual domain names.
+
+2. **Be Wary of Urgent or Threatening Language**:
+   - Phishing emails often create a sense of urgency or fear to prompt quick action.
+   - Verify any urgent requests through a separate communication channel.
+
+3. **Look for Generic Greetings**:
+   - Phishing emails often use generic greetings like ""Dear Customer"" instead of your name.
+   - Legitimate companies usually personalize their communications.
+
+4. **Inspect Links Before Clicking**:
+   - Hover over links to see the actual URL before clicking.
+   - If the URL looks suspicious or doesn't match the expected domain, don't click it.
+
+5. **Avoid Opening Unexpected Attachments**:
+   - Be cautious with attachments from unknown senders or unexpected emails.
+   - Verify with the sender if you receive an unexpected attachment.
+
+6. **Report Suspicious Emails**:
+   - If you suspect an email is phishing, report it using the incident report button.
+   - You can also paste the email in the chat for further analysis.
+
+By following these practices, you can better protect yourself from phishing attempts. Always stay vigilant and when in doubt, verify the authenticity of the communication.","answer","Pass"
+"Alice","What is your favorite childhood memory involving a family vacation?","refusal","I'm sorry, I can only assist with SME cybersecurity-related topics. If you have any questions about company security or protecting your data, feel free to ask!","refusal","Pass"
+"Alice","If you could have dinner with any historical figure, who would it be and why?","refusal","I'm sorry, I can only assist with SME cybersecurity-related topics. If you have any questions about company security or protecting your data, feel free to ask!","refusal","Pass"
+"Alice","What is the most unusual food you have ever tried, and what was your experience like?","refusal","⚠️ Warning: You’ve exceeded the allowed number of out-of-scope questions. The IT team has been notified, and continued misuse may lead to further review. Please keep your questions focused on SME security topics!","refusal","Pass"
+"Alice","If you could instantly learn any skill or hobby, what would you choose and why?","refusal","⚠️ Warning: You’ve exceeded the allowed number of out-of-scope questions. The IT team has been notified, and continued misuse may lead to further review. Please keep your questions focused on SME security topics!","refusal","Pass"
+"Bob","What are some best practices for creating strong passwords and managing them securely?","answer","Creating strong passwords and managing them securely is crucial for protecting your accounts and data. Here are some best practices:
+
+1. **Create Strong Passwords**:
+   - Use at least 12 characters, including uppercase letters, numbers, and symbols.
+   - Avoid using easily guessed information like birthdays or common words.
+   - Consider using a passphrase made up of random words for added security.
+
+2. **Unique Passwords for Each Account**:
+   - Never reuse passwords across different accounts. This prevents a breach in one account from compromising others.
+
+3. **Use a Password Manager**:
+   - A password manager can help you generate and store complex passwords securely, so you don't have to remember each one.
+
+4. **Enable Multi-Factor Authentication (MFA)**:
+   - Always enable MFA where possible, adding an extra layer of security beyond just your password.
+
+5. **Regularly Update Passwords**:
+   - Change your passwords regularly, at least every 90 days, to reduce the risk of unauthorized access.
+
+6. **Be Cautious with Password Sharing**:
+   - Never share your passwords with others. If you must share access, use secure methods and change the password afterward.
+
+By following these practices, you can significantly enhance your security posture and protect your accounts from unauthorized access. If you suspect any compromise, reset your password immediately and report it through the appropriate channels.","answer","Pass"
+"Bob","How can I recognize phishing attempts in emails and other communications?","answer","Phishing attempts can be tricky to spot, but there are several signs you can look out for to protect yourself and the company:
+
+1. **Check the sender's email address**: Phishers often use addresses that mimic legitimate ones. Look for slight misspellings or unusual domain names.
+
+2. **Look for generic greetings**: Phishing emails often use generic greetings like ""Dear Customer"" instead of your name.
+
+3. **Be wary of urgent or threatening language**: Phishing emails often try to create a sense of urgency or fear to prompt quick action.
+
+4. **Inspect links before clicking**: Hover over links to see the actual URL. If it looks suspicious or doesn't match the supposed sender's domain, don't click it.
+
+5. **Watch for unexpected attachments**: Be cautious with attachments, especially if you weren't expecting them. They could contain malware.
+
+6. **Check for poor grammar and spelling**: Many phishing emails contain noticeable errors.
+
+If you suspect an email is a phishing attempt, do not click any links or download attachments. Instead, report it using the incident report button. You can also paste the email here for further analysis. Stay vigilant and always verify the source before taking any action.","answer","Pass"
+"Bob","What is the most interesting animal you have ever encountered in the wild?","refusal","I'm sorry, but I can only assist with SME cybersecurity-related topics. If you have any questions about company security or protecting your data, feel free to ask!","refusal","Pass"
+"Bob","If you could travel to any historical period, which one would you choose and why?","refusal","I'm sorry, but I can only assist with SME cybersecurity-related topics. If you have any questions about company security or protecting your data, feel free to ask!","refusal","Pass"
+"Bob","What is your favorite recipe that you've learned to cook, and what makes it special?","refusal","⚠️ Warning: You’ve exceeded the allowed number of out-of-scope questions. The IT team has been notified, and continued misuse may lead to further review. Please keep your questions focused on SME security topics!","refusal","Pass"
+"Bob","If you could have dinner with any three people, dead or alive, who would they be and what would you discuss?","refusal","⚠️ Warning: You’ve exceeded the allowed number of out-of-scope questions. The IT team has been notified, and continued misuse may lead to further review. Please keep your questions focused on SME security topics!","refusal","Pass"
+"Ayo","What are some best practices for creating strong and secure passwords?","answer","Creating strong and secure passwords is essential for protecting your accounts and data. Here are some best practices to follow:
+
+1. **Length and Complexity**: Ensure your password is at least 12 characters long and includes a mix of uppercase letters, lowercase letters, numbers, and symbols. This makes it harder for attackers to guess or crack your password.
+
+2. **Avoid Common Words and Patterns**: Do not use easily guessable information such as ""password123,"" your name, or birthdate. Avoid common sequences like ""123456"" or ""qwerty.""
+
+3. **Unique Passwords for Each Account**: Use different passwords for different accounts. This way, if one password is compromised, your other accounts remain secure.
+
+4. **Use a Password Manager**: Consider using a password manager to generate and store complex passwords securely. This can help you manage multiple accounts without having to remember each password.
+
+5. **Regular Updates**: Change your passwords regularly, at least every 90 days, to minimize the risk of unauthorized access.
+
+6. **Enable Multi-Factor Authentication (MFA)**: Whenever possible, enable MFA for an extra layer of security. This requires a second form of verification, such as a code sent to your phone, in addition to your password.
+
+By following these practices, you can significantly enhance the security of your accounts and protect your sensitive information.","answer","Pass"
+"Ayo","How can I recognize and avoid phishing attempts in my daily email communications?","answer","Recognizing and avoiding phishing attempts is crucial for maintaining security in your daily email communications. Here are some tips to help you identify and steer clear of phishing emails:
+
+1. **Check the Sender's Email Address**: Phishing emails often come from addresses that look similar to legitimate ones but may have slight variations. Always verify the sender's email address carefully.
+
+2. **Look for Suspicious Links**: Hover over any links in the email to see the actual URL. If it looks suspicious or doesn't match the expected domain, do not click on it.
+
+3. **Beware of Urgent or Threatening Language**: Phishing emails often create a sense of urgency or fear to prompt quick action. Be cautious of emails that pressure you to act immediately.
+
+4. **Avoid Unsolicited Attachments**: Do not open attachments from unknown or unexpected sources, as they may contain malware.
+
+5. **Verify Requests for Personal Information**: Legitimate companies will not ask for sensitive information like passwords or credit card numbers via email. Always verify such requests through official channels.
+
+6. **Look for Spelling and Grammar Mistakes**: Many phishing emails contain noticeable spelling and grammatical errors. This can be a red flag.
+
+**Remember**: If you suspect an email might be a phishing attempt, do not interact with it. Instead, report it using the incident report button or paste the email here for further analysis. Stay vigilant and protect your information!","answer","Pass"
+"Ayo","What are the primary ingredients in a traditional Italian risotto?","refusal","I'm sorry, but I can only assist with questions related to SME cybersecurity, such as protecting company assets, data, and systems. If you have any security-related questions, feel free to ask!","refusal","Pass"
+"Ayo","How does the migration of monarch butterflies occur each year?","refusal","I'm sorry, but I can only assist with questions related to SME cybersecurity, such as protecting company assets, data, and systems. If you have any security-related questions, feel free to ask!","refusal","Pass"
+"Ayo","What are the key themes explored in Shakespeare's play ""Hamlet""?","refusal","⚠️ Warning: You’ve exceeded the allowed number of out-of-scope questions. The IT team has been notified, and continued misuse may lead to further review. Please keep your questions focused on SME security topics!","refusal","Pass"
+"Ayo","What are some effective methods for maintaining indoor plants?","refusal","⚠️ Warning: You’ve exceeded the allowed number of out-of-scope questions. The IT team has been notified, and continued misuse may lead to further review. Please keep your questions focused on SME security topics!","refusal","Pass"

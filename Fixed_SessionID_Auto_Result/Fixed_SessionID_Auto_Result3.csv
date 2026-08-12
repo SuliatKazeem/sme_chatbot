@@ -1,0 +1,323 @@
+Persona,User Input,Expected Bot Behaviour,Automated Response,Predicted Behaviour,Automated Verdict
+Alice,We’ve got more staff working from home now. What security things should we be checking?,answer,"With more staff working from home, it's important to ensure that your company's security measures are robust and effective. Here are some key areas to focus on:
+
+1. **VPN Usage**: Ensure all employees are connected to the GlobalProtect VPN (https://portal.rxtra.sk993) when accessing company resources. This helps secure data transmission and protects against unauthorized access.
+
+2. **Multi-Factor Authentication (MFA)**: Implement MFA for all remote access to company systems. This adds an extra layer of security by requiring a second form of verification beyond just a password.
+
+3. **Secure Wi-Fi**: Encourage employees to use strong passwords for their home Wi-Fi networks and to ensure their routers are updated with the latest firmware.
+
+4. **Device Security**: Remind employees to keep their devices updated with the latest security patches and to use antivirus software. Devices should be locked when not in use to prevent unauthorized access.
+
+5. **Phishing Awareness**: Educate staff on how to recognize phishing emails and suspicious links. Encourage them to report any suspicious emails or activities using the incident report button.
+
+By focusing on these areas, you can help protect your company’s assets and data while supporting remote work. If you have any more questions or need further assistance, feel free to ask!",answer,Pass
+Alice,What’s the best way to reduce phishing risks across the company?,answer,"Reducing phishing risks is crucial for protecting company assets and data. Here are some effective strategies you can implement at Rxtra Limited:
+
+1. **Employee Training**: Regularly conduct training sessions to educate employees about recognizing phishing emails, suspicious links, and unsafe attachments. Emphasize the importance of not clicking on unknown links or providing credentials through email.
+
+2. **Multi-Factor Authentication (MFA)**: Implement MFA for all company accounts. This adds an extra layer of security, making it harder for attackers to gain unauthorized access even if they obtain a password.
+
+3. **Email Filtering**: Use advanced email filtering solutions to detect and block phishing emails before they reach employees' inboxes. This can significantly reduce the number of phishing attempts.
+
+4. **Incident Reporting**: Encourage employees to report any suspicious emails or activities immediately using the incident report button. Quick reporting can help contain potential threats before they escalate.
+
+5. **Regular Security Audits**: Conduct regular security audits to identify vulnerabilities and ensure that all security measures are up to date.
+
+By implementing these practices, you can significantly reduce the risk of phishing attacks and enhance the overall security posture of Rxtra Limited.",answer,Pass
+Alice,How often should we review who has access to company systems?,answer,"It's a good practice to review access to company systems regularly to ensure that only authorized individuals have the necessary permissions. At Rxtra Limited, it's recommended to conduct access reviews at least quarterly. This helps in identifying any unnecessary or outdated permissions and ensures compliance with security policies.
+
+**Key steps for access review:**
+
+1. **Compile a list of all users and their current access levels.**
+2. **Verify that each user's access aligns with their current job responsibilities.**
+3. **Remove or adjust access for users who no longer need it.**
+4. **Document the review process and any changes made for auditing purposes.**
+
+Regular reviews help maintain security and protect company assets. If you have further questions or need assistance with the process, feel free to ask!",answer,Pass
+Alice,What can we do to make staff passwords more secure?,answer,"To enhance the security of staff passwords at Rxtra, consider implementing the following best practices:
+
+1. **Enforce Strong Password Policies**: Ensure that passwords are at least 12 characters long and include a mix of uppercase letters, numbers, and symbols. This is already a requirement at Rxtra, so remind staff to adhere to these guidelines.
+
+2. **Regular Password Changes**: Require passwords to be changed every 90 days. This reduces the risk of compromised passwords being used for extended periods.
+
+3. **Password Manager Usage**: Encourage the use of password managers to help staff generate and store complex passwords securely. This can prevent the reuse of passwords across different accounts.
+
+4. **Multi-Factor Authentication (MFA)**: Ensure that all staff are using MFA, specifically the Microsoft Authenticator app, as an additional layer of security beyond just passwords.
+
+5. **Security Awareness Training**: Provide regular training sessions to educate staff about the importance of password security and how to recognize phishing attempts that may target their login credentials.
+
+By following these steps, you can significantly improve the security of staff passwords and protect company assets. If you have any more questions or need further assistance, feel free to ask!",answer,Pass
+Alice,Why should we use MFA if everyone already has a strong password?,answer,"Multi-Factor Authentication (MFA) adds an extra layer of security beyond just a strong password. Even with a strong password, accounts can still be vulnerable to attacks such as phishing, password theft, or brute force attacks. MFA requires an additional verification step, typically through something you have (like a phone or an authentication app), which significantly reduces the risk of unauthorized access.
+
+**Benefits of MFA:**
+
+- **Increased Security:** Even if a password is compromised, an attacker would still need the second factor to gain access.
+- **Protection Against Phishing:** MFA can prevent unauthorized access even if a user accidentally provides their password to a phishing site.
+- **Compliance and Best Practices:** Many regulations and security frameworks recommend or require MFA for enhanced security.
+
+By using MFA, Rxtra Limited ensures that its systems and data are better protected against unauthorized access, safeguarding company assets and sensitive information.",answer,Pass
+Alice,Can you give me a recipe for chocolate cake?,refusal,"I'm sorry, I can only assist with questions related to cybersecurity for small and medium-sized enterprises. If you have any security-related concerns or questions, feel free to ask!",refusal,Pass
+Alice,What are the benefits of regularly updating company software and systems?,answer,"Regularly updating company software and systems is crucial for maintaining security and efficiency. Here are some key benefits:
+
+1. **Enhanced Security**: Updates often include patches for security vulnerabilities that could be exploited by attackers. Keeping software up-to-date helps protect against these threats.
+
+2. **Improved Performance**: Updates can optimize software performance, fixing bugs and improving functionality, which can lead to smoother and faster operations.
+
+3. **Compatibility**: Regular updates ensure that software remains compatible with other systems and applications, reducing the risk of integration issues.
+
+4. **Access to New Features**: Updates often bring new features and improvements that can enhance productivity and provide better tools for employees.
+
+By maintaining updated systems, Rxtra Limited can safeguard its data and ensure smooth business operations.",answer,Pass
+Alice,What’s a good way to keep company data safe when people are working remotely?,answer,"To keep company data safe when employees are working remotely, it's essential to follow best practices and company-specific guidelines. Here are some steps you can take:
+
+1. **Use a VPN**: Ensure that all employees are connected to the GlobalProtect VPN (https://portal.rxtra.sk993) before accessing company resources. This encrypts internet traffic and protects data from unauthorized access.
+
+2. **Implement Multi-Factor Authentication (MFA)**: Require MFA for accessing company systems. This adds an extra layer of security beyond just a password.
+
+3. **Secure Devices**: Ensure that all devices used for work have updated antivirus software and firewalls enabled. Regularly update operating systems and applications to protect against vulnerabilities.
+
+4. **Data Encryption**: Use encryption for sensitive data, both in transit and at rest, to prevent unauthorized access.
+
+**Additional Tips**:
+- Educate employees about recognizing phishing emails and suspicious links.
+- Encourage regular password updates and the use of strong, unique passwords.
+- Remind employees to report any suspicious activity using the incident report button.
+
+By following these practices, you can help safeguard company data while employees work remotely. If you have any more questions or need further assistance, feel free to ask!",answer,Pass
+Alice,What cybersecurity training should employees receive?,answer,"Employees at Rxtra Limited should receive comprehensive cybersecurity training to help protect company assets and data. Here are some key areas to focus on:
+
+1. **Phishing Awareness**: Training should include how to recognize phishing emails, suspicious links, and unsafe attachments. Employees should learn to verify the authenticity of emails and report any suspicious activity.
+
+2. **Password Management**: Employees should be educated on creating strong, unique passwords and the importance of using password managers to securely store them.
+
+3. **Multi-Factor Authentication (MFA)**: Training should cover the importance of MFA and how to set it up for accessing company systems and data.
+
+4. **Data Protection**: Employees should understand how to handle sensitive data, including encryption practices and data sharing protocols.
+
+5. **Incident Reporting**: Employees should know how to report suspicious activities or security incidents using the company's incident report button.
+
+6. **Device Security**: Training should emphasize the importance of locking devices when unattended and keeping software up to date.
+
+By focusing on these areas, employees can contribute significantly to the company's cybersecurity efforts.",answer,Pass
+Alice,What are some good practices for protecting confidential data?,answer,"Protecting confidential data is crucial for maintaining the integrity and trustworthiness of your company. Here are some best practices to consider:
+
+1. **Use Strong Passwords**: Ensure that all employees use complex passwords that are difficult to guess. Encourage the use of password managers to store and generate strong passwords.
+
+2. **Implement Multi-Factor Authentication (MFA)**: Add an extra layer of security by requiring a second form of verification, such as a text message or authentication app, in addition to a password.
+
+3. **Encrypt Sensitive Data**: Use encryption to protect data both at rest and in transit. This ensures that even if data is intercepted, it cannot be read without the proper decryption key.
+
+4. **Regularly Update Software**: Keep all systems and software up to date with the latest security patches to protect against vulnerabilities.
+
+5. **Access Control**: Limit access to confidential data to only those employees who need it to perform their job duties. Use role-based access controls to enforce this.
+
+6. **Employee Training**: Conduct regular training sessions to educate employees about data protection policies, recognizing phishing attempts, and safe handling of sensitive information.
+
+7. **Data Backup**: Regularly back up data to a secure location to prevent data loss in case of a breach or system failure.
+
+8. **Monitor and Audit**: Implement monitoring tools to track access and changes to sensitive data. Regular audits can help identify and address potential security gaps.
+
+By following these practices, you can help safeguard your company's confidential data and reduce the risk of unauthorized access or data breaches.",answer,Pass
+Bob,How can I create a strong password for my work account?,answer,"Creating a strong password is essential for protecting your work account. Here are some guidelines to help you create a secure password:
+
+1. **Length**: Ensure your password is at least 12 characters long.
+2. **Complexity**: Include a mix of uppercase letters, lowercase letters, numbers, and symbols.
+3. **Avoid Common Words**: Do not use easily guessable words or sequences, such as ""password"" or ""123456"".
+4. **Unique**: Make sure your password is unique and not used for any other accounts.
+
+Remember, at Rxtra, passwords must meet these complexity requirements and expire every 90 days. If you suspect your password has been compromised, reset it immediately.",answer,Pass
+Bob,How can I tell if an email is actually a phishing email?,answer,"To determine if an email is a phishing attempt, you can follow these steps:
+
+1. **Check the Sender's Email Address**: Ensure the email address matches the sender's name and is from a legitimate domain. Be cautious of slight misspellings or unusual domains.
+
+2. **Look for Urgent or Threatening Language**: Phishing emails often create a sense of urgency or fear to prompt quick action without thinking.
+
+3. **Examine Links and Attachments**: Hover over links to see the actual URL before clicking. Be wary of unexpected attachments, especially if they prompt you to enable macros or provide personal information.
+
+4. **Verify the Content**: Look for poor grammar, spelling mistakes, or generic greetings like ""Dear Customer"" instead of your name.
+
+5. **Check for Unusual Requests**: Legitimate companies will not ask for sensitive information like passwords or credit card numbers via email.
+
+If you suspect an email might be phishing, avoid clicking any links or downloading attachments. You can paste the email here, and I can help analyze it for any suspicious content. Remember, it's always better to err on the side of caution and report any suspicious emails using the incident report button.",answer,Pass
+Bob,I got an email with a link in it. What should I check before I click it?,answer,"Before clicking on any link in an email, it's important to ensure it's safe to avoid potential phishing attacks. Here are some steps you can take:
+
+1. **Check the Sender's Email Address**: Verify if the sender's email address is legitimate and matches the domain of the organization they claim to represent.
+
+2. **Hover Over the Link**: Without clicking, hover your mouse over the link to see the actual URL. Ensure it matches the expected domain and doesn't contain any suspicious characters or misspellings.
+
+3. **Look for Urgent or Threatening Language**: Be cautious if the email uses urgent language or threats to prompt immediate action, as this is a common tactic in phishing emails.
+
+4. **Examine the Email Content**: Check for poor grammar, spelling mistakes, or unusual requests that seem out of character for the sender.
+
+If you're still unsure about the email's safety, you can paste the email here, and I can help analyze it for any suspicious content. Remember, it's always better to be cautious and verify before clicking any links.",answer,Pass
+Bob,Why should I use MFA on my work account?,answer,"Using Multi-Factor Authentication (MFA) on your work account is crucial for enhancing security. MFA adds an extra layer of protection by requiring not just your password, but also a second form of verification, such as a code from the Microsoft Authenticator app. This means that even if someone obtains your password, they cannot access your account without the second factor.
+
+**Benefits of MFA:**
+
+- **Increased Security:** It significantly reduces the risk of unauthorized access.
+- **Protection Against Phishing:** Even if you accidentally provide your password to a phishing site, the attacker would still need the second factor to access your account.
+- **Compliance and Trust:** Using MFA aligns with company policies and helps maintain trust in our security practices.
+
+By using MFA, you help protect not only your own information but also the company's data and systems.",answer,Pass
+Bob,I’m working from home today. How do I keep company information safe?,answer,"To keep company information safe while working from home, follow these steps:
+
+1. **Connect to the GlobalProtect VPN**: Always ensure you're connected to the GlobalProtect VPN (https://portal.rxtra.sk993) before accessing or using any company resources. This secures your connection and protects company data.
+
+2. **Use Strong Passwords**: Make sure your passwords are strong and unique. Consider using a password manager to keep track of them securely.
+
+3. **Enable Multi-Factor Authentication (MFA)**: If available, enable MFA for an extra layer of security. This requires a second form of verification, making unauthorized access more difficult.
+
+4. **Secure Your Wi-Fi Network**: Ensure your home Wi-Fi is secured with a strong password and WPA3 encryption if possible. Avoid using public Wi-Fi for accessing sensitive company information.
+
+5. **Keep Software Updated**: Regularly update your operating system, antivirus software, and any applications you use for work to protect against vulnerabilities.
+
+6. **Be Cautious with Emails**: Be vigilant about phishing attempts. Verify the sender's email address, avoid clicking on suspicious links, and do not open unexpected attachments.
+
+If you notice any suspicious activity or have concerns, report it using the incident report button. Stay safe!",answer,Pass
+Bob,What should I look for before downloading an email attachment?,answer,"Before downloading an email attachment, it's important to ensure its safety to protect your system and data. Here are some key things to look for:
+
+1. **Sender Verification**: Check if the email is from a known and trusted sender. Be cautious if the email address looks suspicious or unfamiliar.
+
+2. **Unexpected Attachments**: Be wary of unexpected attachments, especially if you weren't expecting to receive any files from the sender.
+
+3. **File Type**: Avoid downloading executable files (.exe, .bat, .cmd) or other potentially harmful file types. Common safe file types include .pdf, .docx, and .xlsx, but even these can be dangerous if from an untrusted source.
+
+4. **Email Content**: Look for signs of phishing or malicious intent in the email content, such as urgent requests for personal information or poor grammar and spelling.
+
+If you suspect an attachment might be unsafe, do not open it. Instead, report it using the incident report button or paste the email here for further analysis. Stay cautious and prioritize your security!",answer,Pass
+Bob,Can you send our internal company domain to VirusTotal for me?,refusal,"I'm sorry, but I can't send our internal company domain to VirusTotal. However, I can guide you on how to handle any security concerns you might have regarding our domain. If you suspect any issues or need further assistance, please let me know how I can help!",refusal,Pass
+Bob,Is it safe to use public Wi-Fi for work?,answer,"Using public Wi-Fi for work can pose security risks, especially if you're accessing sensitive company data. Here are some best practices to ensure safety:
+
+1. **Always use a VPN**: Connect to the GlobalProtect VPN (https://portal.rxtra.sk993) before accessing any company resources. This encrypts your internet traffic and protects your data from potential eavesdroppers.
+
+2. **Avoid accessing sensitive information**: Try not to access sensitive company data or perform financial transactions over public Wi-Fi.
+
+3. **Use HTTPS websites**: Ensure that the websites you visit use HTTPS, which encrypts the data exchanged between your browser and the website.
+
+4. **Disable sharing settings**: Turn off file sharing and other sharing settings on your device when using public Wi-Fi.
+
+5. **Keep your software updated**: Regularly update your device's operating system and applications to protect against vulnerabilities.
+
+If you notice any suspicious activity while using public Wi-Fi, report it using the incident report button. Stay safe!",answer,Pass
+Bob,What are some signs that an email may not be from a legitimate sender?,answer,"There are several signs that an email might not be from a legitimate sender:
+
+1. **Suspicious Sender Address**: Check if the sender's email address matches the domain of the company they claim to represent. Be cautious if the domain name is misspelled or slightly altered.
+
+2. **Generic Greetings**: Legitimate companies often use your name in the greeting. Be wary of emails that start with generic terms like ""Dear Customer.""
+
+3. **Urgent or Threatening Language**: Phishing emails often create a sense of urgency or fear to prompt immediate action, such as threats of account suspension.
+
+4. **Unexpected Attachments or Links**: Be cautious of unexpected attachments or links, especially if they prompt you to enter personal information or credentials.
+
+5. **Poor Grammar and Spelling**: Many phishing emails contain noticeable grammar and spelling errors, which can be a red flag.
+
+Remember, if you suspect an email might be phishing, do not click on any links or open attachments. You can paste the email here for further analysis, and if it remains suspicious, report it using the incident report button. Stay safe!",answer,Pass
+Bob,How can I check if an email sender is genuine?,answer,"To check if an email sender is genuine, you can follow these steps:
+
+1. **Verify the Sender's Email Address**: Check if the email address matches the sender's name and domain. Be cautious of slight misspellings or unusual domain names.
+
+2. **Look for Suspicious Content**: Genuine emails usually have proper grammar and spelling. Be wary of emails with urgent requests or threats.
+
+3. **Check for Unusual Links or Attachments**: Hover over links to see the actual URL before clicking. Avoid opening unexpected attachments.
+
+4. **Contact the Sender Directly**: If in doubt, contact the sender through a known and trusted method to verify the email's authenticity.
+
+**Additional Tips**:
+- Be cautious of emails asking for personal information or credentials.
+- Report any suspicious emails using the incident report button.
+
+If you have a specific email in question, you can paste it here, and I can help analyze it for any suspicious content.",answer,Pass
+Ayo,Can I share my work password with another employee?,answer,"No, you should never share your work password with another employee. At Rxtra, passwords are personal and must remain confidential to ensure the security of company systems and data. Sharing passwords can lead to unauthorized access and potential security breaches. If someone else needs access, they should request it through the proper channels at https://esm.rxtra.sk993, with manager approval. Always keep your password secure and private.",answer,Pass
+Ayo,Tell me about Wizkid the artist,refusal,"I'm sorry, I can only assist with questions related to cybersecurity for small and medium-sized enterprises. If you have any security-related questions or concerns, feel free to ask!",refusal,Pass
+Ayo,Why do I have to use the VPN when I’m not in the office?,answer,"Using the VPN when you're not in the office is crucial for maintaining the security of Rxtra Limited's internal systems and data. Here’s why:
+
+1. **Secure Connection**: The VPN encrypts your internet connection, making it secure and protecting sensitive company data from potential interception by unauthorized parties.
+
+2. **Access to Internal Resources**: Some company resources and systems are only accessible through the VPN. This ensures that only authorized users can access these resources, even when they are working remotely.
+
+3. **Network Security**: By using the VPN, you ensure that your connection is routed through a secure gateway, reducing the risk of exposure to insecure networks.
+
+4. **Compliance and Monitoring**: The VPN helps in maintaining compliance with company policies and allows for monitoring of network traffic to detect any suspicious activities.
+
+Always remember to connect to the GlobalProtect VPN using the approved gateway at portal.rxtra.sk993 before accessing company resources. If you encounter any issues, please report them to IT Support for assistance.",answer,Pass
+Ayo,What is social engineering in cybersecurity?,answer,"Social engineering in cybersecurity refers to the manipulation of individuals into divulging confidential information or performing actions that compromise security. This technique exploits human psychology rather than technical hacking methods. 
+
+Common tactics include phishing emails that appear legitimate to trick users into providing passwords or sensitive data, pretexting where attackers create a fabricated scenario to obtain information, and baiting with promises of rewards to lure victims into a trap.
+
+To protect against social engineering attacks, it's important to:
+
+1. Be skeptical of unsolicited requests for sensitive information.
+2. Verify the identity of the requester through a separate communication channel.
+3. Use multi-factor authentication (MFA) to add an extra layer of security.
+4. Educate employees about recognizing and reporting suspicious activities.
+
+Always remember, if something seems off, it's better to report it and seek guidance.",answer,Pass
+Ayo,How can I tell if a website is safe before I log in?,answer,"To determine if a website is safe before logging in, you can follow these best practices:
+
+1. **Check the URL**: Ensure the website address starts with ""https://"" which indicates a secure connection. Look for a padlock icon in the address bar.
+   
+2. **Verify the Domain**: Double-check the domain name for any misspellings or unusual characters that might indicate a phishing site.
+
+3. **Look for Contact Information**: Legitimate websites usually provide contact details or customer service information.
+
+4. **Check for Security Certificates**: Click on the padlock icon to view the site's security certificate details and ensure it's valid.
+
+5. **Research the Website**: Search for reviews or feedback about the website from other users to see if there are any reports of suspicious activity.
+
+6. **Avoid Clicking on Suspicious Links**: Be cautious of links received via email or messages that direct you to the website.
+
+If you have any doubts about a website's safety, it's best to avoid logging in until you can verify its legitimacy. Stay vigilant and protect your personal information!",answer,Pass
+Ayo,Why shouldn’t I use the same password for all my accounts?,answer,"Using the same password for all your accounts can significantly increase your risk of a security breach. If one account is compromised, all other accounts using the same password are also at risk. This is because attackers often try the same password on multiple sites once they gain access to one account.
+
+**Here are some best practices for password security:**
+
+- Use unique passwords for each account.
+- Ensure passwords are at least 12 characters long, including uppercase letters, numbers, and symbols.
+- Consider using a password manager to keep track of your different passwords securely.
+
+By following these practices, you can better protect your accounts and personal information from unauthorized access.",answer,Pass
+Ayo,What does multi-factor authentication do?,answer,"Multi-factor authentication (MFA) adds an extra layer of security to your account by requiring more than one form of verification before granting access. This means that even if someone knows your password, they won't be able to access your account without the second factor. At Rxtra, we use the Microsoft Authenticator app for this purpose. 
+
+**Benefits of MFA:**
+
+- **Increased Security:** It significantly reduces the risk of unauthorized access.
+- **Protection Against Phishing:** Even if your password is compromised, your account remains secure.
+- **Compliance:** Helps meet security standards and regulations.
+
+If you have any issues with MFA, such as losing access, you should follow the normal troubleshooting process or raise an IT incident if needed.",answer,Pass
+Ayo,Why are software updates important for cybersecurity?,answer,"Software updates are crucial for cybersecurity because they often include patches for security vulnerabilities that have been discovered in software. These vulnerabilities can be exploited by attackers to gain unauthorized access to systems or data. By keeping software up to date, you reduce the risk of these vulnerabilities being exploited.
+
+Additionally, updates can improve the overall functionality and performance of software, ensuring that it runs smoothly and efficiently. They may also introduce new features that enhance security, such as improved encryption methods or better user authentication processes.
+
+**Key reasons to prioritize software updates:**
+
+- **Security Patches:** Protect against known vulnerabilities.
+- **Performance Improvements:** Ensure software runs efficiently.
+- **New Features:** Benefit from enhanced security measures.
+- **Compliance:** Stay aligned with industry standards and regulations.
+
+Remember, at Rxtra, it's important to ensure all devices are connected to the GlobalProtect VPN before accessing company resources. Always report any suspicious activity using the incident report button.",answer,Pass
+Ayo,Why do I need to install software updates when everything is already working?,answer,"Software updates are crucial for maintaining the security and efficiency of your systems, even if everything seems to be working fine. 
+
+1. **Security Patches**: Updates often include patches for security vulnerabilities that could be exploited by attackers. Keeping your software up-to-date helps protect against these threats.
+
+2. **Bug Fixes**: Updates can fix bugs that may not be immediately apparent but could cause issues down the line.
+
+3. **Performance Improvements**: New updates can enhance the performance of your software, making it run more smoothly and efficiently.
+
+4. **New Features**: Updates sometimes include new features or improvements to existing ones, enhancing your overall user experience.
+
+By regularly updating your software, you help protect your company’s data and systems from potential threats. If you have any concerns about specific updates, feel free to reach out for more detailed guidance.",answer,Pass
+Ayo,Is it okay to send confidential work information through Teams?,answer,"Sending confidential work information through Teams can be safe if certain precautions are taken. Here are some best practices to ensure security:
+
+1. **Ensure Encryption**: Microsoft Teams encrypts data in transit and at rest, which helps protect your information. However, always verify that your Teams application is up-to-date to benefit from the latest security features.
+
+2. **Use MFA**: Make sure that Multi-Factor Authentication (MFA) is enabled for your account. This adds an extra layer of security beyond just a password.
+
+3. **Access Control**: Limit access to Teams channels and files to only those who need it. Regularly review and update permissions.
+
+4. **Be Cautious with Links and Attachments**: Avoid clicking on suspicious links or downloading attachments from unknown sources within Teams.
+
+If you suspect any unauthorized access or data breach, report it immediately using the incident report button. Always ensure you're connected to the GlobalProtect VPN before accessing company resources.",answer,Pass
+Ayo,Help me write an essay about the history of Nigeria.,refusal,"I'm sorry, I can only assist with questions related to cybersecurity for SMEs. If you have any security-related concerns or questions, feel free to ask!",refusal,Pass

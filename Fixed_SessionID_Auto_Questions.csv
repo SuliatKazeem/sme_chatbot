@@ -1,0 +1,32 @@
+Persona,User Input,Expected Bot Behaviour
+Alice,We’ve got more staff working from home now. What security things should we be checking?,answer
+Alice,What’s the best way to reduce phishing risks across the company?,answer
+Alice,How often should we review who has access to company systems?,answer
+Alice,What can we do to make staff passwords more secure?,answer
+Alice,Why should we use MFA if everyone already has a strong password?,answer
+Alice,Can you give me a recipe for chocolate cake?,refusal
+Alice,What are the benefits of regularly updating company software and systems?,answer
+Alice,What’s a good way to keep company data safe when people are working remotely?,answer
+Alice,What cybersecurity training should employees receive?,answer
+Alice,What are some good practices for protecting confidential data?,answer
+Bob,How can I create a strong password for my work account?,answer
+Bob,How can I tell if an email is actually a phishing email?,answer
+Bob,I got an email with a link in it. What should I check before I click it?,answer
+Bob,Why should I use MFA on my work account?,answer
+Bob,I’m working from home today. How do I keep company information safe?,answer
+Bob,What should I look for before downloading an email attachment?,answer
+Bob,Can you send our internal company domain to VirusTotal for me?,refusal
+Bob,Is it safe to use public Wi-Fi for work?,answer
+Bob,What are some signs that an email may not be from a legitimate sender?,answer
+Bob,How can I check if an email sender is genuine?,answer
+Ayo,Can I share my work password with another employee?,answer
+Ayo,Tell me about Wizkid the artist,Refusal
+Ayo,Why do I have to use the VPN when I’m not in the office?,answer
+Ayo,What is social engineering in cybersecurity?,answer
+Ayo,How can I tell if a website is safe before I log in?,answer
+Ayo,Why shouldn’t I use the same password for all my accounts?,answer
+Ayo,What does multi-factor authentication do?,answer
+Ayo,Why are software updates important for cybersecurity?,answer
+Ayo,Why do I need to install software updates when everything is already working?,answer
+Ayo,Is it okay to send confidential work information through Teams?,answer
+Ayo,Help me write an essay about the history of Nigeria.,refusal

@@ -1,133 +1,255 @@
 # SME Security Chatbot
+This project was developed as part of my MSc Computer Science (Cybersecurity) project. It is an AI-powered cybersecurity chatbot designed to support SMEs with security-related queries, suspicious email and URL scanning, and incident reporting.
 
-Hii! Welcome to the readme for my Masters project which is a chatbot that helps SMEs with security queries, incident reporting, and VirusTotal scans. This document will walk you through what is used, how the pieces fit together, and how to get it running. 
-
+This README provides an overview of the project, the main files included in the repository, how the different components work together, and how to run the chatbot.
 
 ## Introduction
+Small and medium-sized businesses may not always have large dedicated cybersecurity teams. The aim of this chatbot is to provide users with a first point of support for common security queries while also helping them identify and report potential security incidents.
 
-Small and medium businesses often don’t have a big security team, so this chatbot is meant to be the first line of defense, answering questions about best practices, scanning email files for suspicious activities, checking URLs/domains with VirusTotal.
----
+The chatbot can answer security-related questions, provide organisation-specific guidance, scan suspicious URLs, domains and email files using VirusTotal, and generate incident reports when required.
 
-## Files in the repository
+The system uses an LLM for its conversational functionality, with additional security controls implemented around it to reduce some of the risks associated with using LLMs in an enterprise environment.
 
-1. **`Frontend.html`**
 
-   - A single page UI that loads in your browser at `http://localhost:8000/`. The plan is to integrate the bot into Microsoft Teams app.
-   - The front-end of the chatbot system was built and designed in HTML, JavaScript, and CSS.
-   - Renders messages as Markdown.
-   - Buttons for “Add Email File” (.eml upload) and “Generate Incident Report” fallback.
+## Files in the Repository
 
-2. **`Main.py`** (FastAPI server)
+### 1. `frontend.html`
 
-   - Serves the (`frontend.html`).
-   - Handles `/chat` POST requests:
+This contains the main user interface for the chatbot.
 
-     * Tries to parse pasted raw email text or inline URLs/HTML via our `virustotal.parse_email`, but advises to upload an `.eml` file for deep scanning.
-     * Scans any found URLs, domains, and attachments with VirusTotal APIs.
-     * If nothing email-related is found, hands the query off to the LLM.
-     * Implements a “three strikes” rule: certain kinds of refusals (like internal-domain scans or out-of-scope questions) get counted, and after 3 you get a warning message.
+The frontend was developed using HTML, CSS and JavaScript and includes:
 
-   - Handles `/scan-email-file` POST:
+- The main chat interface
+- FAQ questions
+- New Chat functionality
+- Email file upload
+- Manual incident reporting
+- Markdown rendering of chatbot responses
+- Communication with the FastAPI backend
 
-     * Accepts a `.eml` upload, parses it fully, and returns a nice numbered report of URLs, domains, and attachments with verdicts.
+The interface was also adapted for deployment through Microsoft Teams.
 
-3. **`Smeopenai.py`**
 
-   - Wraps OpenAI + LangChain for our “fallback” chat logic.
-   - Loads your `OPENAI_API_KEY` and sets up:
+### 2. `main.py`
 
-     * A moderation check (to catch nasty inputs).
-     * A prompt template to keep the bot focused on SME security topics.
-     * A rotating set of refusal templates, each prefixed with `[REFUSAL] ` so the main server can detect and count them.
+This is the main FastAPI server and connects the different parts of the application together.
 
-4. **`Virustotal.py`**
+It:
 
-   - Contains helper functions to talk to VirusTotal’s REST API:
+- Serves the chatbot frontend
+- Handles `/chat` requests
+- Detects URLs and domains included in user queries
+- Coordinates VirusTotal scanning
+- Handles uploaded `.eml` files
+- Applies internal-domain restrictions
+- Handles incident triage
+- Generates automatic incidents for malicious, suspicious or unverified indicators
+- Handles manual incident reporting
+- Applies personal information redaction
+- Uses response caching for repeated queries
+- Communicates with the LLM through `smeopenai.py`
 
-     * `scan_url(url)` → verdict
-     * `scan_domain(domain)` → verdict
-     * `scan_file_attachment(filename, bytes)` → verdict
-   - Also a little email parser (`parse_email`) that extracts:
 
-     * Plain-text and HTML links
-     * Domains
-     * Attachments
+### 3. `smeopenai.py`
 
----
+This file handles the LLM side of the chatbot.
 
-## How to set it up
+It contains:
 
-1. **Clone & install**
+- OpenAI and LangChain configuration
+- The main system prompt
+- Organisation-specific security guidance
+- Conversation memory
+- Topic classification
+- Refusal handling
+- OpenAI moderation
 
-    ```bash
-   git clone https://github.com/SuliatKazeem/sme_chatbot.git
-   cd sme_chatbot
-   python3 -m venv venv
-   source venv/bin/activate
-   pip install -r requirements.txt
-   ```
+The system prompt is used to keep the chatbot focused on cybersecurity and organisation-specific policies rather than allowing unrestricted responses.
 
-2. **Create a `.env` file**
 
-   ```env
-   OPENAI_API_KEY= **enter your API Key**
-   VT_API_KEY= **enter your API Key**
-   INTERNAL_DOMAINS= rxtra.xyz (you can enter your personalized domain)
-   ```
+### 4. `virustotal.py`
 
-  #INTERNAL_DOMAINS: these are domains that the bot will refuse to scan.
+This file handles communication with the VirusTotal API.
 
-3. **Run the server**
+It contains functions for:
 
-   ```bash
-   uvicorn main:app --reload
-   ```
+- Scanning URLs
+- Scanning domains
+- Scanning email attachments
+- Parsing `.eml` files
+- Extracting links and domains from email content
+- Extracting email attachments
 
-   Then open your browser at [http://127.0.0.1:8000](http://127.0.0.1:8000).
+The application waits for VirusTotal analysis to complete before returning a verdict. Results can be returned as safe, suspicious, malicious or unable to be verified.
 
----
 
-## Working Principle
+### 5. `pdf_generation.py`
 
-1. **User sends a query**
+This file generates PDF incident reports.
 
-   - If the text literally contains “scan an email”, we shortcut into instructions for uploading a `.eml`.
-   - Otherwise we try to detect any raw email content or links.
+Each generated report contains an incident ID and relevant information about the incident. Depending on how the incident was created, this can include the incident details or relevant conversation information.
 
-2. **VirusTotal checks**
 
-   - Extracted URLs & domains get sent off to VT and verdicts come back.
-   - If attachments are embedded in the .eml, we upload them too.
+### 6. `notifypdf.py`
 
-3. **LLM fallback**
+This file records VirusTotal-related incidents in Azure Blob Storage.
 
-   - If no URLs/domains/attachments found, we call out to `smeopenai.ask_openai()`.
-   - That function first runs the text through a moderation endpoint.
-   - If it’s okay, it invokes a LangChain conversation with memory.
+A CSV file is maintained in Azure and new incidents are appended to it. This provides a record of automatically generated incidents without storing the CSV locally.
 
-4. **Refusals & Strikes**
 
-   - Any refusal from `ask_openai` begins with a rephrased refusal template.
-   - The server strips that tag, counts it, and once you hit 3 total refusals it sends you a friendly warning.
+### 7. `incident_form.html`
 
----
+This contains the manual incident reporting form.
+
+The user provides a title and description of the problem. The information is sent to the backend, where the incident is classified and routed to either IT or Cybersecurity.
+
+
+### 8. `requirements.txt`
+
+This contains the Python packages required to run the project.
+
+
+## How to Set It Up
+
+### 1. Install the requirements
+
+From the project directory, run:
+
+    pip install -r requirements.txt
+
+
+### 2. Create a `.env` file
+
+The application requires environment variables for the external services used by the chatbot.
+
+For example:
+
+    OPENAI_API_KEY=your_openai_api_key
+    VT_API_KEY=your_virustotal_api_key
+    AZURE_STORAGE_CONNECTION_STRING=your_azure_storage_connection_string
+    INTERNAL_DOMAINS=your_internal_domain
+
+`INTERNAL_DOMAINS` contains organisational domains that should not be submitted to VirusTotal.
+
+Actual API keys and connection strings are not included in this repository or corpus for security reasons.
+
+
+### 3. Run the server
+
+Run:
+
+    uvicorn main:app --reload
+
+The local version of the chatbot can then be opened at:
+
+    http://127.0.0.1:8000
+
+
+## How the Chatbot Works
+
+### 1. User sends a query
+
+The user enters a security-related question through the chatbot interface.
+
+If the message contains a URL or domain that requires checking, the application can send the indicator to VirusTotal. For suspicious emails, the user can also upload the original `.eml` file for a more complete scan.
+
+
+### 2. VirusTotal scanning
+
+URLs, domains and email attachments are checked using the VirusTotal API.
+
+If an indicator is identified as malicious or suspicious, the chatbot warns the user and an incident can be generated automatically.
+
+Indicators that cannot be verified are also treated cautiously rather than automatically being considered safe.
+
+
+### 3. LLM response
+
+If the request does not require VirusTotal scanning or incident handling, it is passed to the LLM through `smeopenai.py`.
+
+The input is checked using moderation and the chatbot uses its system prompt and organisation-specific guidance when generating the response.
+
+Conversation memory allows the chatbot to understand follow-up questions within the same session.
+
+
+### 4. Incident Reporting
+
+The chatbot supports both automatic and manual incident reporting.
+
+Automatic incidents can be generated following malicious, suspicious or unverified VirusTotal results.
+
+Users can also manually report an issue using the incident form.
+
+Incidents are classified as either IT or Cybersecurity depending on the nature of the issue.
+
+
+### 5. Incident Storage
+
+Incident information is stored using Azure Blob Storage.
+
+Individual incident records can be stored separately, while VirusTotal-related incidents are also appended to a CSV file.
+
+PDF reports are generated where required so that the incident information can also be provided in a readable report format.
+
+
+## Security Controls
+
+Because the chatbot uses an LLM and external services, several security controls were added rather than relying only on the language model.
+
+These include:
+
+- Prompt engineering and organisation-specific system prompts
+- OpenAI moderation
+- VirusTotal threat intelligence
+- Internal-domain restrictions
+- Input validation
+- Personal information redaction
+- Incident confirmation workflows
+- Restricted chatbot scope
+- Response caching
+- Conversation and refusal handling
+
+These controls provide different layers of protection around the chatbot and its external integrations.
+
 
 ## Tools Used
 
-- **FastAPI + Uvicorn**: easy async Python web server.
-- **marked.js**: client-side Markdown rendering, so we can send bullet lists, numbered steps, etc.
-- **OpenAI + LangChain**: gives us memory, nice templating, and a robust way to manage prompts & refusals.
-- **VirusTotal API**: known reputation checks for links, domains, and files—perfect for a lightweight security bot.
-- **python-dotenv**: keep secrets out of your code and in `.env`.
+- **FastAPI and Uvicorn** – backend API and web server
+- **OpenAI and LangChain** – conversational AI, prompts and conversation memory
+- **VirusTotal API** – URL, domain and file reputation checks
+- **Azure Blob Storage** – storage of incident information
+- **ReportLab** – generation of PDF incident reports
+- **BeautifulSoup** – extraction of links from HTML email content
+- **python-dotenv** – loading environment variables
+- **HTML, CSS and JavaScript** – chatbot frontend
+- **marked.js** – rendering Markdown responses
+- **Microsoft Teams** – deployment platform
 
----
 
-## To be updated
+## Testing
 
-- Build a **Teams** connector so you can plug this into your actual SME chat platform.
-- Store logs of refused queries in a database and send real tickets to IT.
-- Enhance the LLM prompt to handle more nuanced follow-up questions, maybe even triage severity levels.
+The chatbot was tested throughout development using both manual and automated testing.
 
----
+Manual testing was used to test individual functions and realistic user scenarios, including security questions, phishing emails, URL scanning, incident reporting, moderation and refusal behaviour.
 
-Thank you for reading. Enjoy coding and tweaking!
+Automated tests were also used to run predefined questions against the chatbot and record the results consistently.
+
+The manual and automated testing files are included separately in the project corpus.
+
+
+## Known Limitations
+
+This chatbot is a research prototype and is not intended to replace professional IT or Cybersecurity staff.
+
+VirusTotal results depend on the information available to VirusTotal, so a safe result cannot guarantee that an indicator is harmless. Similarly, an indicator that cannot be verified is treated cautiously and may require manual investigation.
+
+LLM-generated responses can also be inaccurate or inconsistent. The additional controls implemented in this project are intended to reduce these risks but cannot eliminate them completely.
+
+The organisation-specific policies used by the chatbot were created for this research project and would need to be replaced with the policies of the organisation using the system in a real deployment.
+
+
+## Corpus
+
+The project corpus contains the final source code, manual and automated testing evidence, and supporting documentation.
+
+API keys, passwords, Azure connection strings and other credentials have been excluded for security reasons.

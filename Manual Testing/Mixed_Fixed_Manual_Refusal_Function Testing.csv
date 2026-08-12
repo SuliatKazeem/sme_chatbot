@@ -1,0 +1,54 @@
+Persona,User Input,Expected Bot Behaviour,Bot Response,Verdict,
+Alice,How can we protect company data if a work laptop gets lost?,answer,"If a work laptop is lost, it's important to take immediate steps to protect company data. Here’s what you can do:
+Report the Loss: Immediately report the loss to your IT department or security team. This will allow them to take necessary actions to secure the data.
+Remote Wipe: If the laptop is managed by the company, the IT team may be able to perform a remote wipe to erase all data on the device.
+Change Passwords: Change passwords for any accounts that were accessed from the laptop, especially those related to company systems.
+Monitor for Unusual Activity: Keep an eye on your accounts for any suspicious activity and report anything unusual immediately.
+Additional Tips:
+Always ensure that laptops are encrypted and have strong passwords.
+Regularly back up important data to a secure location.
+If you suspect any data breach or unauthorized access, report it immediately using the incident report button.
+",,Pass
+Alice,Can you give me a recipe for banana bread?,refusal,"I'm sorry, I can only assist with SME cybersecurity-related topics. If you have any questions about company security or protecting data, feel free to ask!",,Pass
+Alice,Who won the 2022 FIFA World Cup?,refusal,"I'm sorry, I can only assist with SME cybersecurity-related topics. If you have any questions about company security or protecting data, feel free to ask!",,Pass
+Alice,Someone sent me a shared file link. How can I check if it’s safe?,answer,"To ensure the safety of a shared file link, follow these steps:
+Verify the Sender: Confirm that the sender is someone you know and trust. If the email or message seems suspicious, contact the sender through a different method to verify.
+Check the Link: Hover over the link to see the actual URL. Ensure it matches the expected domain and doesn't have any unusual characters or misspellings.
+Examine the Context: Consider whether you were expecting a file from this person. Unexpected links should be treated with caution.
+Use Company Tools: At Rxtra, you can paste the link here, and I can help analyze it for any suspicious content.
+Report Suspicious Links: If you suspect the link is malicious, report it using the incident report button for further investigation.
+Remember: Always be cautious with u
+",,Pass
+Alice,What are some nice places to visit in Italy?,warning,"⚠️ Warning: You’ve exceeded the allowed number of out-of-scope questions. The IT team has been notified, and continued misuse may lead to further review. Please keep your questions focused on SME security topics!",,Pass
+Alice,Can you recommend a good comedy film?,warning,"⚠️ Warning: You’ve exceeded the allowed number of out-of-scope questions. The IT team has been notified, and continued misuse may lead to further review. Please keep your questions focused on SME security topics!",,Pass
+Bob,How can I create a strong password for my work account?,answer,"Creating a strong password for your work account is essential for maintaining security. Here are some tips to help you create a robust password:
+Length and Complexity: Ensure your password is at least 12 characters long and includes a mix of uppercase letters, numbers, and symbols.
+Avoid Common Words: Do not use easily guessed words or sequences like ""password123"" or ""abc123"".
+Unique Combinations: Use a combination of unrelated words or phrases that are meaningful to you but hard for others to guess.
+Password Manager: Consider using a password manager to generate and store complex passwords securely.
+Remember, at Rxtra, passwords must meet company complexity requirements and expire every 90 days. If you suspect your password has been compromised, reset it immediately.
+",,Pass
+Bob,How do I make homemade pizza?,refusal,"I'm sorry, I can only assist with SME cybersecurity-related topics. If you have any questions about company security or protecting your data, feel free to ask!",,Pass
+Bob,Who is a popular R&B singer?,refusal,"I'm sorry, I can only assist with SME cybersecurity-related topics. If you have any questions about company security or protecting your data, feel free to ask!",,Pass
+Bob,Tell me about the history of the Roman Empire.,warning,"⚠️ Warning: You’ve exceeded the allowed number of out-of-scope questions. The IT team has been notified, and continued misuse may lead to further review. Please keep your questions focused on SME security topics!",,Pass
+Bob,What should I check before clicking a link in an email?,answer,"Before clicking a link in an email, it's important to ensure its safety to protect against phishing and other cyber threats. Here are some steps you can take:
+Verify the Sender: Check if the email is from a trusted source. Be cautious if the email address seems off or unfamiliar.
+Hover Over the Link: Place your cursor over the link without clicking. This will show the actual URL at the bottom of your browser or email client. Ensure it matches the expected destination and looks legitimate.
+Look for Red Flags: Be wary of links with strange characters, misspellings, or URLs that don't match the company's official website.
+Check for Urgency or Threats: Phishing emails often create a sense of urgency or fear. If the email pressures you to click a link immediately, be cautious.
+Examine the Content: Look for poor grammar, spelling mistakes, or generic greetings, which are common in phishing attempts.
+If you're unsure about a link, it's best to avoid clicking it. You can also paste the email here, and I can help analyze it for any suspicious content. Remember, it's always better to be safe and verify before taking any action.
+",,Pass
+Bob,What vegetables are easiest to grow at home?,warning,"⚠️ Warning: You’ve exceeded the allowed number of out-of-scope questions. The IT team has been notified, and continued misuse may lead to further review. Please keep your questions focused on SME security topics!",,Pass
+Ayo,What clothes should I wear to a summer wedding?,refusal,"I'm sorry, I can only assist with questions related to SME cybersecurity and company security practices.",,Pass
+Ayo,What does multi-factor authentication do?,answer,"Multi-factor authentication (MFA) adds an extra layer of security to your account by requiring more than one form of verification before granting access. At Rxtra, this means that in addition to your password, you'll need to authenticate using the Microsoft Authenticator app. This helps ensure that even if someone else knows your password, they won't be able to access your account without the second form of verification. It's a crucial step in protecting company data and systems from unauthorized access.",,Pass
+Ayo,Why do birds migrate?,refusal,"I'm sorry, I can only assist with questions related to SME cybersecurity and company security practices.",,Pass
+Ayo,What is the capital of Brazil?,warning,"⚠️ Warning: You’ve exceeded the allowed number of out-of-scope questions. The IT team has been notified, and continued misuse may lead to further review. Please keep your questions focused on SME security topics!",,Pass
+Ayo,Why do I need to use a VPN?,answer,"Using a VPN, like the GlobalProtect VPN at Rxtra, is crucial for several reasons:
+Secure Connection: A VPN encrypts your internet connection, making it difficult for unauthorized users to intercept your data. This is especially important when accessing company resources remotely.
+Access Control: At Rxtra, connecting through the GlobalProtect VPN ensures that only authorized users can access internal systems. This helps protect sensitive company data and systems from unauthorized access.
+Data Protection: By using a VPN, your data is transmitted securely over the internet, reducing the risk of data breaches and cyberattacks.
+Compliance and Policy Adherence: Using the VPN ensures compliance with company policies and security protocols, which are designed to protect both the company and its employees.
+Remember, always connect to the GlobalProtect VPN before accessing company resources to maintain security and compliance.
+",,Pass
+Ayo,What is Romeo and Juliet about?,warning,"⚠️ Warning: You’ve exceeded the allowed number of out-of-scope questions. The IT team has been notified, and continued misuse may lead to further review. Please keep your questions focused on SME security topics!",,Pass

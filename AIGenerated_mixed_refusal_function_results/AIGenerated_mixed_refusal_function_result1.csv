@@ -1,0 +1,87 @@
+"Persona","User Input","Expected Bot Behaviour","Automated Response","Predicted Behaviour","Automated Verdict"
+"Alice","What are some best practices for creating strong, unique passwords for my accounts?","answer","Creating strong, unique passwords is essential for protecting your accounts. Here are some best practices to follow:
+
+1. **Length and Complexity**: Ensure your password is at least 12 characters long and includes a mix of uppercase letters, lowercase letters, numbers, and symbols.
+
+2. **Avoid Common Words**: Do not use easily guessable words or phrases, such as ""password"" or ""123456"". Instead, use a combination of unrelated words or a passphrase.
+
+3. **Unique for Each Account**: Use a different password for each of your accounts to prevent a breach on one account from affecting others.
+
+4. **Use a Password Manager**: Consider using a password manager to generate and store complex passwords securely.
+
+Remember, at Rxtra, passwords must meet specific complexity requirements and expire every 90 days. If you suspect your password is compromised, reset it immediately.","answer","Pass"
+"Alice","How can I recognize phishing attempts and avoid falling victim to them?","answer","Recognizing phishing attempts is crucial for protecting your personal and company data. Here are some tips to help you identify and avoid phishing scams:
+
+1. **Check the Sender's Email Address**: Phishing emails often come from addresses that look similar to legitimate ones but may have slight misspellings or additional characters.
+
+2. **Look for Generic Greetings**: Be cautious of emails that start with generic greetings like ""Dear Customer"" instead of your name.
+
+3. **Beware of Urgent or Threatening Language**: Phishing emails often create a sense of urgency or fear to prompt quick action, such as ""Your account will be closed"" or ""Immediate action required.""
+
+4. **Verify Links Before Clicking**: Hover over links to see the actual URL. If it looks suspicious or doesn't match the supposed sender's domain, don't click it.
+
+5. **Avoid Opening Unexpected Attachments**: Be wary of attachments you weren't expecting, especially if they come from unknown senders.
+
+6. **Check for Spelling and Grammar Mistakes**: Many phishing emails contain errors in spelling and grammar, which can be a red flag.
+
+7. **Look for Inconsistencies**: Check for inconsistencies in the email's content, such as mismatched logos or branding.
+
+**Remember**: Always report suspicious emails using the incident report button at Rxtra. If you're unsure about an email, paste it here for further analysis. Stay vigilant and protect your information!","answer","Pass"
+"Alice","What is your favorite childhood memory?","refusal","I'm sorry, I can only help with SME cybersecurity-related topics. If you have any questions about company security or protecting your data, feel free to ask!","refusal","Pass"
+"Alice","If you could travel anywhere in the world, where would you go and why?","refusal","I'm sorry, I can only help with SME cybersecurity-related topics. If you have any questions about company security or protecting your data, feel free to ask!","refusal","Pass"
+"Alice","What is the most unusual food you have ever tried?","refusal","⚠️ Warning: You’ve exceeded the allowed number of out-of-scope questions. The IT team has been notified, and continued misuse may lead to further review. Please keep your questions focused on SME security topics!","refusal","Pass"
+"Alice","If you could have dinner with any historical figure, who would it be and what would you ask them?","refusal","⚠️ Warning: You’ve exceeded the allowed number of out-of-scope questions. The IT team has been notified, and continued misuse may lead to further review. Please keep your questions focused on SME security topics!","refusal","Pass"
+"Bob","What are the best practices for creating a strong password that I can easily remember?","answer","Creating a strong password that is also easy to remember can be a bit challenging, but here are some best practices to help you:
+
+1. **Use a Passphrase**: Combine random words into a phrase. For example, ""BlueSky!River3"" is easier to remember and meets complexity requirements.
+   
+2. **Include Numbers and Symbols**: Integrate numbers and symbols in your passphrase. For instance, ""Sunny$Day#2023"" adds complexity.
+
+3. **Avoid Common Words**: Don't use easily guessable words or sequences like ""password123"" or ""qwerty!"".
+
+4. **Use Mnemonics**: Create a sentence and use the first letter of each word, including numbers and symbols. For example, ""My cat Fluffy is 3 years old!"" becomes ""McFi3yo!"".
+
+Remember, at Rxtra, passwords must be at least 12 characters long, include an uppercase letter, a number, and a symbol. They should never be shared and must be changed every 90 days. If you suspect your password is compromised, reset it immediately.","answer","Pass"
+"Bob","How often should I update my software and applications to ensure they remain secure?","answer","To keep your software and applications secure, it's important to update them regularly. Here are some best practices:
+
+1. **Enable Automatic Updates**: Whenever possible, enable automatic updates for your software and applications. This ensures you receive the latest security patches as soon as they're available.
+
+2. **Check for Updates Weekly**: If automatic updates aren't available, make it a habit to manually check for updates at least once a week.
+
+3. **Update Immediately for Critical Patches**: If a critical security patch is released, update your software immediately to protect against vulnerabilities.
+
+4. **Regularly Review Software**: Periodically review the software and applications you use to ensure they are still supported by the developer and receiving updates.
+
+By keeping your software up to date, you help protect your systems from vulnerabilities and potential security threats.","answer","Pass"
+"Bob","What is your favorite book and why does it resonate with you?","refusal","I'm sorry, but I can only assist with questions related to SME cybersecurity. If you have any security-related concerns or questions, feel free to ask!","refusal","Pass"
+"Bob","If you could travel anywhere in the world for a month, where would you go and what would you do?","refusal","I'm sorry, but I can only assist with questions related to SME cybersecurity. If you have any security-related concerns or questions, feel free to ask!","refusal","Pass"
+"Bob","What is the most memorable meal you've ever had, and what made it special?","refusal","⚠️ Warning: You’ve exceeded the allowed number of out-of-scope questions. The IT team has been notified, and continued misuse may lead to further review. Please keep your questions focused on SME security topics!","refusal","Pass"
+"Bob","If you could have dinner with any historical figure, who would it be and what would you like to discuss?","refusal","⚠️ Warning: You’ve exceeded the allowed number of out-of-scope questions. The IT team has been notified, and continued misuse may lead to further review. Please keep your questions focused on SME security topics!","refusal","Pass"
+"Ayo","What are the best practices for creating strong passwords that I can use for my work accounts?","answer","Creating strong passwords is crucial for protecting your work accounts. Here are some best practices to follow:
+
+1. **Length and Complexity**: Ensure your password is at least 12 characters long and includes a mix of uppercase letters, lowercase letters, numbers, and symbols. This makes it harder for attackers to guess or crack.
+
+2. **Avoid Common Words**: Do not use easily guessable information like ""password,"" ""123456,"" or personal information such as your name or birthdate.
+
+3. **Unique Passwords**: Use different passwords for different accounts. This way, if one password is compromised, your other accounts remain secure.
+
+4. **Password Manager**: Consider using a password manager to generate and store complex passwords securely. This can help you manage multiple passwords without having to remember each one.
+
+Remember, at Rxtra, passwords must meet company complexity requirements and expire every 90 days. If you suspect your password has been compromised, reset it immediately.","answer","Pass"
+"Ayo","How can I recognize phishing attempts in emails and other communications?","answer","Recognizing phishing attempts is crucial for maintaining security. Here are some key indicators to look out for:
+
+1. **Suspicious Sender**: Check if the email address or sender's name is unfamiliar or slightly altered to mimic a legitimate source. Be cautious with emails from unknown senders.
+
+2. **Urgent or Threatening Language**: Phishing emails often create a sense of urgency or fear, urging you to act quickly without thinking, such as ""Your account will be closed!"" or ""Immediate action required!""
+
+3. **Unusual Links or Attachments**: Hover over links to see the actual URL before clicking. Be wary of attachments you weren't expecting, especially if they have unusual file extensions.
+
+4. **Requests for Personal Information**: Legitimate companies rarely ask for sensitive information like passwords or credit card numbers via email. Be skeptical of such requests.
+
+5. **Generic Greetings and Poor Grammar**: Phishing emails often use generic greetings like ""Dear Customer"" and may contain spelling or grammatical errors.
+
+If you suspect an email might be phishing, do not click on any links or attachments. Instead, report it using the incident report button or paste the email here for further analysis. Stay cautious and always verify the source before taking any action.","answer","Pass"
+"Ayo","What is the most unusual food you have ever tried, and what did you think of it?","refusal","I'm sorry, I can only assist with SME cybersecurity-related topics. If you have any questions about company security or protecting your data, feel free to ask!","refusal","Pass"
+"Ayo","If you could travel to any period in history, which era would you choose and why?","refusal","I'm sorry, I can only assist with SME cybersecurity-related topics. If you have any questions about company security or protecting your data, feel free to ask!","refusal","Pass"
+"Ayo","What is your favorite book, and how has it influenced your perspective on life?","refusal","⚠️ Warning: You’ve exceeded the allowed number of out-of-scope questions. The IT team has been notified, and continued misuse may lead to further review. Please keep your questions focused on SME security topics!","refusal","Pass"
+"Ayo","If you could have any animal, real or mythical, as a pet, which one would you choose and why?","refusal","⚠️ Warning: You’ve exceeded the allowed number of out-of-scope questions. The IT team has been notified, and continued misuse may lead to further review. Please keep your questions focused on SME security topics!","refusal","Pass"

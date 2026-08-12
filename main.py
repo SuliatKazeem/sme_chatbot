@@ -16,7 +16,7 @@ from collections import defaultdict
 
 from smeopenai import ask_openai, classify_group
 from virustotal import parse_email, scan_url, scan_domain, scan_file_attachment
-from incident_report import generate_incident_pdf
+from pdf_generation import generate_incident_pdf
 from notifypdf import notify_cybersecurity
 from azure.storage.blob import BlobServiceClient
 
@@ -70,8 +70,7 @@ REFUSAL_TAGS = [
 ]
 
 SCAN_KEYWORDS = [     
-    r'\bscan.*email\b',
-    r'\bscan.*domain\b',               
+    r'\bscan.*email\b',            
 ]
 
 WARNING_MESSAGE = (
@@ -377,6 +376,19 @@ async def chat(req: Request):
         state["conversation"].append(f"B: {next_question}")
         state["question_count"] += 1
         return next_question
+    
+    # Block requests to scan internal company domains.
+    if (
+        "internal domain" in user_input.lower()
+        and (
+            "scan" in user_input.lower()
+            or "virustotal" in user_input.lower()
+        )
+    ):
+        return (
+            "I'm sorry, for security and privacy reasons internal company domains cannot be "
+            "submitted to VirusTotal. Please reach out to our IT support team at security@rxtra.sk993 for assistance"
+        )
 
 # This message is sent if the user asks about scanning an email explain how to upload an .eml file
     if any(re.search(pat, user_input, re.IGNORECASE) for pat in SCAN_KEYWORDS):
@@ -545,6 +557,19 @@ async def chat(req: Request):
             "download_url": f"/download/{filename}",
             "incident_id": incident["id"]
         })
+    
+    # Block requests to scan internal company domains.
+    if (
+        "internal domain" in user_input.lower()
+        and (
+            "scan" in user_input.lower()
+            or "virustotal" in user_input.lower()
+        )
+    ):
+        return (
+            "I'm sorry, for security and privacy reasons internal company domains cannot be "
+            "submitted to VirusTotal. Please reach out to our IT support team at security@rxtra.sk993 for assistance"
+        )
 
 # This message is sent if the user pastes an email as a text and explains how to upload an .eml file
     if messages:
@@ -575,8 +600,6 @@ async def chat(req: Request):
         classification = json.loads(classification_clean)
 
     except Exception as e:
-        print("JSON PARSE ERROR:", e)
-        print("RAW CLASSIFICATION:", classification_raw)
         classification = {"create_incident": False}
             
     if classification.get("create_incident"):
@@ -605,25 +628,21 @@ async def chat(req: Request):
     # Reuse a cached response if available.
     if cache_key in response_cache:
         print("CACHE HIT:", cache_key)
-        return response_cache[cache_key]
-
+        return response_cache[cache_key].replace("[REFUSAL]", "").strip()
 
     llm_reply = ask_openai(safe_user_input, session_id=session_id)
 
+    reply_lower = llm_reply.lower()
+    
+    if "[refusal]" in reply_lower:
+        refusal_count[session_id] += 1
+
+        if refusal_count[session_id] >= THRESHOLD:
+            return WARNING_MESSAGE
+    
+    llm_reply = llm_reply.replace("[REFUSAL]", "").strip()
     response_cache[cache_key] = llm_reply
 
-    reply_lower = llm_reply.lower()
-
-    if any(tag.lower() in reply_lower for tag in REFUSAL_TAGS):
-            refusal_count[session_id] += 1
-    else:
-            # optional reset if user goes back to normal flow
-            refusal_count[session_id] = max(0, refusal_count[session_id] - 1)
-
-    if refusal_count[session_id] >= THRESHOLD:
-            refusal_count[session_id] = 0  # prevent spam looping
-            return WARNING_MESSAGE
-        
     chat_sessions[session_id].append({
         "sender": "bot",
         "message": llm_reply

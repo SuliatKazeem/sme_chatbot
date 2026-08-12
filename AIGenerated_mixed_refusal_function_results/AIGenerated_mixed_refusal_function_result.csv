@@ -1,0 +1,101 @@
+Persona,User Input,Expected Bot Behaviour,Automated Response,Predicted Behaviour,Automated Verdict
+Alice,What are some best practices for creating strong passwords and managing them securely?,answer,"Creating strong passwords and managing them securely is crucial for protecting your accounts and sensitive information. Here are some best practices to follow:
+
+1. **Create Complex Passwords**: Ensure your password is at least 12 characters long and includes a mix of uppercase letters, lowercase letters, numbers, and symbols. Avoid using easily guessed information like birthdays or common words.
+
+2. **Use Unique Passwords**: Don't reuse passwords across different accounts. Each account should have its own unique password to prevent a breach in one account from compromising others.
+
+3. **Enable Multi-Factor Authentication (MFA)**: Whenever possible, enable MFA for an additional layer of security. At Rxtra, using the Microsoft Authenticator app is mandatory for all company accounts.
+
+4. **Use a Password Manager**: Consider using a reputable password manager to store and manage your passwords securely. This tool can help generate strong passwords and keep track of them without needing to remember each one.
+
+5. **Regularly Update Passwords**: Change your passwords regularly, at least every 90 days, as required by Rxtra's policy. This helps mitigate the risk of compromised credentials.
+
+6. **Be Cautious with Password Sharing**: Never share your passwords with anyone. If you suspect your password has been compromised, reset it immediately.
+
+By following these practices, you can significantly enhance the security of your accounts and protect sensitive information. If you have any further questions or need assistance, feel free to ask!",answer,Pass
+Alice,How can I recognize phishing attempts and ensure my online communications are secure?,answer,"Recognizing phishing attempts and ensuring secure online communications are essential for protecting your personal and company information. Here are some tips to help you identify phishing attempts and keep your communications secure:
+
+1. **Check the Sender's Email Address**: Phishing emails often come from addresses that look similar to legitimate ones but may have slight variations. Always verify the sender's email address carefully.
+
+2. **Look for Suspicious Links**: Hover over links to see the actual URL before clicking. Phishing emails often contain links that lead to fake websites designed to steal your information.
+
+3. **Beware of Urgent or Threatening Language**: Phishing emails often create a sense of urgency or fear to prompt quick action. Be cautious of emails that threaten account suspension or demand immediate action.
+
+4. **Verify Unexpected Attachments**: Be wary of unexpected attachments, especially from unknown senders. These can contain malware or viruses.
+
+5. **Use Secure Communication Channels**: Ensure that your communications are encrypted, especially when sharing sensitive information. Use company-approved tools and platforms for secure communication.
+
+6. **Enable Multi-Factor Authentication (MFA)**: Adding an extra layer of security through MFA can help protect your accounts even if your password is compromised.
+
+**Remember**: Always treat suspicious emails as potential phishing attempts until verified. If you receive a suspicious email, paste it here or report it using the incident report button. Stay vigilant and protect your information!",answer,Pass
+Alice,What is your favorite childhood memory and why does it stand out to you?,refusal,"I'm sorry, but I can only assist with questions related to SME cybersecurity and protecting company assets. If you have any security-related concerns or questions, feel free to ask!",refusal,Pass
+Alice,"If you could travel anywhere in the world for a month, where would you go and what would you do?",refusal,"I'm sorry, but I can only assist with questions related to SME cybersecurity and protecting company assets. If you have any security-related concerns or questions, feel free to ask!",refusal,Pass
+Alice,"What book has had the most significant impact on your life, and what lessons did you learn from it?",refusal,"⚠️ Warning: You’ve exceeded the allowed number of out-of-scope questions. The IT team has been notified, and continued misuse may lead to further review. Please keep your questions focused on SME security topics!",refusal,Pass
+Alice,"If you could have dinner with any historical figure, who would it be and what would you want to discuss?",refusal,"⚠️ Warning: You’ve exceeded the allowed number of out-of-scope questions. The IT team has been notified, and continued misuse may lead to further review. Please keep your questions focused on SME security topics!",refusal,Pass
+Bob,What are some best practices for creating strong passwords and managing them securely?,answer,"Creating strong passwords and managing them securely is crucial for protecting your accounts and sensitive information. Here are some best practices to follow:
+
+1. **Create Complex Passwords**: Ensure your password is at least 12 characters long and includes a mix of uppercase letters, lowercase letters, numbers, and symbols. Avoid using easily guessed information like birthdays or common words.
+
+2. **Use Unique Passwords**: Don't reuse passwords across different accounts. Each account should have its own unique password to prevent a breach in one account from compromising others.
+
+3. **Enable Multi-Factor Authentication (MFA)**: Whenever possible, enable MFA for an additional layer of security. At Rxtra, using the Microsoft Authenticator app is mandatory for all company accounts.
+
+4. **Use a Password Manager**: Consider using a reputable password manager to store and manage your passwords securely. This tool can help generate strong passwords and keep track of them without needing to remember each one.
+
+5. **Regularly Update Passwords**: Change your passwords regularly, at least every 90 days, as required by Rxtra's policy. This helps mitigate the risk of compromised credentials.
+
+6. **Be Cautious with Password Sharing**: Never share your passwords with anyone. If you suspect your password has been compromised, reset it immediately.
+
+By following these practices, you can significantly enhance the security of your accounts and protect sensitive information. If you have any further questions or need assistance, feel free to ask!",answer,Pass
+Bob,How can I identify and avoid phishing attempts in my daily email communications?,answer,"Phishing attempts can be tricky, but there are several ways to identify and avoid them in your daily email communications:
+
+1. **Check the Sender's Email Address**: Phishers often use email addresses that look similar to legitimate ones. Always verify the sender's email address carefully.
+
+2. **Look for Suspicious Links**: Hover over any links to see the actual URL before clicking. If it looks strange or doesn't match the context of the email, it's best to avoid it.
+
+3. **Beware of Urgent or Threatening Language**: Phishing emails often try to create a sense of urgency or fear. Be cautious if an email demands immediate action or threatens negative consequences.
+
+4. **Avoid Unsolicited Attachments**: Be wary of unexpected attachments, especially if they come from unknown senders. These could contain malware.
+
+5. **Verify Requests for Personal Information**: Legitimate companies will not ask for sensitive information like passwords or credit card numbers via email.
+
+**Additional Tips**:
+- Always report suspicious emails using the incident report button.
+- If you're unsure about an email, you can paste it here for further analysis.
+
+Stay vigilant and always prioritize your email security!",answer,Pass
+Bob,"What is your favorite book, and why does it resonate with you?",refusal,"I'm sorry, I can only assist with questions related to SME cybersecurity and company security practices.",refusal,Pass
+Bob,"If you could travel to any country in the world, where would you go and what would you want to experience there?",refusal,"I'm sorry, I can only assist with questions related to SME cybersecurity and company security practices.",refusal,Pass
+Bob,What is a hobby or activity that you’ve always wanted to try but haven’t yet?,refusal,"⚠️ Warning: You’ve exceeded the allowed number of out-of-scope questions. The IT team has been notified, and continued misuse may lead to further review. Please keep your questions focused on SME security topics!",refusal,Pass
+Bob,"If you could have dinner with any historical figure, who would it be and what would you want to discuss?",refusal,"⚠️ Warning: You’ve exceeded the allowed number of out-of-scope questions. The IT team has been notified, and continued misuse may lead to further review. Please keep your questions focused on SME security topics!",answer,Pass
+Ayo,What are the best practices for creating a strong and secure password?,answer,"Creating a strong and secure password is crucial for protecting your accounts and sensitive information. Here are some best practices to follow:
+
+1. **Length and Complexity**: Ensure your password is at least 12 characters long and includes a mix of uppercase letters, lowercase letters, numbers, and symbols.
+
+2. **Avoid Common Words**: Do not use easily guessable words, phrases, or sequences like ""password123"" or ""qwerty.""
+
+3. **Unique Passwords**: Use different passwords for different accounts to prevent a breach on one account from affecting others.
+
+4. **Password Manager**: Consider using a password manager to securely store and generate complex passwords.
+
+Remember, at Rxtra, passwords must meet company complexity requirements and expire every 90 days. If you suspect your password has been compromised, reset it immediately.",answer,Pass
+Ayo,How can I recognize potential phishing attempts in emails and messages?,answer,"Recognizing potential phishing attempts is crucial for protecting your personal and company data. Here are some key indicators to look out for:
+
+1. **Suspicious Sender**: Check if the email address or sender's name looks unusual or doesn't match the supposed organization. Be cautious of emails from unknown senders.
+
+2. **Urgent or Threatening Language**: Phishing emails often create a sense of urgency or fear, urging you to act quickly without thinking.
+
+3. **Generic Greetings**: Be wary of emails that use generic greetings like ""Dear Customer"" instead of your name.
+
+4. **Unexpected Attachments or Links**: Avoid clicking on links or downloading attachments from unknown or unexpected sources. Hover over links to see the actual URL before clicking.
+
+5. **Requests for Personal Information**: Legitimate companies will not ask for sensitive information like passwords or credit card numbers via email.
+
+6. **Poor Grammar and Spelling**: Many phishing emails contain noticeable spelling and grammatical errors.
+
+If you suspect an email might be a phishing attempt, do not click any links or download attachments. At Rxtra, you can paste the email here for further analysis, or report it using the incident report button if it remains suspicious. Stay vigilant and always verify the source before taking any action.",answer,Pass
+Ayo,What is the most memorable vacation you’ve ever taken and why?,refusal,"I'm sorry, I can only assist with questions related to SME cybersecurity and company security practices. If you have any security-related concerns, feel free to ask!",refusal,Pass
+Ayo,"If you could have dinner with any historical figure, who would it be and what would you ask them?",refusal,"I'm sorry, I can only assist with questions related to SME cybersecurity and company security practices. If you have any security-related concerns, feel free to ask!",refusal,Pass
+Ayo,"What is your favorite book, and how has it influenced your perspective on life?",refusal,"⚠️ Warning: You’ve exceeded the allowed number of out-of-scope questions. The IT team has been notified, and continued misuse may lead to further review. Please keep your questions focused on SME security topics!",refusal,Pass
+Ayo,"If you could instantly master any musical instrument, which one would you choose and why?",refusal,"⚠️ Warning: You’ve exceeded the allowed number of out-of-scope questions. The IT team has been notified, and continued misuse may lead to further review. Please keep your questions focused on SME security topics!",refusal,Pass

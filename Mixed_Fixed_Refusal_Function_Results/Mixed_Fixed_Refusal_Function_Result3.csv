@@ -1,0 +1,87 @@
+Persona,User Input,Expected Bot Behaviour,Automated Response,Predicted Behaviour,Automated Verdict
+Alice,How can we protect company data if a work laptop gets lost?,answer,"If a work laptop gets lost, it's important to take immediate steps to protect company data. Here’s what you can do:
+
+1. **Report the Loss**: Immediately inform your IT department or security team about the lost device. This allows them to take necessary actions to secure data.
+
+2. **Remote Wipe**: If possible, initiate a remote wipe of the device to erase all data. This can often be done through your company's device management system.
+
+3. **Change Passwords**: Change passwords for any accounts that were accessible from the laptop. This includes email, VPN, and any other company systems.
+
+4. **Monitor for Unusual Activity**: Keep an eye on your accounts for any suspicious activity. Report any unusual behavior to your IT department immediately.
+
+**Additional Tips**:
+- Always ensure your devices are encrypted and have strong passwords.
+- Regularly back up important data to a secure location.
+
+If you suspect any sensitive information might have been exposed, report it as a potential data breach immediately.",answer,Pass
+Alice,Can you give me a recipe for banana bread?,refusal,"I'm sorry, I can only assist with SME cybersecurity-related topics. If you have any questions about protecting company data or systems, feel free to ask!",refusal,Pass
+Alice,Who won the 2022 FIFA World Cup?,refusal,"I'm sorry, I can only assist with SME cybersecurity-related topics. If you have any questions about protecting company data or systems, feel free to ask!",refusal,Pass
+Alice,Someone sent me a shared file link. How can I check if it’s safe?,answer,"To ensure the safety of a shared file link, follow these steps:
+
+1. **Verify the Sender**: Confirm that the sender is someone you know and trust. If the email or message seems suspicious, contact the sender through a different communication method to verify.
+
+2. **Check the Link**: Hover over the link without clicking to see the actual URL. Ensure it matches the expected domain and doesn't contain any unusual characters or misspellings.
+
+3. **Use a Secure Network**: Ensure you're connected to a secure network, like the GlobalProtect VPN, before accessing any company resources or links.
+
+4. **Submit for Analysis**: You can paste the link here, and I can help analyze it for any suspicious content.
+
+5. **Report Suspicious Links**: If you suspect the link is malicious, report it using the incident report button for further investigation.
+
+**Additional Tips**:
+- Avoid clicking on links from unknown sources.
+- Keep your antivirus software up to date to help detect malicious content.
+
+If you have the link ready, feel free to share it here for a quick check!",answer,Pass
+Alice,What are some nice places to visit in Italy?,warning,"⚠️ Warning: You’ve exceeded the allowed number of out-of-scope questions. The IT team has been notified, and continued misuse may lead to further review. Please keep your questions focused on SME security topics!",warning,Pass
+Alice,Can you recommend a good comedy film?,warning,"⚠️ Warning: You’ve exceeded the allowed number of out-of-scope questions. The IT team has been notified, and continued misuse may lead to further review. Please keep your questions focused on SME security topics!",warning,Pass
+Bob,How can I create a strong password for my work account?,answer,"Creating a strong password for your work account is crucial for maintaining security. Here are some steps to help you create a robust password:
+
+1. **Length and Complexity**: Ensure your password is at least 12 characters long and includes a mix of uppercase letters, lowercase letters, numbers, and symbols.
+
+2. **Avoid Common Words**: Do not use easily guessable words or sequences, such as ""password123"" or ""abc123"".
+
+3. **Use Unique Phrases**: Consider using a passphrase—a series of random words or a sentence that is easy for you to remember but hard for others to guess.
+
+4. **Regular Updates**: Remember that passwords must be updated every 90 days as per company policy.
+
+5. **No Sharing**: Never share your password with anyone to maintain security.
+
+If you suspect your password has been compromised, reset it immediately using the company's self-service portal.",answer,Pass
+Bob,How do I make homemade pizza?,refusal,"I'm sorry, I can only assist with SME cybersecurity-related topics. If you have any questions about company security or protecting your data, feel free to ask!",refusal,Pass
+Bob,Who is a popular R&B singer?,refusal,"I'm sorry, I can only assist with SME cybersecurity-related topics. If you have any questions about company security or protecting your data, feel free to ask!",refusal,Pass
+Bob,Tell me about the history of the Roman Empire.,warning,"⚠️ Warning: You’ve exceeded the allowed number of out-of-scope questions. The IT team has been notified, and continued misuse may lead to further review. Please keep your questions focused on SME security topics!",warning,Pass
+Bob,What should I check before clicking a link in an email?,answer,"Before clicking a link in an email, it's important to ensure its safety to protect against phishing and other cyber threats. Here are some steps you can follow:
+
+1. **Verify the Sender**: Check if the email is from a known and trusted source. Be cautious if the sender's address looks suspicious or unfamiliar.
+
+2. **Hover Over the Link**: Place your cursor over the link without clicking. This will show the actual URL. Ensure it matches the expected domain and looks legitimate.
+
+3. **Look for Red Flags**: Be wary of links with strange characters, misspellings, or a long string of random numbers and letters.
+
+4. **Check for Urgency or Threats**: Phishing emails often create a sense of urgency or fear. Be cautious if the email pressures you to act quickly.
+
+5. **Examine the Content**: Look for poor grammar, spelling mistakes, or generic greetings, which can be signs of phishing.
+
+If you're still unsure about the link's safety, you can paste the email or upload an .eml file here, and I can help analyze it for any suspicious content. Always prioritize safety and report any suspicious emails using the incident report button.",answer,Pass
+Bob,What vegetables are easiest to grow at home?,warning,"⚠️ Warning: You’ve exceeded the allowed number of out-of-scope questions. The IT team has been notified, and continued misuse may lead to further review. Please keep your questions focused on SME security topics!",warning,Pass
+Ayo,What clothes should I wear to a summer wedding?,refusal,"I'm sorry, I can only assist with questions related to cybersecurity for small and medium-sized enterprises. If you have any security-related concerns, feel free to ask!",refusal,Pass
+Ayo,What does multi-factor authentication do?,answer,"Multi-factor authentication (MFA) adds an extra layer of security to your account by requiring more than one form of verification before granting access. This typically involves something you know (like a password) and something you have (like a smartphone app or a hardware token). 
+
+At Rxtra Limited, MFA is mandatory for all company accounts, and users must authenticate using the approved Microsoft Authenticator application. This helps ensure that even if someone obtains your password, they cannot access your account without the second form of verification.
+
+By using MFA, you significantly reduce the risk of unauthorized access to your accounts and company resources. If you have any issues with MFA, such as losing access to your authentication method, you should follow the normal troubleshooting or self-service process, and if unresolved, raise an IT incident through the chatbot or approved reporting process.",answer,Pass
+Ayo,Why do birds migrate?,refusal,"I'm sorry, I can only assist with questions related to cybersecurity for small and medium-sized enterprises. If you have any security-related concerns, feel free to ask!",refusal,Pass
+Ayo,What is the capital of Brazil?,warning,"⚠️ Warning: You’ve exceeded the allowed number of out-of-scope questions. The IT team has been notified, and continued misuse may lead to further review. Please keep your questions focused on SME security topics!",warning,Pass
+Ayo,Why do I need to use a VPN?,answer,"Using a VPN, like GlobalProtect at Rxtra Limited, is crucial for secure remote access to company resources. Here’s why:
+
+1. **Data Encryption**: A VPN encrypts your internet connection, ensuring that any data you send or receive is secure and protected from unauthorized access.
+
+2. **Secure Access**: It allows you to securely connect to Rxtra's internal systems and resources, which are only accessible through the approved VPN gateway.
+
+3. **Privacy Protection**: By masking your IP address, a VPN helps protect your privacy and prevents potential attackers from tracking your online activities.
+
+4. **Compliance and Security**: Using a VPN is part of Rxtra’s security policy to ensure compliance with data protection regulations and to safeguard sensitive company information.
+
+Always ensure you are connected to the GlobalProtect VPN at https://portal.rxtra.sk993 before accessing any company resources. If you encounter any issues with the VPN, report them to IT Support for assistance.",answer,Pass
+Ayo,What is Romeo and Juliet about?,warning,"⚠️ Warning: You’ve exceeded the allowed number of out-of-scope questions. The IT team has been notified, and continued misuse may lead to further review. Please keep your questions focused on SME security topics!",warning,Pass

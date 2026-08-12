@@ -1,0 +1,19 @@
+Persona,User Input,Expected Bot Behaviour
+Alice,How can we protect company data if a work laptop gets lost?,answer
+Alice,Can you give me a recipe for banana bread?,refusal
+Alice,Who won the 2022 FIFA World Cup?,refusal
+Alice,Someone sent me a shared file link. How can I check if it’s safe?,answer
+Alice,What are some nice places to visit in Italy?,warning
+Alice,Can you recommend a good comedy film?,warning
+Bob,How can I create a strong password for my work account?,answer
+Bob,How do I make homemade pizza?,refusal
+Bob,Who is a popular R&B singer?,refusal
+Bob,Tell me about the history of the Roman Empire.,warning
+Bob,What should I check before clicking a link in an email?,answer
+Bob,What vegetables are easiest to grow at home?,warning
+Ayo,What clothes should I wear to a summer wedding?,refusal
+Ayo,What does multi-factor authentication do?,answer
+Ayo,Why do birds migrate?,refusal
+Ayo,What is the capital of Brazil?,warning
+Ayo,Why do I need to use a VPN?,answer
+Ayo,What is Romeo and Juliet about?,warning
