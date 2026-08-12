@@ -7,3 +7,4 @@ venv/
 .venv/
 it_incidents.csv
 security_incidents.csv
+incident_pdf
